@@ -13,8 +13,8 @@ import java.time.Instant
 abstract class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
-    private var createdAt: Instant? = null
+    var createdAt: Instant? = null
 
     @LastModifiedDate
-    private var updatedAt: Instant? = null
+    var updatedAt: Instant? = null
 }

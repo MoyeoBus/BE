@@ -1,17 +1,16 @@
 package com.moyeobus.application.route.service
 
 import com.moyeobus.application.route.port.`in`.RouteCommand
-import com.moyeobus.application.route.port.`in`.RouteRequestResult
-import com.moyeobus.application.route.port.`in`.RouteUseCase
+import com.moyeobus.application.route.port.`in`.RouteRequestUseCase
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.domain.route.RequestStatus
 import com.moyeobus.domain.route.RouteRequest
 import org.springframework.stereotype.Service
 
 @Service
-class RouteService(
+class RouteRequestService(
     private val routeRequestRepository: RouteRequestOutPort
-) : RouteUseCase {
+) : RouteRequestUseCase {
     override fun request(command: RouteCommand) {
         val routeRequest = RouteRequest(
             passengerId = 1L,
@@ -22,12 +21,6 @@ class RouteService(
             status = RequestStatus.PENDING
         )
         routeRequestRepository.save(routeRequest)
-    }
-
-    // TODO: 페이지네이션 추가
-    override fun query(): RouteRequestResult {
-        val res = routeRequestRepository.findBy(1L)
-        return res
     }
 
     override fun cancel(requestId: Long) {
