@@ -15,6 +15,11 @@ data class RouteRequest (
     fun cancel(): RouteRequest = copy(status = RequestStatus.CANCELLED)
 }
 
-
-
 enum class RequestStatus {PENDING, CANCELLED, APPROVED}
+
+data class RouteRequestSummary (
+    val totalCount: Long,
+    val approvedCount: Long,
+    val cancelledCount: Long,
+    val pendingCount: Long
+)
