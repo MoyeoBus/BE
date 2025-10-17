@@ -1,9 +1,7 @@
 package com.moyeobus.application.route.port.`in`
 
 
-
-interface RouteUseCase {
+interface RouteRequestUseCase {
     fun request(command: RouteCommand)
-    fun query(): RouteRequestResult
     fun cancel(requestId: Long)
 }
