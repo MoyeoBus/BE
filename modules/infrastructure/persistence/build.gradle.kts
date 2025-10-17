@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.jpa") version "1.9.25"
 }
 tasks.jar {
     enabled = true
@@ -11,6 +12,7 @@ tasks.bootJar {
 
 dependencies {
     implementation(projects.modules.domain)
+    implementation(projects.modules.common)
     implementation(projects.modules.application)
     implementation(libs.spring.boot.starter.jpa)
 
