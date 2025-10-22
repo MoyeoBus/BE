@@ -5,6 +5,7 @@ import com.moyeobus.api.route.dto.RouteRequestResponse
 import com.moyeobus.api.route.dto.Summary
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.`in`.RouteCommand
+import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestUseCase
 import com.moyeobus.global.response.ApiResponse
@@ -25,8 +26,14 @@ import java.time.LocalDateTime
 @RequestMapping("/api/v1/routes")
 class RouteController(
     private val routeRequestUseCase: RouteRequestUseCase,
-    private val routeRequestQueryUseCase: RouteRequestQueryUseCase
+    private val routeRequestQueryUseCase: RouteRequestQueryUseCase,
+    private val routeGenerationUseCase: RouteGenerationUseCase,
 ) {
+
+    @GetMapping("/test")
+    fun test() : ResponseEntity<Any> {
+        return ResponseEntity.ok(routeGenerationUseCase.generateRoute())
+    }
 
     @GetMapping
     fun query(
