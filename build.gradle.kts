@@ -41,7 +41,13 @@ allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    group = "kr.thedream"
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.protobuf:protobuf-java:3.21.9")
+        }
+    }
+
+    group = "com.moyeobus"
     version = "0.0.1-SNAPSHOT"
 
     java { toolchain { languageVersion = JavaLanguageVersion.of(22) } }
