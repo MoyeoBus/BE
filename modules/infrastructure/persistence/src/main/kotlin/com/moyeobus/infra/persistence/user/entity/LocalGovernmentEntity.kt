@@ -7,7 +7,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "local_goverment")
+@Table(name = "local_government")
 class LocalGovernmentEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
