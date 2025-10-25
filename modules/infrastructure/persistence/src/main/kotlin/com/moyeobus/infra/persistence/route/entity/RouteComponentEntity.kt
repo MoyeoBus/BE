@@ -1,9 +1,12 @@
 package com.moyeobus.infra.persistence.route.entity
 
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.Instant
 
@@ -14,7 +17,9 @@ class RouteComponentEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val routeId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    val route: RouteEntity,
 
     val assignedTime: Instant
 )
