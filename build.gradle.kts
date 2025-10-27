@@ -1,9 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.flywaydb:flyway-gradle-plugin:11.7.2")
+        classpath("org.flywaydb:flyway-mysql:11.7.2")
+        classpath("com.mysql:mysql-connector-j:8.3.0")
+    }
+}
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.5.6"
 	id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
+    id("org.flywaydb.flyway") version "11.7.2"
     kotlin("plugin.jpa") version "1.9.25"
     kotlin("kapt") version "1.9.25"
 }
@@ -139,6 +151,21 @@ project(":modules:external") {
         apply(plugin = "io.spring.dependency-management")
         apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     }
+}
+
+subprojects {
+    tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+        enabled = false
+    }
+}
+
+flyway {
+    url = "jdbc:mysql://localhost:3306/moyeobus?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+    user = "root"
+    password = "keypass"
+    schemas = arrayOf("moyeobus")
+    locations = arrayOf("filesystem:modules/infrastructure/persistence/src/main/resources/db/migration")
+    cleanDisabled = false
 }
 
 tasks.withType<Test> {
