@@ -2,26 +2,17 @@ package com.moyeobus.infra.persistence.address.adapter
 
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.domain.route.Address
-import com.moyeobus.infra.persistence.address.entity.AddressEntity
+import com.moyeobus.infra.persistence.address.mapper.AddressMapper
 import com.moyeobus.infra.persistence.address.repotiory.AddressJpaRepository
 import org.springframework.stereotype.Component
 
 @Component
 class AddressPersistenceAdapter(
-    private val repo: AddressJpaRepository
+    private val repo: AddressJpaRepository,
+    private val mapper: AddressMapper
 ): AddressOutPort {
     override fun findAll(): List<Address> {
         val res = repo.findAll()
-        return res.map { it.toDomain() }
+        return res.map { mapper.toDomain(it) }
     }
-
-    private fun AddressEntity.toDomain() =
-        Address(
-            id = this.id,
-            area = this.area.id!!,
-            name = this.name,
-            lat = this.lat,
-            lon = this.lon,
-            postCode = this.postCode
-        )
 }

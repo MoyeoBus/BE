@@ -18,7 +18,7 @@ class AddressEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_id")
     val area: AreaEntity,
 

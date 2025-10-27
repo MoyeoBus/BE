@@ -3,7 +3,7 @@ package com.moyeobus.domain.route
 data class Address (
     val id: Long? = null,
 
-    val area: Long,
+    val area: Area,
 
     val name: String,
 

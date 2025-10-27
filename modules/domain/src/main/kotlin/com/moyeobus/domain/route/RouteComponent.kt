@@ -5,7 +5,13 @@ import java.time.Instant
 data class RouteComponent (
     val id: Long? = null,
 
-    val routeId: Long,
+    var route: Route?,
+
+    val spot: Address,
 
     val assignedTime: Instant
-)
+) {
+    fun assignRoute(route: Route) {
+        this.route = route
+    }
+}
