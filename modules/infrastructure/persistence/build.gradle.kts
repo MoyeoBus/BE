@@ -1,13 +1,11 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.jpa") version "1.9.25"
-}
-tasks.jar {
-    enabled = true
+    kotlin("kapt") version "1.9.25"
 }
 
-tasks.bootJar {
-    enabled = false
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -15,11 +13,12 @@ dependencies {
     implementation(projects.modules.common)
     implementation(projects.modules.application)
     implementation(libs.spring.boot.starter.jpa)
-
     implementation("com.mysql:mysql-connector-j:8.3.0")
+    implementation("org.mapstruct:mapstruct:1.6.2")
+    kapt("org.mapstruct:mapstruct-processor:1.6.2")
 
-    implementation("org.flywaydb:flyway-core:10.20.1")
-    implementation("org.flywaydb:flyway-mysql:10.20.1")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-mysql")
 
     implementation("com.graphhopper:graphhopper-core:8.0") {
         exclude(group = "com.fasterxml.jackson.core")
@@ -33,9 +32,14 @@ dependencies {
         exclude(module = "mockito-core")
     }
 }
-repositories {
-    mavenCentral()
+
+tasks {
+    jar { enabled = true }
+    withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+        enabled = false
+    }
 }
+
 kotlin {
     jvmToolchain(21)
 }
