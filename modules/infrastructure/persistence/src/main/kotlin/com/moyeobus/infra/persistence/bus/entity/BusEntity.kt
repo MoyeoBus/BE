@@ -1,6 +1,9 @@
 package com.moyeobus.infra.persistence.bus.entity
 
+import com.moyeobus.domain.bus.BusStatus
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -10,13 +13,14 @@ import jakarta.persistence.Table
 @Table(name = "bus")
 class BusEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    val id: Long? = null,
 
-    private val operatorId: Long,
+    val operatorId: Long,
 
-    private val busNumber: Int,
+    val busNumber: Int,
 
-    private val carNumber: String,
+    val carNumber: String,
 
-    private val isOperating: Boolean
+    @Enumerated(EnumType.STRING)
+    var status: BusStatus
 )
