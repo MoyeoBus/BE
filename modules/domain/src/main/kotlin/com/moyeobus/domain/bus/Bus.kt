@@ -1,13 +1,29 @@
 package com.moyeobus.domain.bus
 
 data class Bus (
-    private val id: Long? = null,
+    val id: Long? = null,
 
-    private val operatorId: Long,
+    val operatorId: Long,
 
-    private val busNumber: Int,
+    val busNumber: Int,
 
-    private val carNumber: String,
+    val carNumber: String,
 
-    private val isOperating: Boolean
-)
+    var status: BusStatus
+) {
+    fun switch(status: BusStatus) {
+        this.status = status
+    }
+}
+
+enum class BusStatus { OPERATING, IDLE }
+
+
+/**
+ *  운수사 대시보드에서 버스 현황 파악에 이용.
+ */
+//data class BusSummary (
+//    val totalCount: Long,
+//    val operatingCount: Long,
+//    val waitingCount: Long
+//)
