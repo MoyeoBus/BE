@@ -11,8 +11,8 @@ interface BusJpaRepository : JpaRepository<BusEntity, Long> {
     @Query(
         """
             SELECT b FROM BusEntity b 
-            WHERE b.operatorId = :operatorId AND b.isOperating = False
+            WHERE b.operatorId = :operatorId AND b.status = 'IDLE'
             """
     )
-    fun findNotOperatingByOperatorId(operatorId: Long) : List<BusEntity>
+    fun findIdleBusesByOperatorId(operatorId: Long): List<BusEntity>
 }
