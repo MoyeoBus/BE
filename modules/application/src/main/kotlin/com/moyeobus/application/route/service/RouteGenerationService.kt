@@ -2,10 +2,12 @@ package com.moyeobus.application.route.service
 
 import com.moyeobus.application.address.dto.RouteDataWrapper
 import com.moyeobus.application.address.port.out.AddressOutPort
+import com.moyeobus.application.bus.port.out.BusOutPort
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteEngineOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
+import com.moyeobus.domain.bus.BusStatus
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteComponent
@@ -16,6 +18,7 @@ import java.time.Instant
 class RouteGenerationService(
     private val routingEngine: RouteEngineOutPort,
     private val addressRepo: AddressOutPort,
+    private val busRepo: BusOutPort,
     private val routeRepo: RouteOutPort,
     private val routeComponentRepo: RouteComponentOutPort
 ) : RouteGenerationUseCase {
@@ -37,6 +40,7 @@ class RouteGenerationService(
             id = null,
             operatorId = 1L,
             localGovId = 1L,
+            busId = null,
             routeDistance = wrapper.routeDistance,
             routeTotalTime = wrapper.routeTotalTime,
             routeComponents = components
@@ -44,6 +48,7 @@ class RouteGenerationService(
 
         val savedRoute = routeRepo.save(route)
         persistRouteComponents(components, savedRoute)
+        persistBus(route.operatorId, route)
         return savedRoute
     }
 
@@ -65,5 +70,16 @@ class RouteGenerationService(
             it.assignRoute(route)
             routeComponentRepo.save(it)
         }
+    }
+
+    private fun persistBus(operatorId: Long, route: Route) {
+        val buses = busRepo.findIdleBusesByOperatorId(operatorId)
+        val selectedBus = buses.random()
+
+        selectedBus.switch(BusStatus.OPERATING)
+        selectedBus.id?.let { route.persistBus(it) }
+
+        busRepo.save(selectedBus)
+        routeRepo.save(route)
     }
 }

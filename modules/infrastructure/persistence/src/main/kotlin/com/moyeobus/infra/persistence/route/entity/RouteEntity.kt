@@ -19,6 +19,8 @@ class RouteEntity (
 
     val localGovId: Long,
 
+    val busId: Long,
+
     val routeDistance: Double,
 
     val routeTotalTime: Double,

@@ -12,7 +12,7 @@ spring:
     validate-on-migrate: true
     clean-disabled: false
     baseline-on-migrate: true
-    locations: classpath:/infrastructure/persistence/src/main/resources/db/migration
+    locations: classpath:db/migration
 
 
 

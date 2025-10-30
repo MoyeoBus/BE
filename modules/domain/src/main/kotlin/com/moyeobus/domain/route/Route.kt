@@ -8,9 +8,15 @@ data class Route (
 
     val localGovId: Long,
 
+    var busId: Long? = null,
+
     val routeDistance: Double,
 
     val routeTotalTime: Double,
 
     val routeComponents: List<RouteComponent> = emptyList()
-)
+) {
+    fun persistBus(busId: Long) {
+        this.busId = busId
+    }
+}

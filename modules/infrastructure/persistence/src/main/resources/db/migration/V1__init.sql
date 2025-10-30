@@ -79,4 +79,12 @@ CREATE TABLE IF NOT EXISTS route_request (
     CONSTRAINT fk_route_request_passenger
         FOREIGN KEY (passenger_id)
         REFERENCES passenger(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
+
+CREATE TABLE IF NOT EXISTS bus (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    operator_id BIGINT NOT NULL,
+    busNumber INT NOT NULL,
+    carNumber VARCHAR(20) NOT NULL,
+    status enum('IDLE', 'OPERATING') default 'IDLE',
+);
