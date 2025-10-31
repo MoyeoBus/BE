@@ -10,23 +10,29 @@ data class ApiResponse<T>(
     val code: String,
     val message: String,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    val result: T?
+    val result: T?,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val path: String?
 ) {
 
 
     companion object {
         // 성공한 경우 응답 생성
         fun <T> onSuccess(result: T): ApiResponse<T> {
-            return ApiResponse(true, SuccessStatus.OK.code, SuccessStatus.OK.message, result)
+            return ApiResponse(true, SuccessStatus.OK.code, SuccessStatus.OK.message, result, null)
+        }
+
+        fun <T> onSuccessCreated(): ApiResponse<T> {
+            return ApiResponse(true, SuccessStatus.CREATED.code, SuccessStatus.CREATED.message, null, null)
         }
 
         fun <T> onSuccessVoid(): ApiResponse<T> {
-            return ApiResponse(true, SuccessStatus.OK.code, SuccessStatus.OK.message, null)
+            return ApiResponse(true, SuccessStatus.OK.code, SuccessStatus.OK.message, null, null)
         }
 
         // 실패한 경우 응답 생성
-        fun <T> onFailure(code: String, message: String, data: T): ApiResponse<T> {
-            return ApiResponse(false, code, message, data)
+        fun <T> onFailure(code: String, message: String, data: T, requestUri: String): ApiResponse<T> {
+            return ApiResponse(false, code, message, data, requestUri)
         }
     }
 }
