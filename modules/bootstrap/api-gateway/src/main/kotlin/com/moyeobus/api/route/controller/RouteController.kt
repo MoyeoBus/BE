@@ -1,5 +1,6 @@
 package com.moyeobus.api.route.controller
 
+import com.moyeobus.api.docs.RouteControllerDocs
 import com.moyeobus.api.route.dto.QueryResponse
 import com.moyeobus.api.route.dto.RouteRequestResponse
 import com.moyeobus.api.route.dto.Summary
@@ -9,6 +10,8 @@ import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestUseCase
 import com.moyeobus.global.response.ApiResponse
+import jakarta.validation.Valid
+
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +31,7 @@ class RouteController(
     private val routeRequestUseCase: RouteRequestUseCase,
     private val routeRequestQueryUseCase: RouteRequestQueryUseCase,
     private val routeGenerationUseCase: RouteGenerationUseCase,
-) {
+) : RouteControllerDocs{
 
     @GetMapping("/test")
     fun test() : ResponseEntity<Any> {
@@ -36,7 +39,7 @@ class RouteController(
     }
 
     @GetMapping
-    fun query(
+    override fun query(
         @RequestParam(required = false) status: String?,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
@@ -55,15 +58,15 @@ class RouteController(
     }
 
     @PostMapping
-    fun create(@RequestBody command: RouteCommand): ResponseEntity<ApiResponse<Void>> {
+    override fun create(@Valid @RequestBody command: RouteCommand): ResponseEntity<ApiResponse<Void>> {
         routeRequestUseCase.request(command)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(ApiResponse.Companion.onSuccessVoid())
+            .body(ApiResponse.Companion.onSuccessCreated())
     }
 
     @PatchMapping("/{requestId}")
-    fun cancel( @PathVariable requestId: Long): ResponseEntity<ApiResponse<Void>> {
+    override fun cancel(@PathVariable requestId: Long): ResponseEntity<ApiResponse<Void>> {
         routeRequestUseCase.cancel(requestId)
         return ResponseEntity
             .ok()
