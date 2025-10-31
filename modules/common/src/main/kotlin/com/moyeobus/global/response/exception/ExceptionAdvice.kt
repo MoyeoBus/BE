@@ -12,7 +12,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.FieldError
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
@@ -45,31 +47,23 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
         return handleExceptionInternalConstraint(e, HttpHeaders.EMPTY, request, errorMessage)
     }
 
-    // @Valid 어노테이션을 통한 검증 실패 시 발생하는 예외를 처리
-    public override fun handleMethodArgumentNotValid(
-        e: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatusCode,
+
+    override fun handleHttpMessageNotReadable(
+        ex: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
         request: WebRequest
-    ): ResponseEntity<Any>? {
-        val errors: MutableMap<String, String> = LinkedHashMap()
-
-        e.bindingResult.fieldErrors
-            .forEach(Consumer { fieldError: FieldError ->
-                val fieldName = fieldError.field
-                val errorMessage = Optional.ofNullable(fieldError.defaultMessage)
-                    .orElse("")
-                errors.merge(
-                    fieldName, errorMessage
-                ) { existingErrorMessage: String, newErrorMessage: String ->
-                    (existingErrorMessage + ", "
-                            + newErrorMessage)
-                }
-            })
-
-        return handleExceptionInternalArgs(
-            e, HttpHeaders.EMPTY,
-            ErrorStatus.valueOf("_BAD_REQUEST"), request, errors
+    ): ResponseEntity<Any> {
+        val path = (request as ServletWebRequest).request.requestURI
+        val message = ex.mostSpecificCause?.message ?: "요청 본문을 읽을 수 없습니다."
+        val body = ApiResponse.onFailure<Any>(
+            ErrorStatus.BAD_REQUEST.code,
+            ErrorStatus.BAD_REQUEST.message,
+            message, path
         )
+        return handleExceptionInternal(ex, body, headers, ErrorStatus.BAD_REQUEST.httpStatus, request)!!
     }
+
 
     // 모든 Exception 클래스 타입의 예외 처리 (500번대)
     @ExceptionHandler
@@ -96,13 +90,32 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
         return handleExceptionInternal(globalException, errorDetail, null, request)
     }
 
+    override fun handleHttpRequestMethodNotSupported(
+        ex: HttpRequestMethodNotSupportedException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        val servletRequest = (request as ServletWebRequest).request
+        val path = servletRequest.requestURI
+
+        val body = ApiResponse.onFailure(
+            code = ErrorStatus.METHOD_NOT_ALLOWED.code,
+            message = ErrorStatus.METHOD_NOT_ALLOWED.message,
+            data = ex.message ?: "허용되지 않은 HTTP 메서드입니다.",
+            requestUri = path
+        )
+
+        return ResponseEntity(body, ErrorStatus.METHOD_NOT_ALLOWED.httpStatus)
+    }
+
     private fun handleExceptionInternal(
         e: Exception, detail: ErrorDetail,
         headers: HttpHeaders?, request: HttpServletRequest
     ): ResponseEntity<Any>? {
         val body = ApiResponse.onFailure<Any?>(
             detail.code.toString(), detail.message.toString(),
-            null
+            null, request.requestURI
         )
         val webRequest: WebRequest = ServletWebRequest(request)
 
@@ -124,10 +137,13 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
         errorCommonStatus: ErrorStatus,
         headers: HttpHeaders, status: HttpStatus, request: WebRequest, errorPoint: String?
     ): ResponseEntity<Any>? {
+        val path = (request as ServletWebRequest).request.requestURI
         val body = ApiResponse.onFailure<Any?>(
             errorCommonStatus.code,
-            errorCommonStatus.message, errorPoint
+            errorCommonStatus.message, errorPoint,
+            path
         )
+
         log.error(errorPoint)
         return super.handleExceptionInternal(
             e,
@@ -144,9 +160,11 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
         errorCommonStatus: ErrorStatus,
         request: WebRequest, errorArgs: Map<String, String>
     ): ResponseEntity<Any>? {
+        val path = (request as ServletWebRequest).request.requestURI
         val body = ApiResponse.onFailure<Any>(
             errorCommonStatus.code,
-            errorCommonStatus.message, errorArgs
+            errorCommonStatus.message, errorArgs,
+            path
         )
         log.error(errorArgs.toString())
         return super.handleExceptionInternal(
@@ -163,9 +181,11 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
         e: Exception,
         headers: HttpHeaders, request: WebRequest, message: String
     ): ResponseEntity<Any>? {
+        val path = (request as ServletWebRequest).request.requestURI
         val body = ApiResponse.onFailure<Any?>(
             ErrorStatus.BAD_REQUEST.code,
-            message, null
+            message, null,
+            path
         )
         log.error(message)
         return super.handleExceptionInternal(
