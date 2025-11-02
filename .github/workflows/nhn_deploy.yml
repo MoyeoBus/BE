@@ -17,6 +17,7 @@ jobs:
         run: |
           ./gradlew :modules:bootstrap:api-gateway:clean :modules:bootstrap:api-gateway:build
 
+
       - name: Build Docker image
         run: |
           docker build -t myapp:latest \
