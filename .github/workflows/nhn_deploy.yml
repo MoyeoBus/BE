@@ -15,7 +15,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t myapp:latest .
+          docker build -t myapp:latest \
+            -f modules/bootstrap/api-gateway/Dockerfile .
 
       - name: Save Docker image as tar
         run: |
