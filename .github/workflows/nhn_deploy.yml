@@ -15,8 +15,8 @@ jobs:
 
       - name: Build JAR
         run: |
-          ./gradlew :modules:bootstrap:api-gateway:clean :modules:bootstrap:api-gateway:build
-
+          ./gradlew :modules:bootstrap:api-gateway:clean \
+                    :modules:bootstrap:api-gateway:build
 
       - name: Build Docker image
         run: |
@@ -25,16 +25,24 @@ jobs:
 
       - name: Save Docker image as tar
         run: |
-          docker save myapp:latest -o myapp.tar                
-            
+          docker save myapp:latest -o myapp.tar
 
-      - name: Transfer files to NHN server (docker image + compose 파일)
+      - name: Check files before SCP
+        run: |
+          echo "=== Check files exist ==="
+          ls -al .
+          [ -f myapp.tar ] && echo "✅ myapp.tar OK" || exit 1
+          [ -f docker-compose.yml ] && echo "✅ docker-compose.yml OK" || exit 1
+
+      - name: Transfer files to NHN server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NHN_HOST }}
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
-          source: "myapp.tar,docker-compose.yml"
+          source: |
+            ./myapp.tar
+            ./docker-compose.yml
           target: /home/ubuntu/app/
           debug: true
 
@@ -47,8 +55,11 @@ jobs:
           script: |
             cd /home/ubuntu/app
 
+            echo "=== Stop running containers ==="
             docker-compose down || true
 
+            echo "=== Load new Docker image ==="
             docker load -i myapp.tar
 
+            echo "=== Start service ==="
             docker-compose up -d
