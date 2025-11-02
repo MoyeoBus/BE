@@ -1,4 +1,4 @@
 FROM openjdk:21-jdk-slim
-COPY ./build/libs/moyeobus-0.0.1-SNAPSHOT.jar app.jar
+COPY modules/bootstrap/api-gateway/build/libs/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
