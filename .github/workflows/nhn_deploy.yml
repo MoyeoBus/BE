@@ -25,20 +25,7 @@ jobs:
 
       - name: Save Docker image as tar
         run: |
-          docker save myapp:latest -o myapp.tar
-
-      - name: ✅ Check files before SCP
-        run: |
-          echo "=== List current directory ==="
-          pwd
-          ls -al
-      
-          echo "=== Check if myapp.tar exists ==="
-          ls -al myapp.tar || echo "❌ myapp.tar does not exist"
-      
-          echo "=== Check if docker-compose.yml exists ==="
-          ls -al docker-compose.yml || echo "❌ docker-compose.yml does not exist"
-                
+          docker save myapp:latest -o myapp.tar                
             
 
       - name: Transfer files to NHN server (docker image + compose 파일)
@@ -48,8 +35,8 @@ jobs:
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
           source: |
-            myapp.tar
-            docker-compose.yml
+            ["myapp.tar", "docker-compose.yml"]
+
           target: /home/ubuntu/app/
           debug: true
 
