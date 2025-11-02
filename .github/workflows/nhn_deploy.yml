@@ -15,8 +15,7 @@ jobs:
 
       - name: Build JAR
         run: |
-          cd modules/bootstrap/api-gateway
-          ../../gradlew clean build
+          ./gradlew :modules:bootstrap:api-gateway:clean :modules:bootstrap:api-gateway:build
 
       - name: Build Docker image
         run: |
