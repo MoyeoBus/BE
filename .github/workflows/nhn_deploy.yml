@@ -34,15 +34,15 @@ jobs:
           [ -f myapp.tar ] && echo "✅ myapp.tar OK" || exit 1
           [ -f docker-compose.yml ] && echo "✅ docker-compose.yml OK" || exit 1
 
-      - name: Transfer files to NHN server
+      - name: Transfer files to NHN server (docker image + compose 파일)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NHN_HOST }}
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
           source: |
-            ./myapp.tar
-            ./docker-compose.yml
+            ${{ github.workspace }}/myapp.tar
+            ${{ github.workspace }}/docker-compose.yml
           target: /home/ubuntu/app/
           debug: true
 
