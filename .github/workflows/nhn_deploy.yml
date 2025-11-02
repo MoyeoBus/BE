@@ -27,17 +27,6 @@ jobs:
         run: |
           docker save myapp:latest -o myapp.tar
 
-      - name: Debug - Check if Docker image and tar exist
-        run: |
-            echo "=== Docker Images ==="
-            docker images
-            echo "=== Current Directory Files ==="
-            ls -al
-            echo "=== API Gateway Build Outputs ==="
-            ls -al modules/bootstrap/api-gateway/build/libs || true
-            echo "=== Check for myapp.tar ==="
-            ls -al myapp.tar || echo "❌ myapp.tar not found"
-
       - name: Transfer files to NHN server (docker image + compose 파일)
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -48,6 +37,7 @@ jobs:
             ./myapp.tar
             ./docker-compose.yml
           target: /home/ubuntu/app/
+          debug: true
 
       - name: Deploy on NHN server
         uses: appleboy/ssh-action@v0.1.7
