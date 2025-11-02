@@ -27,12 +27,8 @@ jobs:
         run: |
           docker save myapp:latest -o myapp.tar
 
-      - name: Check files before SCP
-        run: |
-          echo "=== Check files exist ==="
-          ls -al .
-          [ -f myapp.tar ] && echo "✅ myapp.tar OK" || exit 1
-          [ -f docker-compose.yml ] && echo "✅ docker-compose.yml OK" || exit 1
+      - name: Fix permission for tar file
+        run: chmod 644 myapp.tar
 
       - name: Transfer files to NHN server (docker image + compose 파일)
         uses: appleboy/scp-action@v0.1.7
