@@ -48,7 +48,12 @@ jobs:
           key: ${{ secrets.NHN_SSH_KEY }}
           script: |
             cd /home/ubuntu/app/github/workspace
-
+          
+            echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > .env
+            echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> .env
+            echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+            echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+            
             echo "=== Stop running containers ==="
             docker compose down || true
 
