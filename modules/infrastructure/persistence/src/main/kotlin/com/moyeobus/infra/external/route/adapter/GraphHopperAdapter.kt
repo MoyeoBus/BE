@@ -16,19 +16,13 @@ import java.util.Locale
 class GraphHopperAdapter(
     private val addressRepo: AddressJpaRepository
 ) : RouteEngineOutPort {
-    private val hopper = GraphHopper().apply {
-        osmFile = "/app/osm/south-korea-251017.osm.pbf"
-        graphHopperLocation = "/app/graph-cache"
-
-        val customModel = CustomModel()
-        setProfiles(
-            Profile("car")
-                .setVehicle("car")
-                .setWeighting("custom")
-                .setCustomModel(customModel)
-        )
-
-        importOrLoad()
+    private val hopper: GraphHopper by lazy {
+        GraphHopper().apply {
+            osmFile = "/app/osm/south-korea-251017.osm.pbf"
+            graphHopperLocation = "/app/graph-cache"
+            setProfiles(Profile("car").setVehicle("car").setWeighting("fastest"))
+            importOrLoad()
+        }
     }
 
     override fun calculatePath(stops: List<Address>): RouteDataWrapper {
