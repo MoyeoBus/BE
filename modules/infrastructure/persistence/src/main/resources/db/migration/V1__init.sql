@@ -86,5 +86,5 @@ CREATE TABLE IF NOT EXISTS bus (
     operator_id BIGINT NOT NULL,
     busNumber INT NOT NULL,
     carNumber VARCHAR(20) NOT NULL,
-    status enum('IDLE', 'OPERATING') default 'IDLE',
+    status enum('IDLE', 'OPERATING') default 'IDLE'
 );
