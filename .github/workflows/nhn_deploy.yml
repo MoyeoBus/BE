@@ -36,8 +36,8 @@ jobs:
           host: ${{ secrets.NHN_HOST }}
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
-          source: "${{ github.workspace }}/myapp.tar,${{ github.workspace }}/docker-compose.yml"
-          target: /home/ubuntu/app/
+          source: "myapp.tar,docker-compose.yml"
+          target: "/home/ubuntu/app/"
           debug: true
 
       - name: Deploy on NHN server
