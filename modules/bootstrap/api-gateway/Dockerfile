@@ -7,7 +7,8 @@ WORKDIR /app
 COPY modules/bootstrap/api-gateway/build/libs/*.jar app.jar
 
 # 3. GraphHopper 경로용 디렉토리 생성
-RUN mkdir -p /app/osm /app/graph-cache
+RUN mkdir -p /app/osm \
+    && mkdir -p /app/graph-cache
 
 # 4. OSM 파일 복사 (Git LFS 사용 시 .gitattributes 포함 필요)
 COPY modules/infrastructure/persistence/src/main/resources/osm/south-korea-251017.osm.pbf \
