@@ -47,13 +47,13 @@ jobs:
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app
+            cd /home/ubuntu/app/github/workspace
 
             echo "=== Stop running containers ==="
-            docker-compose down || true
+            docker compose down || true
 
             echo "=== Load new Docker image ==="
             docker load -i myapp.tar
 
             echo "=== Start service ==="
-            docker-compose up -d
+            docker compose up -d
