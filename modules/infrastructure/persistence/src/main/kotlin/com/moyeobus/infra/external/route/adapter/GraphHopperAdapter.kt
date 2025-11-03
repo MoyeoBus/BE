@@ -17,8 +17,8 @@ class GraphHopperAdapter(
     private val addressRepo: AddressJpaRepository
 ) : RouteEngineOutPort {
     private val hopper = GraphHopper().apply {
-        osmFile = "modules/infrastructure/persistence/src/main/resources/osm/south-korea-251017.osm.pbf"
-        graphHopperLocation = "build/graph-cache"
+        osmFile = "/app/osm/south-korea-251017.osm.pbf"
+        graphHopperLocation = "/app/graph-cache"
 
         val customModel = CustomModel()
         setProfiles(
