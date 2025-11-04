@@ -37,6 +37,10 @@ jobs:
       - name: Save Docker image
         run: docker save myapp:latest -o myapp.tar
 
+
+      - name: Fix permission for tar file
+        run: chmod 644 myapp.tar
+
       - name: Transfer files to NHN server
         uses: appleboy/scp-action@v0.1.7
         with:
