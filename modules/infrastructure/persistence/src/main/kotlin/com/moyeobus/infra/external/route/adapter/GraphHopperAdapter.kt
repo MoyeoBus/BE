@@ -18,7 +18,7 @@ class GraphHopperAdapter(
 ) : RouteEngineOutPort {
     private val hopper: GraphHopper by lazy {
         GraphHopper().apply {
-            osmFile = "/app/osm/south-korea-251017.osm.pbf"
+            osmFile = "/app/osm/south-korea.osm.pbf"
             graphHopperLocation = "/app/graph-cache"
             setProfiles(Profile("car").setVehicle("car").setWeighting("fastest"))
             importOrLoad()
