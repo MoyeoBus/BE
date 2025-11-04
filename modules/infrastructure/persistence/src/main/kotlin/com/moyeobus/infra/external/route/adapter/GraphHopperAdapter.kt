@@ -9,20 +9,20 @@ import com.moyeobus.application.address.dto.RouteDataWrapper
 import com.moyeobus.application.route.port.out.RouteEngineOutPort
 import com.moyeobus.domain.route.Address
 import com.moyeobus.infra.persistence.address.repotiory.AddressJpaRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.Locale
 
 @Component
 class GraphHopperAdapter(
+    @Value("\${graphhopper.osm-path}") private val osmPath: String,
     private val addressRepo: AddressJpaRepository
 ) : RouteEngineOutPort {
     private val hopper: GraphHopper by lazy {
-        val osmFilePath = System.getenv("OSM_FILE") ?: "/app/osm/south-korea.osm.pbf"
-
         GraphHopper().apply {
-            this.osmFile = osmFilePath
+            osmFile = osmPath
             graphHopperLocation = "/app/graph-cache"
-            setProfiles(Profile("car"))
+            setProfiles(Profile("car").setVehicle("car").setWeighting("fastest"))
             importOrLoad()
         }
     }
