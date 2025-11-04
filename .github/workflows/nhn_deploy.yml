@@ -22,8 +22,8 @@ jobs:
           ./gradlew clean --no-daemon
           ./gradlew :modules:bootstrap:api-gateway:clean --no-daemon
           ./gradlew :modules:infrastructure:persistence:clean --no-daemon
-          ./gradlew :modules:application:main:clean --no-daemon
-          ./gradlew :modules:common:main:clean --no-daemon
+          ./gradlew :modules:application:clean --no-daemon
+          ./gradlew :modules:common:clean --no-daemon
           
           # 빌드
           ./gradlew :modules:bootstrap:api-gateway:bootJar -x test --no-daemon
