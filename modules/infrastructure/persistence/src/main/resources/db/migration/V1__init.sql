@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS address (
 create table if not exists passenger(
     id bigint auto_increment primary key,
     user_type enum('GOOGLE', 'GUEST', 'KAKAO') default null,
-    is_login bit(1) default null
+    is_login tinyint(1) default null
 );
 
 create table if not exists transport_operator(
@@ -84,7 +84,21 @@ CREATE TABLE IF NOT EXISTS route_request (
 CREATE TABLE IF NOT EXISTS bus (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     operator_id BIGINT NOT NULL,
-    busNumber INT NOT NULL,
-    carNumber VARCHAR(20) NOT NULL,
+    bus_number INT NOT NULL,
+    car_number VARCHAR(20) NOT NULL,
     status enum('IDLE', 'OPERATING') default 'IDLE'
+);
+
+CREATE TABLE IF NOT EXISTS survey_answer (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    departure_local_gov_id BIGINT NOT NULL,
+    destination_local_gov_id INT NOT NULL,
+    created_at DATETIME(6) NULL,
+    updated_at DATETIME(6) NULL
+);
+
+CREATE TABLE IF NOT EXISTS survey_option (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    reason VARCHAR(50) NOT NULL,
+    active tinyint(1) default null
 );
