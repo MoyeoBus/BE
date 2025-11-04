@@ -4,6 +4,12 @@ services:
   app:
     image: myapp:latest
     container_name: myapp
+    environment:
+      - OSM_FILE=/app/osm/south-korea.osm.pbf
+      - GRAPH_CACHE=/app/graph-cache
+    volumes:
+      - /home/ubuntu/app/osm:/app/osm
+      - /home/ubuntu/app/graph-cache:/app/graph-cache
     ports:
       - "8080:8080"
     restart: always
