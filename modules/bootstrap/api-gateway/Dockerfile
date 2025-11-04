@@ -7,10 +7,9 @@ WORKDIR /app
 COPY modules/bootstrap/api-gateway/build/libs/*.jar app.jar
 
 # 3. 필요한 패키지 설치 + OSM 파일 다운로드
-RUN mkdir -p /app/osm /app/graph-cache && \
-    apt-get update && apt-get install -y wget && \
-    wget -O /app/osm/south-korea.osm.pbf https://download.geofabrik.de/asia/south-korea-latest.osm.pbf && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /app/osm && \
+    wget -O /app/osm/south-korea.osm.pbf \
+    https://download.geofabrik.de/asia/south-korea-latest.osm.pbf
 
 # 4. 포트 명시
 EXPOSE 8080
