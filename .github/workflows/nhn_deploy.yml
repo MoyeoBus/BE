@@ -1,0 +1,77 @@
+name: CI/CD Deploy to NHN Cloud
+
+on:
+  push:
+    branches:
+      - feat/#19-nhn-ci-cd
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+        with:
+          lfs: true  # ✅ Git LFS 파일 다운로드
+
+      - name: Fetch LFS files
+        run: git lfs pull  # ✅ 명시적으로 LFS 파일 가져오기
+
+      - name: Verify OSM file
+        run: |
+          ls -lh modules/infrastructure/persistence/src/main/resources/osm/
+          file modules/infrastructure/persistence/src/main/resources/osm/south-korea-251017.osm.pbf
+
+      - name: Build JAR
+        run: |
+          find . -type d -name "build" -exec rm -rf {} + || true
+          ./gradlew clean
+          ./gradlew :modules:bootstrap:api-gateway:bootJar -x test
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache -t myapp:latest \
+            -f modules/bootstrap/api-gateway/Dockerfile .
+
+      - name: Save Docker image
+        run: docker save myapp:latest -o myapp.tar
+
+
+      - name: Fix permission for tar file
+        run: chmod 644 myapp.tar
+
+      - name: Transfer files to NHN server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.NHN_HOST }}
+          username: ${{ secrets.NHN_USER }}
+          key: ${{ secrets.NHN_SSH_KEY }}
+          source: "myapp.tar,docker-compose.yml"
+          target: "/home/ubuntu/app/"
+
+      - name: Deploy on NHN server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.NHN_HOST }}
+          username: ${{ secrets.NHN_USER }}
+          key: ${{ secrets.NHN_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+            
+            docker compose down || true
+            docker rmi myapp:latest || true
+            
+            cat > .env << 'EOF'
+            SPRING_PROFILES_ACTIVE=prod
+            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
+            MYSQL_DB=${{ secrets.MYSQL_DB }}
+            MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            EOF
+            
+            docker load -i myapp.tar
+            docker compose up -d
+            
+            sleep 10
+            docker compose logs --tail=100

@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-
 }
 tasks.jar {
     enabled = false
@@ -15,7 +14,6 @@ dependencies {
     implementation(projects.modules.domain)
     implementation(projects.modules.application)
     implementation(projects.modules.infrastructure.persistence)
-    implementation(projects.modules.external)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.bundles.bootstrap)
     testImplementation(libs.bundles.test)

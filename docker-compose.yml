@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    image: myapp:latest
+    container_name: myapp
+    volumes:
+      - /home/ubuntu/app/osm:/app/osm
+    environment:
+      - OSM_FILE=/app/osm/south-korea.osm.pbf
+    ports:
+      - "8080:8080"
+    restart: always
+    env_file:
+      - .env
