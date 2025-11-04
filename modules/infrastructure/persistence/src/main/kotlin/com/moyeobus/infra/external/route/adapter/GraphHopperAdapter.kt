@@ -17,9 +17,15 @@ class GraphHopperAdapter(
     private val addressRepo: AddressJpaRepository
 ) : RouteEngineOutPort {
     private val hopper: GraphHopper by lazy {
+        val osmPath = System.getenv("OSM_FILE") ?: "/app/osm/south-korea.osm.pbf"
+        val graphCachePath = System.getenv("GRAPH_CACHE") ?: "/app/graph-cache"
+
+        println(">>> [GraphHopper] OSM FILE PATH = $osmPath")             // 로그 찍기
+        println(">>> [GraphHopper] GRAPH CACHE PATH = $graphCachePath")
+
         GraphHopper().apply {
-            osmFile = "/app/osm/south-korea.osm.pbf"
-            graphHopperLocation = "/app/graph-cache"
+            osmFile = osmPath
+            graphHopperLocation = graphCachePath
             setProfiles(Profile("car").setVehicle("car").setWeighting("fastest"))
             importOrLoad()
         }
