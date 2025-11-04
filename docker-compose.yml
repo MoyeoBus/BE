@@ -10,6 +10,5 @@ services:
       - OSM_FILE=/app/osm/south-korea.osm.pbf
     ports:
       - "8080:8080"
-    restart: always
     env_file:
       - .env
