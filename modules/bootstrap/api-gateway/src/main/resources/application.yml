@@ -1,12 +1,16 @@
 spring:
+  profiles:
+    active: prod   # 기본은 운영 환경
+
   datasource:
     url: jdbc:mysql://${MYSQL_HOST}:3306/${MYSQL_DB}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+
   jpa:
     hibernate:
-      ddl-auto: update
+          ddl-auto: update
   flyway:
     enabled: true
     validate-on-migrate: true

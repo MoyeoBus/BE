@@ -4,4 +4,5 @@ import com.moyeobus.domain.user.LocalGovernment
 
 interface LocalGovernmentOutPort {
     fun findById(id: Long) : LocalGovernment
+    fun checkExists(id: Long) : Boolean
 }
