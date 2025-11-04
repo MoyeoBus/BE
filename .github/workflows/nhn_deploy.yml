@@ -13,13 +13,14 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
 
-      - name: Build JAR
+      - name: Build JAR (All modules clean & build)
         run: |
-          ./gradlew :modules:bootstrap:api-gateway:clean \
-                    :modules:bootstrap:api-gateway:build
+          ./gradlew clean :modules:bootstrap:api-gateway:bootJar -x test
 
-      - name: Build Docker Image
-        run: docker build --no-cache -t myapp:${{ github.sha }} .
+      - name: Build Docker image (no cache)
+        run: |
+          docker build --no-cache -t myapp:latest \
+            -f modules/bootstrap/api-gateway/Dockerfile .
 
       - name: Save Docker image as tar
         run: |
