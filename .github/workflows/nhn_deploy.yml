@@ -75,3 +75,27 @@ jobs:
             
             sleep 10
             docker compose logs --tail=100
+
+      - name: Send Discord success message
+        if: success()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          args: |
+            ✅ **배포 성공!**
+            - Repository: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Commit: ${{ github.sha }}
+
+      - name: Send Discord failure message
+        if: failure()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          args: |
+            ❌ **배포 실패!**
+            - Repository: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Error 발생함. 로그 확인 필요.
