@@ -14,13 +14,26 @@ enum class ErrorStatus(
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON_401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON_403", "금지된 요청입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON_404", "다음 데이터를 찾을 수 없습니다 : "),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 요청 메서드입니다."),
 
     // JWT
     EMPTY_JWT(HttpStatus.UNAUTHORIZED, "COMMON_404", "토큰이 비어있습니다."),
     INVALID_JWT(HttpStatus.UNAUTHORIZED, "COMMON_404", "유효하지 않은 토큰입니다."),
 
+    // SURVEY
+    INVALID_SURVEY_OPTION(HttpStatus.BAD_REQUEST, "SURVEY_001", "은 유효하지 않은 설문 옵션입니다."),
+    INVALID_SURVEY_SPOT(HttpStatus.BAD_REQUEST, "SURVEY_002", "은 유효하지 않은 출발지/도착지 식별자 입니다."),
+
     // USER
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER_001", "이미 존재하는 사용자이며, 비밀번호가 틀렸습니다."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_002", "해당 사용자를 찾을 수 없습니다.");
+
+    fun withDetail(detail: String): BaseStatusCode {
+        return object : BaseStatusCode {
+            override val httpStatus = this@ErrorStatus.httpStatus
+            override val code = this@ErrorStatus.code
+            override val message = detail + this@ErrorStatus.message
+        }
+    }
 }
