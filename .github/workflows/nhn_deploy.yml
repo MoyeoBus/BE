@@ -80,7 +80,7 @@ jobs:
         if: success()
         uses: Ilshidur/action-discord@master
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
           args: |
             ✅ **배포 성공!**
@@ -92,7 +92,7 @@ jobs:
         if: failure()
         uses: Ilshidur/action-discord@master
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
           args: |
             ❌ **배포 실패!**
