@@ -1,6 +1,5 @@
 package com.moyeobus.infra.persistence.route.adapter
 
-import com.moyeobus.application.route.port.`in`.RouteRequestResult
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.RouteRequestPage
 import com.moyeobus.application.route.port.out.RouteRequestQuery
@@ -8,6 +7,7 @@ import com.moyeobus.application.route.port.out.RouteRequestSummaryFilter
 import com.moyeobus.application.route.port.out.RouteRequestSummaryProjection
 import com.moyeobus.domain.route.RequestStatus
 import com.moyeobus.domain.route.RouteRequest
+import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import com.moyeobus.infra.persistence.route.repository.RouteRequestJpaRepository
 import org.springframework.data.domain.PageRequest
@@ -50,7 +50,7 @@ class RouteRequestPersistenceAdapter(
 
     override fun findById(requestId: Long): RouteRequest {
         val res = repo.findById(requestId)
-            .orElseThrow { IllegalArgumentException("RouteRequest not found: $requestId") }
+            .orElseThrow { NotFoundException("RouteRequest(id=$requestId)") }
         return res.toDomain()
     }
 

@@ -2,6 +2,7 @@ package com.moyeobus.infra.persistence.user.adapter
 
 import com.moyeobus.application.user.port.out.LocalGovernmentOutPort
 import com.moyeobus.domain.user.LocalGovernment
+import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.user.entity.LocalGovernmentEntity
 import com.moyeobus.infra.persistence.user.repository.LocalGovernmentJpaRepository
 import org.springframework.stereotype.Component
@@ -13,13 +14,13 @@ class LocalGovernmentPersistenceAdapter(
 ) : LocalGovernmentOutPort {
     override fun findById(id: Long): LocalGovernment {
         val res = repo.findById(id).
-                orElseThrow { IllegalArgumentException("LocalGovernment not found: $id")  }
+                orElseThrow { NotFoundException("LocalGovernment(id=$id)") }
 
         return res.toDomain()
     }
 
     override fun checkExists(id: Long): Boolean {
-        return repo.findById(id).isPresent
+        return repo.existsById(id)
     }
 
     private fun LocalGovernmentEntity.toDomain() =

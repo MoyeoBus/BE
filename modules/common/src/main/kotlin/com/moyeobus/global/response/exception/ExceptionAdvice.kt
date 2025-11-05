@@ -81,13 +81,18 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
     }
 
     // 사용자 정의 예외 처리 (400번대)
-    @ExceptionHandler(value = [GlobalException::class])
-    fun onThrowException(
-        globalException: GlobalException,
-        request: HttpServletRequest
-    ): ResponseEntity<*>? {
-        val errorDetail = globalException.errorDetail
-        return handleExceptionInternal(globalException, errorDetail, null, request)
+    @ExceptionHandler(GlobalException::class)
+    fun handleGlobalException(ex: GlobalException, request: HttpServletRequest): ResponseEntity<Any> {
+        val detail = ex.errorDetail
+
+        val body = ApiResponse.onFailure<Any?>(
+            code = detail.code,
+            message = detail.message,
+            data = null,
+            requestUri = request.requestURI
+        )
+
+        return ResponseEntity(body, detail.httpStatus)
     }
 
     override fun handleHttpRequestMethodNotSupported(

@@ -11,6 +11,10 @@ class AddressPersistenceAdapter(
     private val repo: AddressJpaRepository,
     private val mapper: AddressMapper
 ): AddressOutPort {
+    override fun checkExists(id: Long): Boolean {
+        return repo.existsById(id)
+    }
+
     override fun findAll(): List<Address> {
         val res = repo.findAll()
         return res.map { mapper.toDomain(it) }

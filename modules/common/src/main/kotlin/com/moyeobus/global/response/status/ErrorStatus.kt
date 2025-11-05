@@ -14,6 +14,7 @@ enum class ErrorStatus(
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON_401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON_403", "금지된 요청입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON_404", "요청한 리소스를 찾을 수 없습니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 요청 메서드입니다."),
 
     // JWT
@@ -23,4 +24,12 @@ enum class ErrorStatus(
     // USER
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER_001", "이미 존재하는 사용자이며, 비밀번호가 틀렸습니다."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_002", "해당 사용자를 찾을 수 없습니다.");
+
+    fun withDetail(detail: String): BaseStatusCode {
+        return object : BaseStatusCode {
+            override val httpStatus = this@ErrorStatus.httpStatus
+            override val code = this@ErrorStatus.code
+            override val message = detail
+        }
+    }
 }
