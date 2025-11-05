@@ -2,6 +2,7 @@ package com.moyeobus.infra.persistence.survey.adapter
 
 import com.moyeobus.application.survey.port.out.SurveyOptionOutPort
 import com.moyeobus.domain.survey.SurveyOption
+import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.survey.repository.SurveyOptionJpaRepository
 import com.moyeobus.infra.persistence.survey.mapper.SurveyOptionMapper
 import org.springframework.stereotype.Component
@@ -22,7 +23,7 @@ class SurveyOptionAdapter(
 
     override fun findBy(id: Long) : SurveyOption {
         val reason = repo.findById(id)
-            .orElseThrow { IllegalArgumentException("SurveyOption not found: $id") }
+            .orElseThrow { NotFoundException("SurveyOption(id=$id)") }
         return mapper.toDomain(reason)
     }
 
