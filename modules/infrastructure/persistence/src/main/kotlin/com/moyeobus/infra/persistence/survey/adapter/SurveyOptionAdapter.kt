@@ -13,7 +13,7 @@ class SurveyOptionAdapter(
     private val repo: SurveyOptionJpaRepository
 ) : SurveyOptionOutPort {
     override fun checkExists(id: Long): Boolean {
-        return  repo.findById(id).isPresent
+        return  repo.existsById(id)
     }
 
     override fun findAll(): List<SurveyOption> {

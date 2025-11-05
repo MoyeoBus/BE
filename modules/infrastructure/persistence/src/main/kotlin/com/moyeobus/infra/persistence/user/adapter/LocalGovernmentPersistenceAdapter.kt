@@ -20,7 +20,7 @@ class LocalGovernmentPersistenceAdapter(
     }
 
     override fun checkExists(id: Long): Boolean {
-        return repo.findById(id).isPresent
+        return repo.existsById(id)
     }
 
     private fun LocalGovernmentEntity.toDomain() =
