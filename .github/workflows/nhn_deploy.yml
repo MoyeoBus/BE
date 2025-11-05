@@ -85,7 +85,7 @@ jobs:
           args: |
             ✅ **배포 성공!**
             - Repository: ${{ github.repository }}
-            - PR Title: ${{ github.event.pull_request.title }}
+            - Commit Message: ${{ github.event.head_commit.message }}
             - Triggered by: ${{ github.actor }}
 
       - name: Send Discord failure message
@@ -97,7 +97,7 @@ jobs:
           args: |
             ❌ **배포 실패!**
             - Repository: ${{ github.repository }}
-            - PR Title: ${{ github.event.pull_request.title }}
+            - Commit Message: ${{ github.event.head_commit.message }}
             - Triggered by: ${{ github.actor }}
             - Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             - Error 발생함. 로그 확인 필요.
