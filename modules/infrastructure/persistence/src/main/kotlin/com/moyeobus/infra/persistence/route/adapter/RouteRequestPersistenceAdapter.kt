@@ -8,6 +8,7 @@ import com.moyeobus.application.route.port.out.RouteRequestSummaryProjection
 import com.moyeobus.domain.route.RequestStatus
 import com.moyeobus.domain.route.RouteRequest
 import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.infra.persistence.address.mapper.AddressMapper
 import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import com.moyeobus.infra.persistence.route.repository.RouteRequestJpaRepository
 import org.springframework.data.domain.PageRequest
@@ -17,6 +18,7 @@ import java.time.ZoneOffset
 
 @Component
 class RouteRequestPersistenceAdapter(
+    private val addressMapper: AddressMapper,
     private val repo: RouteRequestJpaRepository
 ) : RouteRequestOutPort {
     override fun save(request: RouteRequest) {
@@ -54,6 +56,11 @@ class RouteRequestPersistenceAdapter(
         return res.toDomain()
     }
 
+    override fun findByPending(): List<RouteRequest> {
+        val res = repo.findByStatus(RequestStatus.PENDING.toString())
+        return res.map { it.toDomain() }
+    }
+
     override fun summary(filter: RouteRequestSummaryFilter): RouteRequestSummaryProjection {
         val list = repo.summary(
             passengerId = 1L,
@@ -74,8 +81,8 @@ class RouteRequestPersistenceAdapter(
         RouteRequestEntity(
             id = this.id,
             passengerId = 1L,
-            departureId = this.departureId,
-            destinationId = this.destinationId,
+            departure = addressMapper.toEntity(this.departure),
+            destination = addressMapper.toEntity(this.destination),
             startDateTime = this.startDateTime.toInstant(ZoneOffset.UTC),
             endDateTime = this.endDateTime.toInstant(ZoneOffset.UTC),
             status = this.status.name
@@ -84,8 +91,8 @@ class RouteRequestPersistenceAdapter(
         RouteRequest(
             id = this.id,
             passengerId = this.passengerId,
-            departureId = this.departureId,
-            destinationId = this.destinationId,
+            departure = addressMapper.toDomain(this.departure),
+            destination = addressMapper.toDomain(this.destination),
             startDateTime = LocalDateTime.ofInstant(this.startDateTime, ZoneOffset.UTC),
             endDateTime = LocalDateTime.ofInstant(this.endDateTime, ZoneOffset.UTC),
             status = RequestStatus.valueOf(this.status)
