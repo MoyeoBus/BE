@@ -56,4 +56,13 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         @Param("fromAt") fromAt: Instant?,
         @Param("toAt") toAt: Instant?,
     ): List<Array<Any>>
+
+    @Query(
+        """
+    SELECT r 
+    FROM RouteRequestEntity r 
+    WHERE r.status = :status
+    """
+    )
+    fun findByStatus(@Param("status") status: String): List<RouteRequestEntity>
 }
