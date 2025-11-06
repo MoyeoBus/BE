@@ -2,6 +2,7 @@ package com.moyeobus.infra.persistence.address.adapter
 
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.domain.route.Address
+import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.address.mapper.AddressMapper
 import com.moyeobus.infra.persistence.address.repotiory.AddressJpaRepository
 import org.springframework.stereotype.Component
@@ -18,5 +19,11 @@ class AddressPersistenceAdapter(
     override fun findAll(): List<Address> {
         val res = repo.findAll()
         return res.map { mapper.toDomain(it) }
+    }
+
+    override fun findById(id: Long): Address {
+        val res = repo.findById(id).
+            orElseThrow { NotFoundException("Address(id=$id)") }
+        return mapper.toDomain(res)
     }
 }
