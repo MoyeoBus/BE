@@ -37,10 +37,13 @@ create table if not exists transport_operator(
 );
 
 create table if not exists local_government(
-    id bigint auto_increment primary key,
+    id BIGINT auto_increment primary key,
+    area_id BIGINT NOT NULL,
     login_id VARCHAR(255) default null,
     password VARCHAR(255) default null,
-    operator_name VARCHAR(255) default null
+    CONSTRAINT fk_local_gov_area
+            FOREIGN KEY (area_id)
+            REFERENCES area(id)
 );
 
 create table if not exists route(
