@@ -4,15 +4,26 @@ import com.moyeobus.application.address.dto.RouteDataWrapper
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.application.bus.port.out.BusOutPort
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
+import com.moyeobus.application.route.port.out.KakaoMobilityOutPort
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteEngineOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
+import com.moyeobus.application.route.port.out.RouteRequestOutPort
+import com.moyeobus.application.route.port.out.dto.KakaoDirectionRequest
+import com.moyeobus.application.route.port.out.dto.Point
+import com.moyeobus.application.route.port.out.dto.Waypoint
 import com.moyeobus.domain.bus.BusStatus
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteComponent
+import com.moyeobus.domain.route.RouteRequest
 import org.springframework.stereotype.Service
 import java.time.Instant
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Service
 class RouteGenerationService(
@@ -20,15 +31,97 @@ class RouteGenerationService(
     private val addressRepo: AddressOutPort,
     private val busRepo: BusOutPort,
     private val routeRepo: RouteOutPort,
-    private val routeComponentRepo: RouteComponentOutPort
+    private val routeRequestRepo: RouteRequestOutPort,
+    private val routeComponentRepo: RouteComponentOutPort,
+    private val kakaoMobilityClient: KakaoMobilityOutPort
 ) : RouteGenerationUseCase {
 
-    override fun generateRoute(): Route {
-        val stops = addressRepo.findAll()
-        require(stops.size >= 2) { "최소 2개 이상의 정류장이 필요합니다." }
+    fun KakaoDirectionRequest.Companion.fromCluster(
+        group: List<RouteRequest>,
+        addressRepo: AddressOutPort
+    ): KakaoDirectionRequest {
+        val first = addressRepo.findById(group.first().departure.id!!)
+        val last = addressRepo.findById(group.last().destination.id!!)
 
-        val routeData = routingEngine.calculatePath(stops)
-        return persistGeneratedRoute(routeData)
+        val waypoints = group.drop(1).dropLast(1).map { req ->
+            addressRepo.findById(req.departure.id!!).let { addr ->
+                Waypoint("via", addr.lon, addr.lat)
+            }
+        }
+
+        return KakaoDirectionRequest(
+            origin = Point(first.lon.toString(), first.lat.toString()),
+            destination = Point(last.lon.toString(), last.lat.toString()),
+            waypoints = waypoints
+        )
+    }
+
+    override fun generateRoute(): List<Any> {
+        val groups = clusterByDistance()
+        val createdRoutes = mutableListOf<Route>()
+        val kakaoResponse = mutableListOf<Any>()
+
+        groups.forEach { group ->
+            val request = KakaoDirectionRequest.fromCluster(group, addressRepo)
+            val response = kakaoMobilityClient.getDirections(request)
+
+            //val route = saveRoute(response, group) // Route + RouteComponents 저장
+            //createdRoutes.add(route)
+            kakaoResponse.add(response)
+        }
+
+        return kakaoResponse
+    }
+
+
+    fun distance(a: Address, b: Address): Double {
+        val R = 6371e3 // 지구 반지름 (미터)
+        val lat1 = Math.toRadians(a.lat)
+        val lat2 = Math.toRadians(b.lat)
+        val dLat = Math.toRadians(b.lat - a.lat)
+        val dLon = Math.toRadians(b.lon - a.lon)
+
+        val h = sin(dLat / 2).pow(2.0) +
+                cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2.0)
+
+        return 2 * R * atan2(sqrt(h), sqrt(1 - h)) // 단위: meter
+    }
+
+    fun canBeInSameRouteByDistance(prev: RouteRequest, next: RouteRequest): Boolean {
+        val prevEnd = addressRepo.findById(prev.destination.id!!)
+        val nextStart = addressRepo.findById(next.departure.id!!)
+
+        val distMeters = distance(prevEnd, nextStart)
+
+        return distMeters <= 2000
+    }
+
+    fun clusterByDistance(): List<List<RouteRequest>> {
+        val requests = routeRequestRepo.findByPending().sortedBy { it.startDateTime }
+        val clusters = mutableListOf<MutableList<RouteRequest>>()
+
+        for (req in requests) {
+            var assigned = false
+
+            // 이미 존재하는 노선에 붙일 수 있으면 추가
+            for (group in clusters) {
+                if (canBeInSameRouteByDistance(group.last(), req)) {
+                    group.add(req)
+                    assigned = true
+                    break
+                }
+            }
+
+            if (!assigned) {
+                clusters.add(mutableListOf(req))  // 새로운 노선 생성
+            }
+        }
+
+        return clusters
+    }
+
+    fun kakao(){
+
     }
 
     /**
