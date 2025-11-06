@@ -16,8 +16,8 @@ data class RouteRequestResponse(
     companion object {
         fun from (r: RouteRequest) = RouteRequestResponse(
             id = r.id,
-            departureId = r.departureId,
-            destinationId = r.destinationId,
+            departureId = r.departure.id!!,
+            destinationId = r.destination.id!!,
             startDateTime = r.startDateTime,
             endDateTime = r.endDateTime,
             status = r.status.name
