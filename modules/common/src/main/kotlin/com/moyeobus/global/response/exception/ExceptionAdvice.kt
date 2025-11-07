@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.util.*
 import java.util.function.Consumer
@@ -199,6 +200,21 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
             headers,
             ErrorStatus.BAD_REQUEST.httpStatus,
             request
+        )
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun handleTypeMismatch(request: WebRequest, ex: MethodArgumentTypeMismatchException): ResponseEntity<ApiResponse<String>> {
+        val message = "${ex.name}의 형식을 확인해주세요."
+        val path = (request as ServletWebRequest).request.requestURI
+
+        return ResponseEntity.badRequest().body(
+            ApiResponse.onFailure(
+                code = "COMMON_400",
+                message = "잘못된 요청입니다.",
+                data = message,
+                requestUri = path
+            )
         )
     }
 }
