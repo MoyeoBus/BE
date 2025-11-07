@@ -1,7 +1,7 @@
 package com.moyeobus.application.address.port.`in`
 
-import com.moyeobus.application.address.dto.SpotDto
+import com.moyeobus.application.address.dto.StationDto
 
 interface AddressQueryUseCase {
-    fun queryStations(id: Long) : List<SpotDto>
+    fun queryStations(id: Long) : List<StationDto>
 }

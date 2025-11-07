@@ -1,6 +1,6 @@
 package com.moyeobus.infra.persistence.address.adapter
 
-import com.moyeobus.application.address.dto.SpotDto
+import com.moyeobus.application.address.dto.StationDto
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.Area
@@ -24,7 +24,7 @@ class AddressPersistenceAdapter(
         return res.map { mapper.toDomain(it) }
     }
 
-    override fun findByArea(area: Area): List<SpotDto> {
+    override fun findByArea(area: Area): List<StationDto> {
         val res = repo.findByArea(areaMapper.toEntity(area))
         return res
     }

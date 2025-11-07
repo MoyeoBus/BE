@@ -1,6 +1,6 @@
 package com.moyeobus.application.address.dto
 
-data class SpotDto(
+data class StationDto(
     val id: Long,
     val name: String,
     val lat: Double,
