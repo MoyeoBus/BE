@@ -6,5 +6,6 @@ interface RouteRequestOutPort {
     fun save(request: RouteRequest)
     fun findBy(query: RouteRequestQuery): RouteRequestPage
     fun findById(requestId: Long): RouteRequest
+    fun findByPending() : List<RouteRequest>
     fun summary(filter: RouteRequestSummaryFilter) : RouteRequestSummaryProjection
 }

@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 data class RouteRequest (
     val id: Long? = null,
     val passengerId: Long? = null,
-    val departureId: Long,
-    val destinationId: Long,
+    val departure: Address,
+    val destination: Address,
     var startDateTime: LocalDateTime,
     var endDateTime: LocalDateTime,
     var status: RequestStatus

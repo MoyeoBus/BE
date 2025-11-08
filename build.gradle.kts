@@ -144,14 +144,14 @@ project(":modules:common") {
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-//// external
-//project(":modules:external") {
-//    subprojects {
-//        apply(plugin = "org.springframework.boot")
-//        apply(plugin = "io.spring.dependency-management")
-//        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-//    }
-//}
+// external
+project(":modules:external") {
+    subprojects {
+        apply(plugin = "org.springframework.boot")
+        apply(plugin = "io.spring.dependency-management")
+        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+    }
+}
 
 subprojects {
     tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {

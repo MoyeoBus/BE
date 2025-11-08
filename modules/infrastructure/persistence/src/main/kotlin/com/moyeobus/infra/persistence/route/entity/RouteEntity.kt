@@ -1,7 +1,6 @@
 package com.moyeobus.infra.persistence.route.entity
 
 import com.moyeobus.global.entity.BaseEntity
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType

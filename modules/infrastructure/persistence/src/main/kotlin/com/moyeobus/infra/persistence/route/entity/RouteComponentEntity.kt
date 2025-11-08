@@ -1,6 +1,7 @@
 package com.moyeobus.infra.persistence.route.entity
 
-import com.moyeobus.infra.persistence.address.entity.AddressEntity
+import com.moyeobus.domain.route.GeoPoint
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -22,9 +23,9 @@ class RouteComponentEntity (
     @JoinColumn(name = "route_id")
     val route: RouteEntity? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    val spot: AddressEntity,
+    val lat: Double,
+
+    val lon: Double,
 
     val assignedTime: Instant
 )
