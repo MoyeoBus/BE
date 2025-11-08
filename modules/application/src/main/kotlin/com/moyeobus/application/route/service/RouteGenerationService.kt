@@ -5,16 +5,21 @@ import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.out.KakaoMobilityOutPort
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
+import com.moyeobus.application.route.port.out.RouteRequestCluster
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.dto.KakaoDirectionRequest
+import com.moyeobus.application.route.port.out.dto.KakaoDirectionResponse
 import com.moyeobus.application.route.port.out.dto.Point
 import com.moyeobus.application.route.port.out.dto.Waypoint
+import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
+import com.moyeobus.application.user.port.out.PassengerOutPort
 import com.moyeobus.domain.bus.BusStatus
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.domain.route.RouteRequest
+import com.moyeobus.domain.routeowner.PassengerRoute
 import org.springframework.stereotype.Service
 import java.time.ZoneId
 import kotlin.math.abs
@@ -27,6 +32,8 @@ import kotlin.math.sqrt
 @Service
 class RouteGenerationService(
     private val busRepo: BusOutPort,
+    private val passengerRepo: PassengerOutPort,
+    private val passengerRouteRepo: PassengerRouteOutPort,
     private val routeRepo: RouteOutPort,
     private val routeRequestRepo: RouteRequestOutPort,
     private val routeComponentRepo: RouteComponentOutPort,
@@ -50,63 +57,83 @@ class RouteGenerationService(
         )
     }
 
-    override fun generateRoute(): List<Any> {
-        val groups = clusterByDistance()
-        val kakaoResponse = mutableListOf<Any>()
+    override fun generateRoute(): List<Route> {
+        val clusters = clusterByDistanceWithParticipants()
+        val savedRoutes = mutableListOf<Route>()
 
+        clusters.forEach { cluster ->
+            // 1) 카카오 길찾기로 경로 계산
+            val kakaoRoute = kakaoMobilityClient.getDirections(
+                KakaoDirectionRequest.fromCluster(cluster.acceptedRequests)
+            )
 
+            // 2) Route 도메인 저장
+            val route = saveRoute(kakaoRoute, cluster)
 
-        groups.forEachIndexed { index, group ->
-            val request = KakaoDirectionRequest.fromCluster(group)
-            val response = kakaoMobilityClient.getDirections(request)
-            response.routes?.forEach { route ->
-                val routeComponents = mutableListOf<RouteComponent>()
-                val origin = route.summary?.origin
-                val destination = route.summary?.destination
-                val totalDistance = route.summary?.distance
-                val totalDuration = route.summary?.duration
-                val tempRoute = Route(
-                id = null,
-                operatorId = 1L,
-                localGovId = 1L,
-                busId = 1L,
-                routeDistance = totalDistance ?: 0,
-                routeTotalTime = totalDuration ?: 0,
-                routeComponents = emptyList()
-                )
+            // 3) 참여자(PassengerRoute) 저장
+            savePassengersOfRoute(route, cluster.exceptedRequests)
 
-                val routeEntity = routeRepo.save(tempRoute)
-
-
-
-                route.sections?.forEach { section ->
-                    val sectionDistance = section.distance
-                    val sectionDuration = section.duration
-
-                    section.guides?.forEach { guide ->
-                        val name = guide.name
-                        val x = guide.x
-                        val y = guide.y
-                        val guideDistance = guide.distance
-                        val guideDuration = guide.duration
-                        routeComponents.addLast(RouteComponent(
-                            id = null,
-                            route = routeEntity,
-                            location = GeoPoint(x, y),
-                            assignedTime = group.first().startDateTime
-                        ))
-                    }
-                    routeComponentRepo.saveAll(routeComponents)
-                }
-            }
-
-
-            kakaoResponse.add(response)
+            savedRoutes.add(route)
         }
-
-        return kakaoResponse
+        return savedRoutes
     }
 
+    private fun savePassengersOfRoute(route: Route, requests: List<RouteRequest>) {
+        requests.forEach { req ->
+            val passenger = passengerRepo.findById(req.passengerId!!)
+            passengerRouteRepo.save(
+                PassengerRoute(
+                    id = null,
+                    passenger = passenger,
+                    route = route
+                )
+            )
+        }
+    }
+
+    private fun createRouteComponents(
+        response: KakaoDirectionResponse,
+        route: Route,
+        representativeRequest: RouteRequest
+    ): List<RouteComponent> {
+        val components = mutableListOf<RouteComponent>()
+
+        response.routes?.first()?.sections?.forEach { section ->
+            section.guides?.forEach { guide ->
+                components.add(
+                    RouteComponent(
+                        id = null,
+                        route = route,
+                        location = GeoPoint(guide.x, guide.y),
+                        assignedTime = representativeRequest.startDateTime
+                    )
+                )
+            }
+        }
+        return components
+    }
+
+    private fun saveRoute(response: KakaoDirectionResponse, cluster: RouteRequestCluster): Route {
+        val summary = response.routes?.first()?.summary
+            ?: throw IllegalStateException("경로 요약 정보 없음")
+
+        val route = Route(
+            id = null,
+            operatorId = 1L,
+            localGovId = 1L,
+            busId = 1L,
+            routeDistance = summary.distance,
+            routeTotalTime = summary.duration,
+            routeComponents = emptyList()
+        )
+
+        val savedRoute = routeRepo.save(route)
+
+        val components = createRouteComponents(response, savedRoute, cluster.acceptedRequests.first())
+        routeComponentRepo.saveAll(components)
+
+        return savedRoute
+    }
 
     fun distance(a: Address, b: Address): Double {
         val R = 6371e3 // 지구 반지름 (미터)
@@ -142,41 +169,51 @@ class RouteGenerationService(
         return diff <= minutes * 60 * 1000
     }
 
-    fun clusterByDistance(): List<List<RouteRequest>> {
+    fun clusterByDistanceWithParticipants(): List<RouteRequestCluster> {
         val requests = routeRequestRepo.findByPending()
             .sortedBy { it.startDateTime }
 
         val clusters = mutableListOf<MutableList<RouteRequest>>()
+        val participantMap = mutableMapOf<Int, MutableList<RouteRequest>>()
 
         for (req in requests) {
             var assigned = false
 
-            for (group in clusters) {
+            for ((index, group) in clusters.withIndex()) {
                 val last = group.last()
 
-                // 1) 같은 장소 & 시간 비교 → 이전 요청만 유지
-                if (isSameSpot(last, req) && isCloseTime(last, req, minutes = 30)) {
+                // 조건 1: 같은 위치 & 30분 내 요청 → 대표로는 안 들어가고 참여자로만 저장
+                if (isSameSpot(last, req) && isCloseTime(last, req, 30)) {
+                    participantMap.getOrPut(index) { mutableListOf() }.add(req)
+                    routeRequestRepo.save(req.approve())
                     assigned = true
-                    break // 현재 요청은 skip
+                    break
                 }
 
-                // 2) 기존 그룹에 거리로 묶일 수 있다면 추가
+                // 조건 2: 거리 기준으로 같은 노선에 묶일 수 있을 때만 그룹에 포함
                 if (canBeInSameRouteByDistance(last, req)) {
                     group.add(req)
+                    routeRequestRepo.save(req.approve())
                     assigned = true
                     break
                 }
             }
 
-            // 3) 어떤 그룹에도 못 들어가면 새 그룹 생성
+            // 어떤 그룹에도 포함되지 않으면 새 그룹 생성
             if (!assigned) {
                 clusters.add(mutableListOf(req))
+                routeRequestRepo.save(req.approve())
             }
         }
 
-        return clusters
+        // 클러스터 + 참여자 묶음으로 반환
+        return clusters.mapIndexed { index, group ->
+            RouteRequestCluster(
+                acceptedRequests = group,
+                exceptedRequests = group + participantMap[index].orEmpty()
+            )
+        }
     }
-
 
 
     /**
