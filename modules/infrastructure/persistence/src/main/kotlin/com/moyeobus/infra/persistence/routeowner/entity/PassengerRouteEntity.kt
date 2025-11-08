@@ -1,4 +1,4 @@
-package com.moyeobus.infra.persistence.userroute.entity
+package com.moyeobus.infra.persistence.routeowner.entity
 
 import com.moyeobus.global.entity.BaseEntity
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
