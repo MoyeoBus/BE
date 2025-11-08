@@ -10,9 +10,9 @@ data class Route (
 
     var busId: Long? = null,
 
-    val routeDistance: Double,
+    val routeDistance: Int,
 
-    val routeTotalTime: Double,
+    val routeTotalTime: Int,
 
     val routeComponents: List<RouteComponent> = emptyList()
 ) {
