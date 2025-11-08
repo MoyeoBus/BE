@@ -1,12 +1,9 @@
 package com.moyeobus.application.route.service
 
-import com.moyeobus.application.address.dto.RouteDataWrapper
-import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.application.bus.port.out.BusOutPort
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.out.KakaoMobilityOutPort
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
-import com.moyeobus.application.route.port.out.RouteEngineOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.dto.KakaoDirectionRequest
@@ -14,11 +11,13 @@ import com.moyeobus.application.route.port.out.dto.Point
 import com.moyeobus.application.route.port.out.dto.Waypoint
 import com.moyeobus.domain.bus.BusStatus
 import com.moyeobus.domain.route.Address
+import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.domain.route.RouteRequest
 import org.springframework.stereotype.Service
-import java.time.Instant
+import java.time.ZoneId
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -27,8 +26,6 @@ import kotlin.math.sqrt
 
 @Service
 class RouteGenerationService(
-    private val routingEngine: RouteEngineOutPort,
-    private val addressRepo: AddressOutPort,
     private val busRepo: BusOutPort,
     private val routeRepo: RouteOutPort,
     private val routeRequestRepo: RouteRequestOutPort,
@@ -37,16 +34,13 @@ class RouteGenerationService(
 ) : RouteGenerationUseCase {
 
     fun KakaoDirectionRequest.Companion.fromCluster(
-        group: List<RouteRequest>,
-        addressRepo: AddressOutPort
+        group: List<RouteRequest>
     ): KakaoDirectionRequest {
-        val first = addressRepo.findById(group.first().departure.id!!)
-        val last = addressRepo.findById(group.last().destination.id!!)
+        val first = group.first().departure
+        val last = group.last().destination
 
         val waypoints = group.drop(1).dropLast(1).map { req ->
-            addressRepo.findById(req.departure.id!!).let { addr ->
-                Waypoint("via", addr.lon, addr.lat)
-            }
+            Waypoint("via", req.departure.lon, req.departure.lat)
         }
 
         return KakaoDirectionRequest(
@@ -58,15 +52,55 @@ class RouteGenerationService(
 
     override fun generateRoute(): List<Any> {
         val groups = clusterByDistance()
-        val createdRoutes = mutableListOf<Route>()
         val kakaoResponse = mutableListOf<Any>()
 
-        groups.forEach { group ->
-            val request = KakaoDirectionRequest.fromCluster(group, addressRepo)
-            val response = kakaoMobilityClient.getDirections(request)
 
-            //val route = saveRoute(response, group) // Route + RouteComponents 저장
-            //createdRoutes.add(route)
+
+        groups.forEachIndexed { index, group ->
+            val request = KakaoDirectionRequest.fromCluster(group)
+            val response = kakaoMobilityClient.getDirections(request)
+            response.routes?.forEach { route ->
+                val routeComponents = mutableListOf<RouteComponent>()
+                val origin = route.summary?.origin
+                val destination = route.summary?.destination
+                val totalDistance = route.summary?.distance
+                val totalDuration = route.summary?.duration
+                val tempRoute = Route(
+                id = null,
+                operatorId = 1L,
+                localGovId = 1L,
+                busId = 1L,
+                routeDistance = totalDistance ?: 0,
+                routeTotalTime = totalDuration ?: 0,
+                routeComponents = emptyList()
+                )
+
+                val routeEntity = routeRepo.save(tempRoute)
+
+
+
+                route.sections?.forEach { section ->
+                    val sectionDistance = section.distance
+                    val sectionDuration = section.duration
+
+                    section.guides?.forEach { guide ->
+                        val name = guide.name
+                        val x = guide.x
+                        val y = guide.y
+                        val guideDistance = guide.distance
+                        val guideDuration = guide.duration
+                        routeComponents.addLast(RouteComponent(
+                            id = null,
+                            route = routeEntity,
+                            location = GeoPoint(x, y),
+                            assignedTime = group.first().startDateTime
+                        ))
+                    }
+                    routeComponentRepo.saveAll(routeComponents)
+                }
+            }
+
+
             kakaoResponse.add(response)
         }
 
@@ -88,72 +122,62 @@ class RouteGenerationService(
     }
 
     fun canBeInSameRouteByDistance(prev: RouteRequest, next: RouteRequest): Boolean {
-        val prevEnd = addressRepo.findById(prev.destination.id!!)
-        val nextStart = addressRepo.findById(next.departure.id!!)
+        val prevEnd = prev.destination
+        val nextStart = next.departure
 
         val distMeters = distance(prevEnd, nextStart)
 
         return distMeters <= 2000
     }
 
+    fun isSameSpot(a: RouteRequest, b: RouteRequest): Boolean {
+        return a.departure.id == b.departure.id && a.destination.id == b.destination.id
+    }
+
+    fun isCloseTime(a: RouteRequest, b: RouteRequest, minutes: Long): Boolean {
+        val diff = abs(
+            a.startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
+                    b.startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        )
+        return diff <= minutes * 60 * 1000
+    }
+
     fun clusterByDistance(): List<List<RouteRequest>> {
-        val requests = routeRequestRepo.findByPending().sortedBy { it.startDateTime }
+        val requests = routeRequestRepo.findByPending()
+            .sortedBy { it.startDateTime }
+
         val clusters = mutableListOf<MutableList<RouteRequest>>()
 
         for (req in requests) {
             var assigned = false
 
-            // 이미 존재하는 노선에 붙일 수 있으면 추가
             for (group in clusters) {
-                if (canBeInSameRouteByDistance(group.last(), req)) {
+                val last = group.last()
+
+                // 1) 같은 장소 & 시간 비교 → 이전 요청만 유지
+                if (isSameSpot(last, req) && isCloseTime(last, req, minutes = 30)) {
+                    assigned = true
+                    break // 현재 요청은 skip
+                }
+
+                // 2) 기존 그룹에 거리로 묶일 수 있다면 추가
+                if (canBeInSameRouteByDistance(last, req)) {
                     group.add(req)
                     assigned = true
                     break
                 }
             }
 
+            // 3) 어떤 그룹에도 못 들어가면 새 그룹 생성
             if (!assigned) {
-                clusters.add(mutableListOf(req))  // 새로운 노선 생성
+                clusters.add(mutableListOf(req))
             }
         }
 
         return clusters
     }
 
-    fun kakao(){
 
-    }
-
-    /**
-     * 라우팅 엔진 결과를 기반으로 Route 및 RouteComponent 저장
-     */
-    private fun persistGeneratedRoute(wrapper: RouteDataWrapper): Route {
-        val components = wrapper.stops.map { createRouteComponent(it) }
-        val route = Route(
-            id = null,
-            operatorId = 1L,
-            localGovId = 1L,
-            busId = null,
-            routeDistance = wrapper.routeDistance,
-            routeTotalTime = wrapper.routeTotalTime,
-            routeComponents = components
-        )
-
-        val savedRoute = routeRepo.save(route)
-        persistRouteComponents(components, savedRoute)
-        persistBus(route.operatorId, route)
-        return savedRoute
-    }
-
-    /**
-     * 정류장을 기반으로 임시 RouteComponent 생성
-     */
-    private fun createRouteComponent(stop: Address) = RouteComponent(
-        id = null,
-        route = null,
-        spot = stop,
-        assignedTime = Instant.now() // TODO: 실제 운행 시간 반영 예정
-    )
 
     /**
      * RouteComponent 목록에 부모 Route 설정 후 저장
