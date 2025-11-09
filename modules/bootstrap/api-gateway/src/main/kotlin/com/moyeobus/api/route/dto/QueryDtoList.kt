@@ -7,6 +7,13 @@ data class QueryResponse(
     val hasNext: Boolean,
 )
 
+data class PassengerRouteQueryResponse(
+    val items: List<PassengerRouteResponse>,
+    val nextCursor: String?,
+    val hasNext: Boolean,
+)
+
+
 data class Summary(
     val totalCount: Long,
     val approvedCount: Long,
