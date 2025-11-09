@@ -1,5 +1,6 @@
 package com.moyeobus.api.docs
 
+import com.moyeobus.api.route.dto.PassengerRouteQueryResponse
 import com.moyeobus.api.route.dto.QueryResponse
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.global.response.ApiResponse
@@ -198,6 +199,75 @@ interface RouteControllerDocs {
         @RequestParam(required = false)
         cursor: String?,
     ): ResponseEntity<ApiResponse<QueryResponse>>
+
+
+    @Operation(
+        summary = "사용자별 노선 조회",
+        description = "특정 승객(passengerId)이 참여하거나 생성한 노선 목록을 조회합니다. 상태(status), 날짜 필터(from, to), 페이지네이션(cursor)를 사용할 수 있습니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "조회 성공 예시",
+                                value = """
+                            {
+                              "code": "COMMON_200",
+                              "message": "요청이 정상적으로 처리되었습니다.",
+                              "result": {
+                                "items": [
+                                  {
+                                    "id": 94,
+                                    "route": {
+                                      "id": 101,
+                                      "operatorId": 1,
+                                      "localGovId": 1,
+                                      "busId": 1,
+                                      "routeDistance": 67735,
+                                      "routeTotalTime": 4832,
+                                      "routeComponents": []
+                                    }
+                                ],
+                                "nextCursor": "MTc1OTY2NzExMDAwMDoxMA==",
+                                "hasNext": true
+                              },
+                              "isSuccess": true
+                            }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun queryByUser(
+        @Parameter(example = "1", description = "조회할 승객 ID")
+        @PathVariable passengerId: Long,
+
+        @Parameter(example = "APPROVED", description = "노선 상태 (APPROVED, CANCELLED, PENDING)")
+        @RequestParam(required = false) status: String?,
+
+        @Parameter(example = "2025-11-01 00:00:00", description = "조회 시작일 (yyyy-MM-dd HH:mm:ss)")
+        @RequestParam(required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        from: LocalDateTime?,
+
+        @Parameter(example = "2025-11-30 23:59:59", description = "조회 종료일 (yyyy-MM-dd HH:mm:ss)")
+        @RequestParam(required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        to: LocalDateTime?,
+
+        @Parameter(example = "MTc1OTY2NzExMDAwMDoxMA==", description = "페이지네이션 커서 값")
+        @RequestParam(required = false)
+        cursor: String?
+    ): ResponseEntity<ApiResponse<PassengerRouteQueryResponse>>
 
 
     @Operation(

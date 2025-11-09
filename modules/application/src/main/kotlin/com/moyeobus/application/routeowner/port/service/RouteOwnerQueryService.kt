@@ -1,8 +1,6 @@
 package com.moyeobus.application.routeowner.port.service
 
 import com.moyeobus.application.route.port.`in`.QueryFilter
-import com.moyeobus.application.route.port.`in`.QueryResult
-import com.moyeobus.application.route.port.out.RouteRequestSummaryFilter
 import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryResult
 import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryUseCase
 import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort

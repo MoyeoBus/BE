@@ -65,7 +65,6 @@ class RouteController(
     @GetMapping("/{passengerId}")
     fun queryByUser(
                     @PathVariable passengerId: Long,
-                    @RequestParam(required = false) status: String?,
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
                     @RequestParam(required = false) cursor: String?
