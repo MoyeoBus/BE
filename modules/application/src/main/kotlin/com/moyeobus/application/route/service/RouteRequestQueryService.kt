@@ -25,14 +25,14 @@ class RouteRequestQueryService(
         val nextCursorCreatedAt = queryItems.nextCursorCreatedAt
             ?.toInstant(ZoneOffset.UTC)
 
-        val paymentSummaryFilter = RouteRequestSummaryFilter.from(filter)
-        val paymentSummary = routeRequestRepository.summary(paymentSummaryFilter)
+        val routeRequestSummaryFilter = RouteRequestSummaryFilter.from(filter)
+        val routeRequestSummary = routeRequestRepository.summary(routeRequestSummaryFilter)
 
         return QueryResult(
             items = queryItems.items,
             summary = RouteRequestSummary(
-                paymentSummary.totalCount, paymentSummary.approvedCount,
-                paymentSummary.cancelledCount, paymentSummary.pendingCount
+                routeRequestSummary.totalCount, routeRequestSummary.approvedCount,
+                routeRequestSummary.cancelledCount, routeRequestSummary .pendingCount
             ),
             nextCursor = if (queryItems.hasNext) {
                 encodeCursor(nextCursorCreatedAt, queryItems.nextCursorId)
