@@ -1,6 +1,7 @@
 package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
+import com.moyeobus.application.route.port.out.RouteInfoDto
 import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.infra.persistence.route.entity.RouteComponentEntity
@@ -22,6 +23,15 @@ class RouteComponentPersistenceAdapter(
 
     override fun saveAll(components: List<RouteComponent>) {
         repo.saveAll(components.map { it.toEntity() })
+    }
+
+    override fun findById(id: Long) : RouteInfoDto {
+        val res = repo.findRouteEndpoints(id)
+        return RouteInfoDto(
+            routeId = res.routeId,
+            departure = res.departure,
+            destination = res.destination
+        )
     }
 
     private fun RouteComponent.toEntity(): RouteComponentEntity =
