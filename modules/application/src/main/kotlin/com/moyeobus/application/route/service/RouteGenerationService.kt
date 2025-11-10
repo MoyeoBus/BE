@@ -98,6 +98,8 @@ class RouteGenerationService(
     ): List<RouteComponent> {
         val components = mutableListOf<RouteComponent>()
 
+        var currentTime = representativeRequest.startDateTime
+
         response.routes?.first()?.sections?.forEach { section ->
             section.guides?.forEach { guide ->
                 val name = when (guide.name) {
@@ -106,18 +108,28 @@ class RouteGenerationService(
                     else -> guide.name?.ifBlank { "경유지" } ?: "경유지"
                 }
 
-
                 components.add(
                     RouteComponent(
                         id = null,
                         route = route,
                         name = name,
                         location = GeoPoint(guide.x, guide.y),
-                        assignedTime = representativeRequest.startDateTime
+                        assignedTime = currentTime
                     )
                 )
+
+                guide.duration?.let { duration ->
+                    currentTime = currentTime.plusSeconds(duration.toLong())
+                } ?: run {
+
+                    section.duration?.let {
+                        val guideCount = section.guides?.size ?: 1
+                        currentTime = currentTime.plusSeconds((it / guideCount).toLong())
+                    }
+                }
             }
         }
+
         return components
     }
 
