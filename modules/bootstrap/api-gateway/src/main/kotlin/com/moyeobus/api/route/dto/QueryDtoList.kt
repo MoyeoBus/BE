@@ -1,5 +1,7 @@
 package com.moyeobus.api.route.dto
 
+import com.moyeobus.application.route.port.out.RouteInfoDto
+
 data class QueryResponse(
     val items: List<RouteRequestResponse>,
     val summary: Summary,
@@ -8,7 +10,7 @@ data class QueryResponse(
 )
 
 data class PassengerRouteQueryResponse(
-    val items: List<PassengerRouteResponse>,
+    val items: List<RouteInfoDto>,
     val nextCursor: String?,
     val hasNext: Boolean,
 )
