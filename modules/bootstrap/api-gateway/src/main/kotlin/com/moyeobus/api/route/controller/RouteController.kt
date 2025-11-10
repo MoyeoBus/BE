@@ -63,13 +63,13 @@ class RouteController(
 
     // TODO: 쿠키 도입 후 사용자 정보 제거
     @GetMapping("/{passengerId}")
-    fun queryByUser(
+    override fun queryByUser(
                     @PathVariable passengerId: Long,
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
                     @RequestParam(required = false) cursor: String?
     ) : ResponseEntity<ApiResponse<PassengerRouteQueryResponse>> {
-        val res = routeOwnerQueryService.query(passengerId, QueryFilter(status, from, to, cursor))
+        val res = routeOwnerQueryService.query(passengerId, QueryFilter(null, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             PassengerRouteQueryResponse(
                 items = res.items.map { PassengerRouteResponse.from(it) },
