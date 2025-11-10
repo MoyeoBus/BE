@@ -100,10 +100,18 @@ class RouteGenerationService(
 
         response.routes?.first()?.sections?.forEach { section ->
             section.guides?.forEach { guide ->
+                val name = when (guide.name) {
+                    "출발지" -> representativeRequest.departure.name
+                    "도착지" -> representativeRequest.destination.name
+                    else -> guide.name?.ifBlank { "경유지" } ?: "경유지"
+                }
+
+
                 components.add(
                     RouteComponent(
                         id = null,
                         route = route,
+                        name = name,
                         location = GeoPoint(guide.x, guide.y),
                         assignedTime = representativeRequest.startDateTime
                     )
