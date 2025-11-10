@@ -7,6 +7,8 @@ data class RouteComponent (
 
     var route: Route?,
 
+    val name: String,
+
     val location: GeoPoint,
 
     val assignedTime: LocalDateTime
