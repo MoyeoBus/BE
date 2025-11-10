@@ -72,7 +72,7 @@ class RouteController(
         val res = routeOwnerQueryService.query(passengerId, QueryFilter(null, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             PassengerRouteQueryResponse(
-                items = res.items.map { PassengerRouteResponse.from(it) },
+                items = res.items,
                 nextCursor = res.nextCursor,
                 hasNext = res.hasNext
             )
