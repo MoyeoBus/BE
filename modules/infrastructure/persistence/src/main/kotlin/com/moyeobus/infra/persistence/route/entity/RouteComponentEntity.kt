@@ -23,6 +23,8 @@ class RouteComponentEntity (
     @JoinColumn(name = "route_id")
     val route: RouteEntity? = null,
 
+    val name: String,
+
     val lat: Double,
 
     val lon: Double,

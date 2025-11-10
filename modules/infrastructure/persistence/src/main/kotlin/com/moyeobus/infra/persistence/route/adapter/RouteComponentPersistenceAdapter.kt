@@ -28,6 +28,7 @@ class RouteComponentPersistenceAdapter(
         RouteComponentEntity(
             id = this.id,
             route = this.route?.let { routeAdapter.toEntity(it) },
+            name = this.name,
             lat = this.location.lat,
             lon = this.location.lon,
             assignedTime = this.assignedTime.toInstant(ZoneOffset.UTC)
@@ -38,6 +39,7 @@ class RouteComponentPersistenceAdapter(
         RouteComponent(
             id = this.id,
             route = null,
+            name = this.name,
             location = GeoPoint(lat = this.lat, lon = this.lon),
             assignedTime = LocalDateTime.ofInstant(this.assignedTime, ZoneOffset.UTC)
         )
