@@ -251,9 +251,6 @@ interface RouteControllerDocs {
         @Parameter(example = "1", description = "조회할 승객 ID")
         @PathVariable passengerId: Long,
 
-        @Parameter(example = "APPROVED", description = "노선 상태 (APPROVED, CANCELLED, PENDING)")
-        @RequestParam(required = false) status: String?,
-
         @Parameter(example = "2025-11-01 00:00:00", description = "조회 시작일 (yyyy-MM-dd HH:mm:ss)")
         @RequestParam(required = false)
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
