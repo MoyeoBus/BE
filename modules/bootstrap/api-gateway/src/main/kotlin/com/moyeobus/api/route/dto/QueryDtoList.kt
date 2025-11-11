@@ -1,6 +1,6 @@
 package com.moyeobus.api.route.dto
 
-import com.moyeobus.application.route.port.out.RouteInfoDto
+import com.moyeobus.application.routeowner.port.dto.RouteInfoDto
 
 data class QueryResponse(
     val items: List<RouteRequestResponse>,
