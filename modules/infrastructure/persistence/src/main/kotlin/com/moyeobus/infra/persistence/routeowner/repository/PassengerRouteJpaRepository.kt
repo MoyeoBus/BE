@@ -15,7 +15,7 @@ interface PassengerRouteJpaRepository : JpaRepository<PassengerRouteEntity, Long
         """
         select new com.moyeobus.infra.persistence.routeowner.dto.PassengerRouteEntityDto(r.id, r.route, r.createdAt)
         from PassengerRouteEntity r
-        where (:passengerId is null or r.passengerEntity.id = :passengerId)
+        where (r.passengerEntity.id = :passengerId)
           and (:fromAt is null or r.createdAt >= :fromAt)
           and (:toAt is null or r.createdAt < :toAt)
           and (
