@@ -2,6 +2,7 @@ package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.domain.route.Route
+import com.moyeobus.domain.route.RouteStatus
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
 import com.moyeobus.infra.persistence.route.repository.RouteJpaRepository
 import org.springframework.stereotype.Component
@@ -17,6 +18,10 @@ class RoutePersistenceAdapter(
         return toDomain(saved)
     }
 
+    override fun findStatus(id: Long): String {
+        return repo.findStatus(id)
+    }
+
     fun toEntity(domain: Route): RouteEntity = RouteEntity(
         id = domain.id,
         operatorId = domain.operatorId,
@@ -24,7 +29,7 @@ class RoutePersistenceAdapter(
         busId = domain.busId ?: 0L,  // null 처리 필요
         routeDistance = domain.routeDistance.toDouble(),
         routeTotalTime = domain.routeTotalTime.toDouble(),
-        routeComponents = emptyList()  // 순환 참조 방지
+        status = domain.status.toString()
     )
 
     fun toDomain(entity: RouteEntity): Route = Route(
@@ -34,6 +39,6 @@ class RoutePersistenceAdapter(
         busId = entity.busId.takeIf { it > 0 },  // 0이면 null로
         routeDistance = entity.routeDistance.toInt(),
         routeTotalTime = entity.routeTotalTime.toInt(),
-        routeComponents = emptyList()  // 필요시 lazy loading
+        status = RouteStatus.valueOf(entity.status)
     )
 }
