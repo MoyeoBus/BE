@@ -1,7 +1,7 @@
 package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
-import com.moyeobus.application.route.port.out.RouteInfoDto
+import com.moyeobus.application.route.port.out.RouteInfoWrapper
 import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.infra.persistence.route.entity.RouteComponentEntity
@@ -25,19 +25,24 @@ class RouteComponentPersistenceAdapter(
         repo.saveAll(components.map { it.toEntity() })
     }
 
-    override fun findById(id: Long) : RouteInfoDto {
+    override fun findById(id: Long) : RouteInfoWrapper {
         val res = repo.findRouteEndpoints(id)
-        return RouteInfoDto(
+        return RouteInfoWrapper(
             routeId = res.routeId,
             departure = res.departure,
             destination = res.destination
         )
     }
 
+    override fun findAllByRouteIdIn(routeIds: List<Long>): List<RouteComponent> {
+        val res = repo.findAllByRouteIdIn(routeIds)
+        return res.map { it.toDomain() }
+    }
+
     private fun RouteComponent.toEntity(): RouteComponentEntity =
         RouteComponentEntity(
             id = this.id,
-            route = this.route?.let { routeAdapter.toEntity(it) },
+            routeId = this.routeId,
             name = this.name,
             lat = this.location.lat,
             lon = this.location.lon,
@@ -48,7 +53,7 @@ class RouteComponentPersistenceAdapter(
     private fun RouteComponentEntity.toDomain(): RouteComponent =
         RouteComponent(
             id = this.id,
-            route = null,
+            routeId = this.routeId,
             name = this.name,
             location = GeoPoint(lat = this.lat, lon = this.lon),
             assignedTime = LocalDateTime.ofInstant(this.assignedTime, ZoneOffset.UTC)
