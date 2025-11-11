@@ -14,9 +14,11 @@ data class Route (
 
     val routeTotalTime: Int,
 
-    val routeComponents: List<RouteComponent> = emptyList()
+    var status: RouteStatus
 ) {
     fun persistBus(busId: Long) {
         this.busId = busId
     }
 }
+
+enum class RouteStatus {CREATED, PENDING, OPERATED}
