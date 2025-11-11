@@ -24,6 +24,5 @@ class RouteEntity (
 
     val routeTotalTime: Double,
 
-    @OneToMany(mappedBy = "route", orphanRemoval = true)
-    val routeComponents: List<RouteComponentEntity> = emptyList()
+    var status: String
 ) : BaseEntity()

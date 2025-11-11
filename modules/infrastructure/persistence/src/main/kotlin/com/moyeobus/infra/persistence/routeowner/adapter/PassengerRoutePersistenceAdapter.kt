@@ -28,7 +28,7 @@ class PassengerRoutePersistenceAdapter(
     override fun findBy(query: RouteOwnerQuery): RouteOwnerPage {
         val pageSize = query.limit
         val list = repo.pageBy(
-            passengerId = 1L,
+            passengerId = query.passengerId,
             status = query.status?.name,
             fromAt = query.from?.toInstant(ZoneOffset.UTC),
             toAt = query.to?.toInstant(ZoneOffset.UTC),

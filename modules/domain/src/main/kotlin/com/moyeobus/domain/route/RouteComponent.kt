@@ -5,18 +5,14 @@ import java.time.LocalDateTime
 data class RouteComponent (
     val id: Long? = null,
 
-    var route: Route?,
+    var routeId: Long,
 
     val name: String,
 
     val location: GeoPoint,
 
     val assignedTime: LocalDateTime
-) {
-    fun assignRoute(route: Route) {
-        this.route = route
-    }
-}
+)
 
 
 data class GeoPoint(

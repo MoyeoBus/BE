@@ -4,4 +4,5 @@ import com.moyeobus.domain.route.Route
 
 interface RouteOutPort {
     fun save(route: Route) : Route
+    fun findStatus(id: Long) : String
 }
