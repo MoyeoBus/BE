@@ -19,6 +19,7 @@ import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.domain.route.RouteRequest
+import com.moyeobus.domain.route.RouteStatus
 import com.moyeobus.domain.routeowner.PassengerRoute
 import org.springframework.stereotype.Service
 import java.time.ZoneId
@@ -111,7 +112,7 @@ class RouteGenerationService(
                 components.add(
                     RouteComponent(
                         id = null,
-                        route = route,
+                        routeId = route.id!!,
                         name = name,
                         location = GeoPoint(guide.x, guide.y),
                         assignedTime = currentTime
@@ -144,7 +145,7 @@ class RouteGenerationService(
             busId = 1L,
             routeDistance = summary.distance,
             routeTotalTime = summary.duration,
-            routeComponents = emptyList()
+            status = RouteStatus.CREATED
         )
 
         val savedRoute = routeRepo.save(route)
@@ -235,16 +236,16 @@ class RouteGenerationService(
         }
     }
 
-
-    /**
-     * RouteComponent 목록에 부모 Route 설정 후 저장
-     */
-    private fun persistRouteComponents(components: List<RouteComponent>, route: Route) {
-        components.forEach {
-            it.assignRoute(route)
-            routeComponentRepo.save(it)
-        }
-    }
+//
+//    /**
+//     * RouteComponent 목록에 부모 Route 설정 후 저장
+//     */
+//    private fun persistRouteComponents(components: List<RouteComponent>, route: Route) {
+//        components.forEach {
+//            it.assignRoute(route)
+//            routeComponentRepo.save(it)
+//        }
+//    }
 
     private fun persistBus(operatorId: Long, route: Route) {
         val buses = busRepo.findIdleBusesByOperatorId(operatorId)
