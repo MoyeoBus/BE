@@ -19,9 +19,7 @@ class RouteComponentEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id")
-    val route: RouteEntity? = null,
+    val routeId: Long,
 
     val name: String,
 
