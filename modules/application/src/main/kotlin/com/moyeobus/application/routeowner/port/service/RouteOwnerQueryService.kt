@@ -2,8 +2,8 @@ package com.moyeobus.application.routeowner.port.service
 
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
-import com.moyeobus.application.route.port.out.RouteInfoDto
 import com.moyeobus.application.route.port.out.RouteOutPort
+import com.moyeobus.application.routeowner.port.dto.RouteInfoDto
 import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryResult
 import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryUseCase
 import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
@@ -23,13 +23,33 @@ class RouteOwnerQueryService(
 
     override fun query(id: Long, filter: QueryFilter): RouteOwnerQueryResult {
         val decodedCursor = cursorUtil.decode(filter.cursor)
-        val routeOwnerQuery = RouteOwnerQuery.from(filter, decodedCursor)
+        val routeOwnerQuery = RouteOwnerQuery.from(id, filter, decodedCursor)
 
         val queryItems = passengerRouteRepository.findBy(routeOwnerQuery)
-        val routes = queryItems.items.map { it.route }
+        val items = queryItems.items
 
-        val dtoList: List<RouteInfoDto> = routes.map { route ->
-            routeComponentRepository.findById(route.id!!)
+        val routeStatusMap = items.associate { it.route.id!! to it.route.status }
+        val routeIds = routeStatusMap.keys.toList()
+
+
+        val componentsByRouteId = routeComponentRepository
+            .findAllByRouteIdIn(routeIds)
+            .groupBy { it.routeId }
+
+
+
+        val dtoList: List<RouteInfoDto> = routeIds.map { routeId ->
+            val components = componentsByRouteId[routeId] ?: emptyList()
+            val departure = components.firstOrNull()?.name ?: "출발지 미정"
+            val destination = components.lastOrNull()?.name ?: "도착지 미정"
+            val status = routeStatusMap[routeId] ?: "UNKNOWN"
+
+            RouteInfoDto(
+                routeId = routeId,
+                departure = departure,
+                destination = destination,
+                status = status.toString()
+            )
         }
 
 
