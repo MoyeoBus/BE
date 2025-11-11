@@ -7,6 +7,7 @@ import com.moyeobus.global.util.CursorWrapper
 import java.time.LocalDateTime
 
 data class RouteOwnerQuery (
+    val passengerId: Long,
     val status: RequestStatus? = null,
     @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val from: LocalDateTime? = null,
@@ -18,7 +19,8 @@ data class RouteOwnerQuery (
     val cursorId: Long? = null,
 ) {
     companion object {
-        fun from(q: QueryFilter, p: CursorWrapper) = RouteOwnerQuery(
+        fun from(id: Long, q: QueryFilter, p: CursorWrapper) = RouteOwnerQuery(
+            passengerId = id,
             status = q.status?.let { RequestStatus.valueOf(it) },
             from = q.from,
             to = q.to,
