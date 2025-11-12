@@ -65,4 +65,12 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
     """
     )
     fun findByStatus(@Param("status") status: String): List<RouteRequestEntity>
+
+    @Query("""
+    SELECT r 
+    FROM RouteRequestEntity r 
+    WHERE r.destination.id in :addressIds
+    """
+    )
+    fun findByAddressIds(@Param("addressIds") addressIds: List<Long?>) : List<RouteRequestEntity>
 }

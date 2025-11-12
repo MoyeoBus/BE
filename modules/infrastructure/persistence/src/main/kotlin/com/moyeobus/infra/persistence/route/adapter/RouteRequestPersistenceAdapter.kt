@@ -5,6 +5,7 @@ import com.moyeobus.application.route.port.out.RouteRequestPage
 import com.moyeobus.application.route.port.out.RouteRequestQuery
 import com.moyeobus.application.route.port.out.RouteRequestSummaryFilter
 import com.moyeobus.application.route.port.out.RouteRequestSummaryProjection
+import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.RequestStatus
 import com.moyeobus.domain.route.RouteRequest
 import com.moyeobus.infra.exception.NotFoundException
@@ -47,6 +48,12 @@ class RouteRequestPersistenceAdapter(
             nextCursorCreatedAt = last?.createdAt?.let { java.time.LocalDateTime.ofInstant(it, ZoneOffset.UTC) },
             nextCursorId = last?.id,
         )
+    }
+
+    override fun findByAddress(addresses: List<Address>): List<RouteRequest> {
+        val addressIds = addresses.map { it.id!! }
+        val res = repo.findByAddressIds(addressIds)
+        return res.map { it.toDomain() }
     }
 
 
