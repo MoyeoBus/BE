@@ -9,5 +9,6 @@ data class LocalGovernment(
 
     var loginId: String,
 
-    var govName: String
+    var password: String,
 )
+
