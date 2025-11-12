@@ -34,4 +34,10 @@ class AddressPersistenceAdapter(
         val res = repo.findByArea(areaMapper.toEntity(area))
         return res
     }
+
+    override fun findAllByArea(areas: List<Area>): List<Address> {
+        val areaIds = areas.map { it.id!! }
+        val res = repo.findAllByAreaIdIn(areaIds)
+        return res.map { mapper.toDomain(it)}
+    }
 }
