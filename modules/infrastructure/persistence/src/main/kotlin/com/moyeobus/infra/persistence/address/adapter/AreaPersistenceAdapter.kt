@@ -17,4 +17,9 @@ class AreaPersistenceAdapter(
             { NotFoundException("Area(id=$id)") })
         return mapper.toDomain(res)
     }
+
+    override fun findChildrenByParent(id: Long): List<Area> {
+        val res = repo.findAllChildren(id)
+        return res.map { mapper.toDomain(it) }
+    }
 }

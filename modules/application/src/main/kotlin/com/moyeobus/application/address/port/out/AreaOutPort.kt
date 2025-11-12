@@ -4,4 +4,5 @@ import com.moyeobus.domain.route.Area
 
 interface AreaOutPort {
     fun findById(id: Long): Area
+    fun findChildrenByParent(id: Long) : List<Area>
 }
