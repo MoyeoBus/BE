@@ -22,6 +22,11 @@ class RoutePersistenceAdapter(
         return repo.findStatus(id)
     }
 
+    override fun findByLocal(id: Long): List<Route> {
+        val res = repo.findByLocal(id)
+        return res.map { toDomain(it) }
+    }
+
     fun toEntity(domain: Route): RouteEntity = RouteEntity(
         id = domain.id,
         operatorId = domain.operatorId,
