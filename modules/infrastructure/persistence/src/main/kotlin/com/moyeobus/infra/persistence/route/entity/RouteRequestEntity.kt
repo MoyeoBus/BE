@@ -21,6 +21,8 @@ class RouteRequestEntity (
 
     val passengerId: Long,
 
+    var routeId: Long? = null,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departure_id")
     val departure: AddressEntity,

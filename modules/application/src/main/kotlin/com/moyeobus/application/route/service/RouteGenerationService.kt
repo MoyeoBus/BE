@@ -63,20 +63,26 @@ class RouteGenerationService(
         val savedRoutes = mutableListOf<Route>()
 
         clusters.forEach { cluster ->
-            // 1) 카카오 길찾기로 경로 계산
             val kakaoRoute = kakaoMobilityClient.getDirections(
                 KakaoDirectionRequest.fromCluster(cluster.acceptedRequests)
             )
 
-            // 2) Route 도메인 저장
             val route = saveRoute(kakaoRoute, cluster)
 
-            // 3) 참여자(PassengerRoute) 저장
             savePassengersOfRoute(route, cluster.exceptedRequests)
 
             savedRoutes.add(route)
+            assignRouteToParticipants(route, cluster.exceptedRequests)
         }
         return savedRoutes
+    }
+
+    private fun assignRouteToParticipants(route: Route, requests: List<RouteRequest>) {
+        requests.forEach { req ->
+            val approved = req.approve()
+            val withRoute = approved.assignRoute(route.id!!)
+            routeRequestRepo.save(withRoute)
+        }
     }
 
     private fun savePassengersOfRoute(route: Route, requests: List<RouteRequest>) {
@@ -151,6 +157,7 @@ class RouteGenerationService(
         val savedRoute = routeRepo.save(route)
 
         val components = createRouteComponents(response, savedRoute, cluster.acceptedRequests.first())
+
         routeComponentRepo.saveAll(components)
 
         return savedRoute
@@ -206,7 +213,6 @@ class RouteGenerationService(
                 // 조건 1: 같은 위치 & 30분 내 요청 → 대표로는 안 들어가고 참여자로만 저장
                 if (isSameSpot(last, req) && isCloseTime(last, req, 30)) {
                     participantMap.getOrPut(index) { mutableListOf() }.add(req)
-                    routeRequestRepo.save(req.approve())
                     assigned = true
                     break
                 }
@@ -214,7 +220,6 @@ class RouteGenerationService(
                 // 조건 2: 거리 기준으로 같은 노선에 묶일 수 있을 때만 그룹에 포함
                 if (canBeInSameRouteByDistance(last, req)) {
                     group.add(req)
-                    routeRequestRepo.save(req.approve())
                     assigned = true
                     break
                 }
@@ -223,7 +228,6 @@ class RouteGenerationService(
             // 어떤 그룹에도 포함되지 않으면 새 그룹 생성
             if (!assigned) {
                 clusters.add(mutableListOf(req))
-                routeRequestRepo.save(req.approve())
             }
         }
 
