@@ -1,5 +1,7 @@
 package com.moyeobus.infra.persistence.route.adapter
 
+import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.RouteRequestPage
 import com.moyeobus.application.route.port.out.RouteRequestQuery
@@ -14,6 +16,7 @@ import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import com.moyeobus.infra.persistence.route.repository.RouteRequestJpaRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -24,6 +27,29 @@ class RouteRequestPersistenceAdapter(
 ) : RouteRequestOutPort {
     override fun save(request: RouteRequest) {
         repo.save(request.toEntity())
+    }
+
+    override fun countMonthly(requestIds: List<Long>): List<LocalGovDateUseWrapper> {
+        val res = repo.countMonthlyUse(requestIds)
+        val items = res.map{
+            LocalGovDateUseWrapper(
+                date = it.date,
+                useCount = it.useCount
+            )
+        }
+
+        return items
+    }
+
+    override fun countHourly(requestIds: List<Long>, date: LocalDate): List<LocalGovTimeUseWrapper> {
+        val res = repo.countHourlyUse(requestIds, date)
+        val items = res.map{
+            LocalGovTimeUseWrapper(
+                hour = it.hour,
+                useCount = it.useCount
+            )
+        }
+        return items
     }
 
     override fun findBy(query: RouteRequestQuery): RouteRequestPage {
