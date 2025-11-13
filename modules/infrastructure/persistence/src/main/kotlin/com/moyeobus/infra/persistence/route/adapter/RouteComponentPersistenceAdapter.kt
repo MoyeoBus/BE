@@ -39,6 +39,10 @@ class RouteComponentPersistenceAdapter(
         return res.map { it.toDomain() }
     }
 
+    override fun countStations(routeId: Long): Int {
+        return repo.countComponents(routeId)
+    }
+
     private fun RouteComponent.toEntity(): RouteComponentEntity =
         RouteComponentEntity(
             id = this.id,

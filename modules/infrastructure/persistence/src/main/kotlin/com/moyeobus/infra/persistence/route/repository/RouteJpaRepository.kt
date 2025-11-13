@@ -15,4 +15,11 @@ interface RouteJpaRepository : JpaRepository<RouteEntity, Long> {
     """)
     fun findStatus(id: Long) : String
 
+    @Query("""
+        SELECT r
+        FROM RouteEntity r
+        Where r.localGovId = :id
+    """)
+    fun findByLocal(id: Long) : List<RouteEntity>
+
 }

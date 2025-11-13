@@ -49,6 +49,10 @@ class PassengerRoutePersistenceAdapter(
         )
     }
 
+    override fun countByLocal(id: Long): Int {
+        return repo.countPassengerByLocal(id)
+    }
+
     fun toDomain(entity: PassengerRouteEntity): PassengerRoute =
         PassengerRoute(
             id = entity.id,

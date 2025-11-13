@@ -9,4 +9,5 @@ interface AddressOutPort {
     fun findAll() : List<Address>
     fun findById(id: Long) : Address
     fun findByArea(area: Area) : List<StationDto>
+    fun findAllByArea(areas: List<Area>) : List<Address>
 }

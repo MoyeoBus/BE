@@ -9,7 +9,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "area")
 class AreaEntity (
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     val id: Long? = null,
 
     val sigunguName: String,
