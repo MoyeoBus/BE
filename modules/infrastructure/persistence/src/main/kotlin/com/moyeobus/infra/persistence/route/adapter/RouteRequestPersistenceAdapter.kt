@@ -29,6 +29,10 @@ class RouteRequestPersistenceAdapter(
         repo.save(request.toEntity())
     }
 
+    override fun saveAll(request: List<RouteRequest>) {
+        request.map { repo.save(it.toEntity()) }
+    }
+
     override fun countMonthly(requestIds: List<Long>): List<LocalGovDateUseWrapper> {
         val res = repo.countMonthlyUse(requestIds)
         val items = res.map{
@@ -114,6 +118,7 @@ class RouteRequestPersistenceAdapter(
         RouteRequestEntity(
             id = this.id,
             passengerId = 1L,
+            routeId = this.routeId,
             departure = addressMapper.toEntity(this.departure),
             destination = addressMapper.toEntity(this.destination),
             startDateTime = this.startDateTime.toInstant(ZoneOffset.UTC),
@@ -124,6 +129,7 @@ class RouteRequestPersistenceAdapter(
         RouteRequest(
             id = this.id,
             passengerId = this.passengerId,
+            routeId = this.routeId,
             departure = addressMapper.toDomain(this.departure),
             destination = addressMapper.toDomain(this.destination),
             startDateTime = LocalDateTime.ofInstant(this.startDateTime, ZoneOffset.UTC),

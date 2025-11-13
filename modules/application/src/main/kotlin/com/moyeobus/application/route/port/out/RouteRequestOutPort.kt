@@ -8,6 +8,7 @@ import java.time.LocalDate
 
 interface RouteRequestOutPort {
     fun save(request: RouteRequest)
+    fun saveAll(request: List<RouteRequest>)
     fun countMonthly(requestIds: List<Long>) : List<LocalGovDateUseWrapper>
     fun countHourly(requestIds: List<Long>, date: LocalDate) : List<LocalGovTimeUseWrapper>
     fun findBy(query: RouteRequestQuery): RouteRequestPage
