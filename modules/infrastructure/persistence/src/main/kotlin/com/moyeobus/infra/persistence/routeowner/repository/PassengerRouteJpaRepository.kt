@@ -35,4 +35,14 @@ interface PassengerRouteJpaRepository : JpaRepository<PassengerRouteEntity, Long
         @Param("cursorId") cursorId: Long?,
         org: org.springframework.data.domain.Pageable,
     ): List<PassengerRouteEntityDto>
+
+    @Query(
+        """
+        SELECT COUNT(*) 
+        FROM passenger_route p 
+        WHERE p.route_id = :id
+        """,
+        nativeQuery = true
+    )
+    fun countPassengerByLocal(@Param("id") id: Long): Int
 }
