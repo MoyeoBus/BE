@@ -37,4 +37,14 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
     """)
     fun findAllByRouteIdIn(@Param("routeIds") routeIds: List<Long>): List<RouteComponentEntity>
 
+    @Query(
+            """
+            SELECT COUNT(*) 
+            FROM route_component 
+            WHERE route_id = :id
+        """,
+        nativeQuery = true
+    )
+    fun countComponents(@Param("id") id: Long): Int
+
 }
