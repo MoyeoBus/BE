@@ -12,16 +12,6 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-        with:
-          lfs: true  # ✅ Git LFS 파일 다운로드
-
-      - name: Fetch LFS files
-        run: git lfs pull  # ✅ 명시적으로 LFS 파일 가져오기
-
-      - name: Verify OSM file
-        run: |
-          ls -lh modules/infrastructure/persistence/src/main/resources/osm/
-          file modules/infrastructure/persistence/src/main/resources/osm/south-korea-251017.osm.pbf
 
       - name: Build JAR
         run: |
@@ -36,7 +26,6 @@ jobs:
 
       - name: Save Docker image
         run: docker save myapp:latest -o myapp.tar
-
 
       - name: Fix permission for tar file
         run: chmod 644 myapp.tar
@@ -68,6 +57,7 @@ jobs:
             MYSQL_DB=${{ secrets.MYSQL_DB }}
             MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
             EOF
             
             docker load -i myapp.tar

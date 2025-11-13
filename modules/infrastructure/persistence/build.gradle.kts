@@ -20,12 +20,6 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-mysql")
 
-    implementation("com.graphhopper:graphhopper-core:8.0") {
-        exclude(group = "com.fasterxml.jackson.core")
-        exclude(group = "com.fasterxml.jackson.dataformat")
-        exclude(group = "com.fasterxml.jackson.datatype")
-        exclude(group = "com.fasterxml.jackson.module")
-    }
     implementation("com.google.protobuf:protobuf-java:3.21.9")
 
     testImplementation(libs.spring.boot.starter.test) {

@@ -9,6 +9,3 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
-
-graphhopper:
-  osm-path: modules/infrastructure/persistence/src/main/resources/osm/south-korea-251017.osm.pbf
