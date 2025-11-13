@@ -2,19 +2,32 @@ package com.moyeobus.application.localgov.port.service
 
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.application.address.port.out.AreaOutPort
+import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
+import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
+import com.moyeobus.application.localgov.port.`in`.LocalGovRouteWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
+import com.moyeobus.application.localgov.port.`in`.LocalGovStatusWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovTimeResult
 import com.moyeobus.application.localgov.port.out.LocalGovernmentOutPort
 import com.moyeobus.application.localgov.port.out.LocalGovernmentUseCase
+import com.moyeobus.application.route.port.out.RouteComponentOutPort
+import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
+import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class LocalGovernmentQueryService(
     private val areaRepository: AreaOutPort,
     private val addressRepository: AddressOutPort,
+    private val routeRepository: RouteOutPort,
     private val routeRequestRepository: RouteRequestOutPort,
-    private val localGovRepository: LocalGovernmentOutPort
+    private val routeComponentRepository: RouteComponentOutPort,
+    private val localGovRepository: LocalGovernmentOutPort,
+    private val passengerRouteRepository: PassengerRouteOutPort
 ) : LocalGovernmentUseCase {
-    override fun queryLocal(id: Long): Any {
+    override fun queryLocal(id: Long): LocalGovStatusResult {
         val localGov = localGovRepository.findById(id)
         val govArea = localGov.area
 
@@ -31,15 +44,81 @@ class LocalGovernmentQueryService(
         val total = areaCounts.values.sum().toDouble()
 
         val areaStats = areaCounts.map { (key, count) ->
-            mapOf(
-                "areaId" to key.id,
-                "sigunguName" to key.sigunguName,
-                "count" to count,
-                "ratio" to String.format("%.2f", count / total * 100)
+            LocalGovStatusWrapper(
+                areaId = key.id!!,
+                sigunguName = key.sigunguName,
+                count = count,
+                ratio = String.format("%.2f", count / total * 100)
+
             )
         }
 
 
-        return areaStats
+        return LocalGovStatusResult(govArea.sigunguName, areaStats)
+    }
+
+    override fun queryDate(id: Long): LocalGovDateResult {
+        val localGov = localGovRepository.findById(id)
+        val govArea = localGov.area
+
+        val sigunguList = govArea.id?.let { areaRepository.findChildrenByParent(it) }
+        val addressList = sigunguList?.let { addressRepository.findAllByArea(it) }
+
+        val requestList = addressList?.let { routeRequestRepository.findByAddress(it) }
+
+        val requestListIds = requestList
+            ?.mapNotNull { it.id }
+            ?: emptyList()
+
+        val localGovDateResult = routeRequestRepository.countMonthly(requestListIds)
+        return LocalGovDateResult(govArea.sigunguName, localGovDateResult)
+    }
+
+    override fun queryHour(
+        id: Long,
+        date: LocalDate
+    ): LocalGovTimeResult {
+        val localGov = localGovRepository.findById(id)
+        val govArea = localGov.area
+
+        val sigunguList = govArea.id?.let { areaRepository.findChildrenByParent(it) }
+        val addressList = sigunguList?.let { addressRepository.findAllByArea(it) }
+
+        val requestList = addressList?.let { routeRequestRepository.findByAddress(it) }
+
+        val requestListIds = requestList
+            ?.mapNotNull { it.id }
+            ?: emptyList()
+
+        val localGovTimeResult = routeRequestRepository.countHourly(requestListIds, date)
+        return LocalGovTimeResult(govArea.sigunguName, localGovTimeResult)
+    }
+
+    override fun queryRoute(id: Long): LocalGovRouteResult {
+        val localGov = localGovRepository.findById(id)
+        val govName = localGov.area.sigunguName
+
+        val routes = routeRepository.findByLocal(localGov.area.id!!)
+        println(routes.toList())
+
+        val items = routes.map { route ->
+            val routeId = route.id!!
+
+            val stationCount = routeComponentRepository.countStations(routeId)
+            val peopleCount = passengerRouteRepository.countByLocal(routeId)
+            val distance = route.routeDistance
+
+            LocalGovRouteWrapper(
+                routeId = routeId,
+                stationCount = stationCount,
+                peopleCount = peopleCount,
+                distance = distance
+            )
+        }
+
+        return LocalGovRouteResult(
+            govName = govName,
+            items = items
+        )
     }
 }
