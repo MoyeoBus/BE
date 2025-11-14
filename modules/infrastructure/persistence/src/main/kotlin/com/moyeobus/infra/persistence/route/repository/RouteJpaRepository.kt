@@ -22,4 +22,10 @@ interface RouteJpaRepository : JpaRepository<RouteEntity, Long> {
     """)
     fun findByLocal(id: Long) : List<RouteEntity>
 
+    @Query("""
+        SELECT r
+        FROM RouteEntity r
+        Where r.operatorId = :id
+    """)
+    fun findByOperator(id: Long) : List<RouteEntity>
 }
