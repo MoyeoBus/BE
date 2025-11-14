@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
+import java.time.YearMonth
 
 interface LocalGovernmentControllerDocs {
 
@@ -106,7 +107,8 @@ interface LocalGovernmentControllerDocs {
     )
     fun getStatusByDate(
         @Parameter(example = "1", description = "조회할 지자체 ID")
-        @PathVariable localGovId: Long
+        @PathVariable localGovId: Long,
+        @RequestParam stdDate: YearMonth,
     ): ResponseEntity<ApiResponse<LocalGovDateResult>>
 
 
