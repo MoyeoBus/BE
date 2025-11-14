@@ -1,4 +1,4 @@
-package com.moyeobus.application.localgov.port.service
+package com.moyeobus.application.localgov.service
 
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.application.address.port.out.AreaOutPort
@@ -9,7 +9,7 @@ import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeResult
 import com.moyeobus.application.localgov.port.out.LocalGovernmentOutPort
-import com.moyeobus.application.localgov.port.out.LocalGovernmentUseCase
+import com.moyeobus.application.localgov.port.`in`.LocalGovernmentUseCase
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
@@ -99,7 +99,6 @@ class LocalGovernmentQueryService(
         val govName = localGov.area.sigunguName
 
         val routes = routeRepository.findByLocal(localGov.area.id!!)
-        println(routes.toList())
 
         val items = routes.map { route ->
             val routeId = route.id!!

@@ -2,6 +2,8 @@ package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
+import com.moyeobus.application.route.model.RequestAddressCount
+import com.moyeobus.application.route.model.RequestAreaRanking
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.RouteRequestPage
 import com.moyeobus.application.route.port.out.RouteRequestQuery
@@ -96,6 +98,21 @@ class RouteRequestPersistenceAdapter(
     override fun findByPending(): List<RouteRequest> {
         val res = repo.findByStatus(RequestStatus.PENDING.toString())
         return res.map { it.toDomain() }
+    }
+
+    override fun findByRoutes(routeIds: List<Long?>): List<RouteRequest> {
+        val res = repo.findByRouteIds(routeIds)
+        return res.map { it.toDomain() }
+    }
+
+    override fun findDepartureCountByRoute(routeIds: List<Long?>): List<RequestAddressCount> {
+        val res = repo.findDepartureCountByRoute(routeIds)
+        return res.map { RequestAddressCount(addressMapper.toDomain(it.address), it.requestCount) }
+    }
+
+    override fun findDestinationCountByRoute(routeIds: List<Long?>): List<RequestAddressCount> {
+        val res = repo.findDestinationCountByRoute(routeIds)
+        return res.map { RequestAddressCount(addressMapper.toDomain(it.address), it.requestCount) }
     }
 
     override fun summary(filter: RouteRequestSummaryFilter): RouteRequestSummaryProjection {
