@@ -2,7 +2,7 @@ package com.moyeobus.infra.persistence.route.repository
 
 import com.moyeobus.infra.persistence.route.dto.DateUseProjection
 import com.moyeobus.infra.persistence.route.dto.HourUseProjection
-import com.moyeobus.infra.persistence.route.dto.RankProjection
+import com.moyeobus.infra.persistence.route.dto.AddressRankProjection
 import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -130,7 +130,7 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         WHERE r.routeId in :routeIds
         GROUP BY r.departure.id
     """)
-    fun findDepartureCountByRoute(@Param("routeIds") routeIds: List<Long?>) : List<RankProjection>
+    fun findDepartureCountByRoute(@Param("routeIds") routeIds: List<Long?>) : List<AddressRankProjection>
 
     @Query("""
         SELECT r.destination AS address, count(r) AS requestCount
@@ -138,5 +138,5 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         WHERE r.routeId in :routeIds
         GROUP BY r.destination.id
     """)
-    fun findDestinationCountByRoute(@Param("routeIds") routeIds: List<Long?>) : List<RankProjection>
+    fun findDestinationCountByRoute(@Param("routeIds") routeIds: List<Long?>) : List<AddressRankProjection>
 }
