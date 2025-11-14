@@ -3,15 +3,15 @@ package com.moyeobus.application.route.port.out
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
 import com.moyeobus.application.route.model.RequestAddressCount
-import com.moyeobus.application.route.model.RequestAreaRanking
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.RouteRequest
 import java.time.LocalDate
+import java.time.YearMonth
 
 interface RouteRequestOutPort {
     fun save(request: RouteRequest)
     fun saveAll(request: List<RouteRequest>)
-    fun countMonthly(requestIds: List<Long>) : List<LocalGovDateUseWrapper>
+    fun countMonthly(requestIds: List<Long>, ym: YearMonth) : List<LocalGovDateUseWrapper>
     fun countHourly(requestIds: List<Long>, date: LocalDate) : List<LocalGovTimeUseWrapper>
     fun findBy(query: RouteRequestQuery): RouteRequestPage
     fun findByAddress(addresses: List<Address>) : List<RouteRequest>

@@ -16,21 +16,22 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
 
     @Query(
         """
-        SELECT 
-            DATE(r.start_date_time) AS date,
-            COUNT(*) AS useCount
-        FROM route_request r
-        WHERE 
-            r.destination_id IN (:ids) or r.departure_id IN (:ids)
-            AND YEAR(r.start_date_time) = YEAR(CURDATE())
-            AND MONTH(r.start_date_time) = MONTH(CURDATE())
-        GROUP BY DATE(r.start_date_time)
-        ORDER BY DATE(r.start_date_time)
-        """,
+    SELECT 
+        DATE(r.start_date_time) AS date,
+        COUNT(*) AS useCount
+    FROM route_request r
+    WHERE 
+        (r.destination_id IN (:ids) OR r.departure_id IN (:ids))
+        AND YEAR(r.start_date_time) = YEAR(:stdDate)
+        AND MONTH(r.start_date_time) = MONTH(:stdDate)
+    GROUP BY DATE(r.start_date_time)
+    ORDER BY DATE(r.start_date_time)
+    """,
         nativeQuery = true
     )
     fun countMonthlyUse(
-        @Param("ids") ids: List<Long>
+        @Param("ids") ids: List<Long>,
+        @Param("stdDate") stdDate: LocalDate
     ): List<DateUseProjection>
 
     @Query(

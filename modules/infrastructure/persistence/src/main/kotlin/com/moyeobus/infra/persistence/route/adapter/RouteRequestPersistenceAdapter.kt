@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.ZoneOffset
 
 @Component
@@ -34,16 +35,26 @@ class RouteRequestPersistenceAdapter(
         request.map { repo.save(it.toEntity()) }
     }
 
-    override fun countMonthly(requestIds: List<Long>): List<LocalGovDateUseWrapper> {
-        val res = repo.countMonthlyUse(requestIds)
-        val items = res.map{
+    override fun countMonthly(requestIds: List<Long>, ym: YearMonth): List<LocalGovDateUseWrapper> {
+        val stdDate = ym.atDay(1)
+
+        val res = repo.countMonthlyUse(requestIds, stdDate)
+
+        val countMap = res.associateBy(
+            keySelector = { it.date },
+            valueTransform = { it.useCount }
+        )
+
+        val daysInMonth = ym.lengthOfMonth()
+
+        return (1..daysInMonth).map { day ->
+            val date = ym.atDay(day)
+
             LocalGovDateUseWrapper(
-                date = it.date,
-                useCount = it.useCount
+                date = date,
+                useCount = countMap[date] ?: 0
             )
         }
-
-        return items
     }
 
     override fun countHourly(requestIds: List<Long>, date: LocalDate): List<LocalGovTimeUseWrapper> {
