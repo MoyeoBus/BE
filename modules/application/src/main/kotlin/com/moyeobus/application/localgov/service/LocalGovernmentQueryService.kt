@@ -106,13 +106,12 @@ class LocalGovernmentQueryService(
 
             val stationCount = routeComponentRepository.countStations(routeId)
             val peopleCount = passengerRouteRepository.countByLocal(routeId)
-            val distance = route.routeDistance
 
             LocalGovRouteWrapper(
                 routeId = routeId,
                 stationCount = stationCount,
                 peopleCount = peopleCount,
-                distance = distance
+                distance = (route.routeDistance / 1000.0).let { "%.1f".format(it).toDouble() }
             )
         }
 
