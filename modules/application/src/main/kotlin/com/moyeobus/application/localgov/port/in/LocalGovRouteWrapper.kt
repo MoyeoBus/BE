@@ -4,5 +4,5 @@ data class LocalGovRouteWrapper(
     val routeId: Long,
     val stationCount: Int,
     val peopleCount: Int,
-    val distance: Int
+    val distance: Double
 )

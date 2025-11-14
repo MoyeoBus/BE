@@ -79,7 +79,7 @@ class TransportOperatorQueryService(
             .mapIndexed { index, route ->
                 RouteDistanceRanking(
                     routeNo = route.id!!,
-                    distance = route.routeDistance,
+                    distance = (route.routeDistance / 1000.0).let { "%.1f".format(it).toDouble() },
                     ranking = index + 1
                 )
             }
