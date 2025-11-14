@@ -5,7 +5,7 @@ import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeResult
-import com.moyeobus.application.localgov.port.out.LocalGovernmentUseCase
+import com.moyeobus.application.localgov.port.`in`.LocalGovernmentUseCase
 import com.moyeobus.global.response.ApiResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

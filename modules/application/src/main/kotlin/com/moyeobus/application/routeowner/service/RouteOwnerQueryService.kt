@@ -1,4 +1,4 @@
-package com.moyeobus.application.routeowner.port.service
+package com.moyeobus.application.routeowner.service
 
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
