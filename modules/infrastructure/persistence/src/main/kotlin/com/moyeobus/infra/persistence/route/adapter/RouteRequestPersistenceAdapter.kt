@@ -3,7 +3,6 @@ package com.moyeobus.infra.persistence.route.adapter
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
 import com.moyeobus.application.route.model.RequestAddressCount
-import com.moyeobus.application.route.model.RequestAreaRanking
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.route.port.out.RouteRequestPage
 import com.moyeobus.application.route.port.out.RouteRequestQuery
@@ -49,13 +48,13 @@ class RouteRequestPersistenceAdapter(
 
     override fun countHourly(requestIds: List<Long>, date: LocalDate): List<LocalGovTimeUseWrapper> {
         val res = repo.countHourlyUse(requestIds, date)
-        val items = res.map{
-            LocalGovTimeUseWrapper(
-                hour = it.hour,
-                useCount = it.useCount
-            )
+        return (5..23).map { hour ->
+            val found = res.find { it.hour == hour }
+            if (found != null)
+                LocalGovTimeUseWrapper(hour = found.hour, useCount = found.useCount)
+            else
+                LocalGovTimeUseWrapper(hour = hour, useCount = 0)
         }
-        return items
     }
 
     override fun findBy(query: RouteRequestQuery): RouteRequestPage {
