@@ -2,6 +2,8 @@ package com.moyeobus.application.route.port.out
 
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
+import com.moyeobus.application.route.model.RequestAddressCount
+import com.moyeobus.application.route.model.RequestAreaRanking
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.RouteRequest
 import java.time.LocalDate
@@ -15,5 +17,8 @@ interface RouteRequestOutPort {
     fun findByAddress(addresses: List<Address>) : List<RouteRequest>
     fun findById(requestId: Long): RouteRequest
     fun findByPending() : List<RouteRequest>
+    fun findByRoutes(routeIds: List<Long?>) : List<RouteRequest>
+     fun findDepartureCountByRoute(routeIds: List<Long?>) : List<RequestAddressCount>
+    fun findDestinationCountByRoute(routeIds: List<Long?>) : List<RequestAddressCount>
     fun summary(filter: RouteRequestSummaryFilter) : RouteRequestSummaryProjection
 }
