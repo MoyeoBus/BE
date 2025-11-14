@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
+import java.time.YearMonth
 
 interface LocalGovernmentControllerDocs {
 
@@ -90,8 +91,124 @@ interface LocalGovernmentControllerDocs {
                                 "govName": "서울특별시",
                                 "data": [
                                   {
+                                    "date": "2025-11-01",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-02",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-03",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-04",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-05",
+                                    "useCount": 0
+                                  },
+                                  {
                                     "date": "2025-11-06",
                                     "useCount": 4
+                                  },
+                                  {
+                                    "date": "2025-11-07",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-08",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-09",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-10",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-11",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-12",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-13",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-14",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-15",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-16",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-17",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-18",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-19",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-20",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-21",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-22",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-23",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-24",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-25",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-26",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-27",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-28",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-29",
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "date": "2025-11-30",
+                                    "useCount": 0
                                   }
                                 ]
                               },
@@ -106,7 +223,8 @@ interface LocalGovernmentControllerDocs {
     )
     fun getStatusByDate(
         @Parameter(example = "1", description = "조회할 지자체 ID")
-        @PathVariable localGovId: Long
+        @PathVariable localGovId: Long,
+        @RequestParam stdDate: YearMonth,
     ): ResponseEntity<ApiResponse<LocalGovDateResult>>
 
 
@@ -132,8 +250,80 @@ interface LocalGovernmentControllerDocs {
                                 "govName": "서울특별시",
                                 "data": [
                                   {
+                                    "hour": 5,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 6,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 7,
+                                    "useCount": 0
+                                  },
+                                  {
                                     "hour": 8,
                                     "useCount": 2
+                                  },
+                                  {
+                                    "hour": 9,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 10,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 11,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 12,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 13,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 14,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 15,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 16,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 17,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 18,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 19,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 20,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 21,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 22,
+                                    "useCount": 0
+                                  },
+                                  {
+                                    "hour": 23,
+                                    "useCount": 0
                                   }
                                 ]
                               },

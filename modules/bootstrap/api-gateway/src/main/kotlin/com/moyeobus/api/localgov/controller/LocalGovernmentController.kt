@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
+import java.time.YearMonth
 
 
 @RestController
@@ -31,9 +32,10 @@ class LocalGovernmentController(
 
     @GetMapping("/{localGovId}/date")
     override fun getStatusByDate (
-        @PathVariable localGovId: Long
+        @PathVariable localGovId: Long,
+        @RequestParam stdDate: YearMonth
     ) : ResponseEntity<ApiResponse<LocalGovDateResult>> {
-        return ResponseEntity.ok(ApiResponse.onSuccess(localGovernmentQueryService.queryDate(localGovId)))
+        return ResponseEntity.ok(ApiResponse.onSuccess(localGovernmentQueryService.queryDate(localGovId, stdDate)))
     }
 
     @GetMapping("/{localGovId}/time")

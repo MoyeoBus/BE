@@ -16,6 +16,7 @@ import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Service
 class LocalGovernmentQueryService(
@@ -57,7 +58,7 @@ class LocalGovernmentQueryService(
         return LocalGovStatusResult(govArea.sigunguName, areaStats)
     }
 
-    override fun queryDate(id: Long): LocalGovDateResult {
+    override fun queryDate(id: Long, stdDate: YearMonth): LocalGovDateResult {
         val localGov = localGovRepository.findById(id)
         val govArea = localGov.area
 
@@ -70,7 +71,7 @@ class LocalGovernmentQueryService(
             ?.mapNotNull { it.id }
             ?: emptyList()
 
-        val localGovDateResult = routeRequestRepository.countMonthly(requestListIds)
+        val localGovDateResult = routeRequestRepository.countMonthly(requestListIds, stdDate)
         return LocalGovDateResult(govArea.sigunguName, localGovDateResult)
     }
 
