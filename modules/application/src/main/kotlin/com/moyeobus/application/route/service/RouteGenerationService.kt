@@ -101,9 +101,15 @@ class RouteGenerationService(
     private fun createRouteComponents(
         response: KakaoDirectionResponse,
         route: Route,
-        representativeRequest: RouteRequest
+        requests: List<RouteRequest>
     ): List<RouteComponent> {
         val components = mutableListOf<RouteComponent>()
+
+        val representativeRequest = requests.first()
+        val requestedNames = requests
+            .flatMap { listOf(it.departure.name, it.destination.name) }
+            .toSet()
+
 
         var currentTime = representativeRequest.startDateTime
 
@@ -115,13 +121,18 @@ class RouteGenerationService(
                     else -> guide.name?.ifBlank { "경유지" } ?: "경유지"
                 }
 
+                val isRequested = name in requestedNames
+
+
+
                 components.add(
                     RouteComponent(
                         id = null,
                         routeId = route.id!!,
                         name = name,
                         location = GeoPoint(guide.x, guide.y),
-                        assignedTime = currentTime
+                        assignedTime = currentTime,
+                        isRequested = isRequested
                     )
                 )
 
@@ -156,7 +167,7 @@ class RouteGenerationService(
 
         val savedRoute = routeRepo.save(route)
 
-        val components = createRouteComponents(response, savedRoute, cluster.acceptedRequests.first())
+        val components = createRouteComponents(response, savedRoute, cluster.acceptedRequests)
 
         routeComponentRepo.saveAll(components)
 

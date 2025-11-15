@@ -22,5 +22,7 @@ class RouteComponentEntity (
 
     val lon: Double,
 
-    val assignedTime: Instant
+    val assignedTime: Instant,
+
+    val isRequested: Boolean
 )

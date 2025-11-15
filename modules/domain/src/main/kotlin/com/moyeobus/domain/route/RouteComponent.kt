@@ -11,7 +11,9 @@ data class RouteComponent (
 
     val location: GeoPoint,
 
-    val assignedTime: LocalDateTime
+    val assignedTime: LocalDateTime,
+
+    val isRequested: Boolean
 )
 
 
