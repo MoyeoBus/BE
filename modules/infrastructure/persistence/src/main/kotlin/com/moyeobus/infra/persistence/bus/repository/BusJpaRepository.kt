@@ -10,6 +10,14 @@ interface BusJpaRepository : JpaRepository<BusEntity, Long> {
 
     @Query(
         """
+            SELECT b.busNumber FROM BusEntity b 
+            WHERE b.id = :id
+            """
+    )
+    fun findNumberById(id : Long) : Long
+
+    @Query(
+        """
             SELECT b FROM BusEntity b 
             WHERE b.operatorId = :operatorId AND b.status = 'IDLE'
             """
