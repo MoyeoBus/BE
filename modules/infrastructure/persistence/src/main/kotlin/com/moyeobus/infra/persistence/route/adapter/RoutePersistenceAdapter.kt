@@ -3,6 +3,7 @@ package com.moyeobus.infra.persistence.route.adapter
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteStatus
+import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
 import com.moyeobus.infra.persistence.route.repository.RouteJpaRepository
 import org.springframework.stereotype.Component
@@ -16,6 +17,12 @@ class RoutePersistenceAdapter(
         val entity = toEntity(route)
         val saved = repo.save(entity)
         return toDomain(saved)
+    }
+
+    override fun findById(id: Long): Route {
+        val res = repo.findById(id)
+            .orElseThrow({ NotFoundException("Route(id=$id)") })
+        return toDomain(res)
     }
 
     override fun findStatus(id: Long): String {
