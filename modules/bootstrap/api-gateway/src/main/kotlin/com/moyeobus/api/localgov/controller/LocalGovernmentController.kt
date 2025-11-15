@@ -1,6 +1,7 @@
 package com.moyeobus.api.localgov.controller
 
 import com.moyeobus.api.docs.LocalGovernmentControllerDocs
+import com.moyeobus.api.localgov.dto.LocalGovStationResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
@@ -51,5 +52,23 @@ class LocalGovernmentController(
         @PathVariable localGovId: Long
     ) : ResponseEntity<ApiResponse<LocalGovRouteResult>> {
         return ResponseEntity.ok(ApiResponse.onSuccess(localGovernmentQueryService.queryRoute(localGovId)))
+
+
+    }
+
+    @GetMapping("/{routeId}/departures")
+    override fun getStatusByDeparture (
+        @PathVariable routeId: Long
+    ) : ResponseEntity<ApiResponse<LocalGovStationResult>> {
+        val response = LocalGovStationResult(localGovernmentQueryService.queryDeparture(routeId))
+        return ResponseEntity.ok(ApiResponse.onSuccess(response))
+    }
+
+    @GetMapping("/{routeId}/destinations")
+    override fun getStatusByDestination (
+        @PathVariable routeId: Long
+    ) : ResponseEntity<ApiResponse<LocalGovStationResult>> {
+        val response = LocalGovStationResult(localGovernmentQueryService.queryDestination(routeId))
+        return ResponseEntity.ok(ApiResponse.onSuccess(response))
     }
 }
