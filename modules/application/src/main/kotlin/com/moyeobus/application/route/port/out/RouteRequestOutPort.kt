@@ -1,6 +1,7 @@
 package com.moyeobus.application.route.port.out
 
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovStationWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
 import com.moyeobus.application.route.model.RequestAddressCount
 import com.moyeobus.domain.route.Address
@@ -13,6 +14,8 @@ interface RouteRequestOutPort {
     fun saveAll(request: List<RouteRequest>)
     fun countMonthly(requestIds: List<Long>, ym: YearMonth) : List<LocalGovDateUseWrapper>
     fun countHourly(requestIds: List<Long>, date: LocalDate) : List<LocalGovTimeUseWrapper>
+    fun countDepartureByRouteId(routeId: Long) : List<LocalGovStationWrapper>
+    fun countDestinationByRouteId(routeId: Long) : List<LocalGovStationWrapper>
     fun findBy(query: RouteRequestQuery): RouteRequestPage
     fun findByAddress(addresses: List<Address>) : List<RouteRequest>
     fun findById(requestId: Long): RouteRequest

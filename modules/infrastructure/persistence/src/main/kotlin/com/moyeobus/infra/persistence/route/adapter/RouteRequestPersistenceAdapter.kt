@@ -1,6 +1,7 @@
 package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateUseWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovStationWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeUseWrapper
 import com.moyeobus.application.route.model.RequestAddressCount
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
@@ -66,6 +67,16 @@ class RouteRequestPersistenceAdapter(
             else
                 LocalGovTimeUseWrapper(hour = hour, useCount = 0)
         }
+    }
+
+    override fun countDepartureByRouteId(routeId: Long): List<LocalGovStationWrapper> {
+        val res = repo.countDepartureByRouteId(routeId)
+        return res.map { LocalGovStationWrapper(it.station.name, it.count) }
+    }
+
+    override fun countDestinationByRouteId(routeId: Long): List<LocalGovStationWrapper> {
+        val res = repo.countDestinationByRouteId(routeId)
+        return res.map { LocalGovStationWrapper(it.station.name, it.count) }
     }
 
     override fun findBy(query: RouteRequestQuery): RouteRequestPage {
