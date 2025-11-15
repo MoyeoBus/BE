@@ -1,5 +1,6 @@
 package com.moyeobus.api.docs
 
+import com.moyeobus.api.localgov.dto.LocalGovStationResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
@@ -407,4 +408,89 @@ interface LocalGovernmentControllerDocs {
         @Parameter(example = "1", description = "조회할 지자체 ID")
         @PathVariable localGovId: Long
     ): ResponseEntity<ApiResponse<LocalGovRouteResult>>
+
+    @Operation(
+        summary = "출발지 기준 요청 통계 조회",
+        description = "특정 노선(routeId)에 대해 출발지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "출발지 통계 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "출발지 통계 성공 예시",
+                                value = """
+                                {
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "items": [
+                                      {
+                                        "stationName": "경복궁",
+                                        "count": 1
+                                      }
+                                    ]
+                                  },
+                                  "isSuccess": true
+                                }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun getStatusByDeparture(
+        @Parameter(description = "조회 대상 노선 ID", example = "42")
+        @PathVariable routeId: Long
+    ): ResponseEntity<ApiResponse<LocalGovStationResult>>
+
+
+    @Operation(
+        summary = "도착지 기준 요청 통계 조회",
+        description = "특정 노선(routeId)에 대해 도착지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "도착지 통계 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "도착지 통계 성공 예시",
+                                value = """
+                                {
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "items": [
+                                      {
+                                        "stationName": "경복궁",
+                                        "count": 1
+                                      }
+                                    ]
+                                  },
+                                  "isSuccess": true
+                                }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun getStatusByDestination(
+        @Parameter(description = "조회 대상 노선 ID", example = "42")
+        @PathVariable routeId: Long
+    ): ResponseEntity<ApiResponse<LocalGovStationResult>>
 }
