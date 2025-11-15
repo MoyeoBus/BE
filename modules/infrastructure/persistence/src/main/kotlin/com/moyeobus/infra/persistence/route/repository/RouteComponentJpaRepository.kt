@@ -1,6 +1,8 @@
 package com.moyeobus.infra.persistence.route.repository
 
+import com.moyeobus.infra.persistence.route.dto.RouteDetailProjection
 import com.moyeobus.infra.persistence.route.dto.RouteInfoProjection
+import com.moyeobus.infra.persistence.route.dto.RouteTimeProjection
 import com.moyeobus.infra.persistence.route.entity.RouteComponentEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -34,8 +36,37 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
         select rc from RouteComponentEntity rc
         where rc.routeId in :routeIds
         order by rc.routeId, rc.assignedTime asc
-    """)
+    """
+    )
     fun findAllByRouteIdIn(@Param("routeIds") routeIds: List<Long>): List<RouteComponentEntity>
+
+
+    @Query("""
+    SELECT 
+        function('date', min(rc.assignedTime)) AS date,
+        function('date_format', min(rc.assignedTime), '%H:%i') AS departureTime,
+        function('date_format', max(rc.assignedTime), '%H:%i') AS destinationTime
+    FROM RouteComponentEntity rc
+    WHERE rc.routeId = :routeId
+    """
+    )
+    fun findTimeRange(@Param("routeId") routeId: Long): RouteTimeProjection
+
+    @Query(
+        """
+            SELECT 
+                ROW_NUMBER() OVER (ORDER BY rc.assignedTime ASC, rc.id ASC) AS order,
+                rc.name AS station,
+                function('date_format', rc.assignedTime, '%H:%i') AS time
+            FROM RouteComponentEntity rc
+            WHERE rc.routeId = :routeId
+            ORDER BY rc.id ASC
+            """
+    )
+    fun findAllByRouteId(@Param("routeId") routeId: Long): List<RouteDetailProjection>
+
+
+
 
     @Query(
             """
