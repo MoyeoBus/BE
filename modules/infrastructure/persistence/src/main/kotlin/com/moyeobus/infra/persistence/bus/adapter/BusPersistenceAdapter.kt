@@ -15,6 +15,10 @@ class BusPersistenceAdapter(
         repo.save(mapper.toEntity(bus))
     }
 
+    override fun findNumberById(id: Long): Long {
+        return repo.findNumberById(id)
+    }
+
     override fun findIdleBusesByOperatorId(operatorId: Long): List<Bus> {
         val busEntities = repo.findIdleBusesByOperatorId(operatorId)
         return busEntities.map { mapper.toDomain(it) }
