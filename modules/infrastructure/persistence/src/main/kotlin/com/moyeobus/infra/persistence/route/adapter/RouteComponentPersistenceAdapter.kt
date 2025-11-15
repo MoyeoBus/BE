@@ -67,7 +67,8 @@ class RouteComponentPersistenceAdapter(
             name = this.name,
             lat = this.location.lat,
             lon = this.location.lon,
-            assignedTime = this.assignedTime.toInstant(ZoneOffset.UTC)
+            assignedTime = this.assignedTime.toInstant(ZoneOffset.UTC),
+            isRequested = this.isRequested
         )
 
 
@@ -77,7 +78,8 @@ class RouteComponentPersistenceAdapter(
             routeId = this.routeId,
             name = this.name,
             location = GeoPoint(lat = this.lat, lon = this.lon),
-            assignedTime = LocalDateTime.ofInstant(this.assignedTime, ZoneOffset.UTC)
+            assignedTime = LocalDateTime.ofInstant(this.assignedTime, ZoneOffset.UTC),
+            isRequested = this.isRequested
         )
 
 }

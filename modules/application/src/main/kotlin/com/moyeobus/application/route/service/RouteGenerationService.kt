@@ -115,13 +115,16 @@ class RouteGenerationService(
                     else -> guide.name?.ifBlank { "경유지" } ?: "경유지"
                 }
 
+
+
                 components.add(
                     RouteComponent(
                         id = null,
                         routeId = route.id!!,
                         name = name,
                         location = GeoPoint(guide.x, guide.y),
-                        assignedTime = currentTime
+                        assignedTime = currentTime,
+
                     )
                 )
 
