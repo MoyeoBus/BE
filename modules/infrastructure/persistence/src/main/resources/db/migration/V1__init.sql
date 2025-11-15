@@ -60,7 +60,8 @@ create table if not exists route_component(
     created_at DATETIME(6) NULL,
     updated_at DATETIME(6) NULL,
     assigned_time DATETIME NOT NULL,
-    route_id BIGINT NOT NULL
+    route_id BIGINT NOT NULL,
+    is_requested TINYINT(1) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS route_request (
