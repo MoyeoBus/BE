@@ -3,6 +3,7 @@ package com.moyeobus.infra.persistence.route.repository
 import com.moyeobus.infra.persistence.route.dto.DateUseProjection
 import com.moyeobus.infra.persistence.route.dto.HourUseProjection
 import com.moyeobus.infra.persistence.route.dto.AddressRankProjection
+import com.moyeobus.infra.persistence.route.dto.StationProjection
 import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -52,6 +53,25 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         @Param("requestIds") requestIds: List<Long>,
         @Param("targetDate") targetDate: LocalDate
     ): List<HourUseProjection>
+
+    @Query("""
+        select rr.departure as station, count(rr) as count
+        from RouteRequestEntity rr
+        where rr.routeId = :routeId
+        group by rr.departure.id
+        order by count(rr) desc
+        """)
+    fun countDepartureByRouteId(@Param("routeId") routeId: Long): List<StationProjection>
+
+    @Query("""
+        select rr.destination as station, count(rr) as count
+        from RouteRequestEntity rr
+        where rr.routeId = :routeId
+        group by rr.destination.id
+        order by count(rr) desc
+        """)
+    fun countDestinationByRouteId(@Param("routeId") routeId: Long): List<StationProjection>
+
 
     @Query(
         """
