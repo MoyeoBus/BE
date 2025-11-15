@@ -8,4 +8,6 @@ interface LocalGovernmentUseCase {
     fun queryDate(id: Long, stdDate: YearMonth) : LocalGovDateResult
     fun queryHour(id: Long, date: LocalDate) : LocalGovTimeResult
     fun queryRoute(id: Long) : LocalGovRouteResult
+    fun queryDeparture(routeId: Long) : List<LocalGovStationWrapper>
+    fun queryDestination(routeId: Long) : List<LocalGovStationWrapper>
 }

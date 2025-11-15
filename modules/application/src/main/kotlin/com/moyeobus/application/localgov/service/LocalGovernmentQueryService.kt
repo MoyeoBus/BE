@@ -5,6 +5,7 @@ import com.moyeobus.application.address.port.out.AreaOutPort
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteWrapper
+import com.moyeobus.application.localgov.port.`in`.LocalGovStationWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeResult
@@ -119,5 +120,13 @@ class LocalGovernmentQueryService(
             govName = govName,
             items = items
         )
+    }
+
+    override fun queryDeparture(routeId: Long): List<LocalGovStationWrapper> {
+        return routeRequestRepository.countDepartureByRouteId(routeId)
+    }
+
+    override fun queryDestination(routeId: Long): List<LocalGovStationWrapper> {
+        return routeRequestRepository.countDestinationByRouteId(routeId)
     }
 }
