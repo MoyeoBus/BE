@@ -1,7 +1,9 @@
 package com.moyeobus.infra.persistence.route.adapter
 
+import com.moyeobus.application.route.model.RouteItem
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteInfoWrapper
+import com.moyeobus.application.route.port.out.RouteTimeRange
 import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.domain.route.RouteComponent
 import com.moyeobus.infra.persistence.route.entity.RouteComponentEntity
@@ -13,7 +15,7 @@ import java.time.ZoneOffset
 @Component
 class RouteComponentPersistenceAdapter(
     private val repo: RouteComponentJpaRepository,
-    private val routeAdapter: RoutePersistenceAdapter  // Mapper 대신 Adapter 주입
+    private val routeAdapter: RoutePersistenceAdapter
 ) : RouteComponentOutPort {
 
     override fun save(component: RouteComponent) {
@@ -37,6 +39,21 @@ class RouteComponentPersistenceAdapter(
     override fun findAllByRouteIdIn(routeIds: List<Long>): List<RouteComponent> {
         val res = repo.findAllByRouteIdIn(routeIds)
         return res.map { it.toDomain() }
+    }
+
+    override fun findTimeRange(routeId: Long): RouteTimeRange {
+        val res = repo.findTimeRange(routeId)
+        return RouteTimeRange(res.date, res.departureTime, res.destinationTime)
+    }
+
+    override fun findAllByRouteId(routeId: Long): List<RouteItem> {
+        val res = repo.findAllByRouteId(routeId)
+        val items = res.map { RouteItem(
+            order = it.order,
+            station = it.station,
+            time = it.time
+        ) }
+        return items
     }
 
     override fun countStations(routeId: Long): Int {

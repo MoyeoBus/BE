@@ -3,12 +3,13 @@ package com.moyeobus.api.route.controller
 import com.moyeobus.api.docs.RouteControllerDocs
 import com.moyeobus.api.route.dto.PassengerRouteQueryResponse
 import com.moyeobus.api.route.dto.QueryResponse
-import com.moyeobus.api.route.dto.PassengerRouteResponse
 import com.moyeobus.api.route.dto.RouteRequestResponse
 import com.moyeobus.api.route.dto.Summary
+import com.moyeobus.application.route.model.RouteDetail
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
+import com.moyeobus.application.route.port.`in`.RouteQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestUseCase
 import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryUseCase
@@ -31,6 +32,7 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/api/v1/routes")
 class RouteController(
+    private val routeQueryService: RouteQueryUseCase,
     private val routeOwnerQueryService: RouteOwnerQueryUseCase,
     private val routeRequestUseCase: RouteRequestUseCase,
     private val routeRequestQueryUseCase: RouteRequestQueryUseCase,
@@ -59,6 +61,11 @@ class RouteController(
                 hasNext = res.hasNext
             )
         ))
+    }
+
+    @GetMapping("/{routeId}/detail")
+    fun queryRouteDetail(@PathVariable routeId: Long) : ResponseEntity<ApiResponse<RouteDetail>> {
+        return ResponseEntity.ok(ApiResponse.onSuccess(routeQueryService.queryRouteDetail(routeId)))
     }
 
     // TODO: 쿠키 도입 후 사용자 정보 제거
