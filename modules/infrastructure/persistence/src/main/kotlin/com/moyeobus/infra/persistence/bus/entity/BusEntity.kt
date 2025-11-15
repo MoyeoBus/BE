@@ -17,7 +17,7 @@ class BusEntity (
 
     val operatorId: Long,
 
-    val busNumber: Int,
+    val busNumber: Long,
 
     val carNumber: String,
 
