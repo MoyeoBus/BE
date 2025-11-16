@@ -6,5 +6,5 @@ data class RouteInfo(
     val destinationName: String,
     val operateDate: String,
     val departTime: String,
-    val arrivalTime: String,
+    val arrivalTime: String
 )
