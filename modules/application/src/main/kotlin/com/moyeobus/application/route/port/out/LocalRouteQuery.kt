@@ -7,8 +7,7 @@ import com.moyeobus.global.util.CursorWrapper
 import java.time.LocalDateTime
 
 data class LocalRouteQuery(
-    val dosi: String,
-    val sigungu: String,
+    val localGovId: Long,
     val status: RequestStatus? = null,
     @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val from: LocalDateTime? = null,
@@ -20,9 +19,8 @@ data class LocalRouteQuery(
     val cursorId: Long? = null,
 ) {
     companion object {
-        fun from(q: LocalQueryFilter, p: CursorWrapper) = LocalRouteQuery(
-            dosi = q.dosi,
-            sigungu = q.sigungu,
+        fun from(id: Long, q: LocalQueryFilter, p: CursorWrapper) = LocalRouteQuery(
+            localGovId = id,
             status = q.status?.let { RequestStatus.valueOf(it) },
             from = q.from,
             to = q.to,
