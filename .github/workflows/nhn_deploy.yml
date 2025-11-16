@@ -3,7 +3,7 @@ name: CI/CD Deploy to NHN Cloud
 on:
   push:
     branches:
-      - fix/#69-pagenation-query-fix
+      - main
 
 jobs:
   deploy:
