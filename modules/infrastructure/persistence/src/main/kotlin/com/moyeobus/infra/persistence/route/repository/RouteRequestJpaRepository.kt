@@ -78,8 +78,8 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         select r from RouteRequestEntity r
         where (:passengerId is null or r.passengerId = :passengerId)
           and (:status is null or r.status = :status)
-          and (:fromAt is null or r.createdAt >= :fromAt)
-          and (:toAt is null or r.createdAt < :toAt)
+          and (:fromAt is null or r.startDateTime >= :fromAt)
+          and (:toAt is null or r.endDateTime < :toAt)
           and (
                 (:cursorCreatedAt is null and :cursorId is null)
              or (r.createdAt < :cursorCreatedAt)
@@ -108,8 +108,8 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         from RouteRequestEntity r
         where (:passengerId is null or r.passengerId = :passengerId)
           and (:status is null or r.status = :status)
-          and (:fromAt is null or r.createdAt >= :fromAt)
-          and (:toAt is null or r.createdAt < :toAt)
+          and (:fromAt is null or r.startDateTime >= :fromAt)
+          and (:toAt is null or r.endDateTime < :toAt)
         order by r.createdAt desc, r.id desc
         """,
     )
