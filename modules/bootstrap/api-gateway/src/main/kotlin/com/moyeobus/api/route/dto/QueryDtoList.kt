@@ -15,6 +15,12 @@ data class PassengerRouteQueryResponse(
     val hasNext: Boolean,
 )
 
+data class LocalRouteQueryResponse(
+    val items: List<RouteInfoDto>,
+    val nextCursor: String?,
+    val hasNext: Boolean,
+)
+
 
 data class Summary(
     val totalCount: Long,

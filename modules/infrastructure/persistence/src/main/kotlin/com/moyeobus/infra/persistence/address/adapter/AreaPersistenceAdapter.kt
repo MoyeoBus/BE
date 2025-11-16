@@ -18,8 +18,12 @@ class AreaPersistenceAdapter(
         return mapper.toDomain(res)
     }
 
-    override fun findChildrenByParent(id: Long): List<Area> {
-        val res = repo.findAllChildren(id)
-        return res.map { mapper.toDomain(it) }
+    override fun findDosiId(dosi: String): Long {
+        return repo.findDosiId(dosi)
+    }
+
+    override fun findSigunguByDosi(dosiId: Long, sigungu: String) : Area {
+        val res = repo.findSigunguByDosi(dosiId, sigungu)
+        return mapper.toDomain(res)
     }
 }

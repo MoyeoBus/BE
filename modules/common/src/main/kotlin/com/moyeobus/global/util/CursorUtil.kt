@@ -1,6 +1,5 @@
 package com.moyeobus.global.util
 
-import org.springframework.stereotype.Component
 import java.time.Instant
 import java.util.Base64
 
@@ -9,9 +8,7 @@ data class CursorWrapper(
     val cursorId: Long?
 )
 
-@Component
 object CursorUtil {
-
     fun encode(cursor: CursorWrapper): String? {
         val (createdAt, id) = cursor
         if (createdAt == null || id == null) return null

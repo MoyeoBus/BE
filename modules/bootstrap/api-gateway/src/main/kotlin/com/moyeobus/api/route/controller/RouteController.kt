@@ -1,11 +1,13 @@
 package com.moyeobus.api.route.controller
 
 import com.moyeobus.api.docs.RouteControllerDocs
+import com.moyeobus.api.route.dto.LocalRouteQueryResponse
 import com.moyeobus.api.route.dto.PassengerRouteQueryResponse
 import com.moyeobus.api.route.dto.QueryResponse
 import com.moyeobus.api.route.dto.RouteRequestResponse
 import com.moyeobus.api.route.dto.Summary
 import com.moyeobus.application.route.model.RouteDetail
+import com.moyeobus.application.route.port.`in`.LocalQueryFilter
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
@@ -64,8 +66,26 @@ class RouteController(
     }
 
     @GetMapping("/{routeId}/detail")
-    fun queryRouteDetail(@PathVariable routeId: Long) : ResponseEntity<ApiResponse<RouteDetail>> {
+    override fun queryRouteDetail(@PathVariable routeId: Long) : ResponseEntity<ApiResponse<RouteDetail>> {
         return ResponseEntity.ok(ApiResponse.onSuccess(routeQueryService.queryRouteDetail(routeId)))
+    }
+
+    @GetMapping("/local")
+    override fun queryLocalRoute(@RequestParam dosi: String,
+                         @RequestParam sigungu: String,
+                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
+                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
+                         @RequestParam(required = false) cursor: String?) : ResponseEntity<ApiResponse<LocalRouteQueryResponse>> {
+        val filter = LocalQueryFilter(dosi, sigungu, null, from, to, cursor)
+        val res = routeQueryService.queryLocalRoute(filter)
+
+        return ResponseEntity.ok(ApiResponse.onSuccess(
+            LocalRouteQueryResponse(
+                items = res.items,
+                nextCursor = res.nextCursor,
+                hasNext = res.hasNext
+            )
+        ))
     }
 
     // TODO: 쿠키 도입 후 사용자 정보 제거
@@ -76,7 +96,7 @@ class RouteController(
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
                     @RequestParam(required = false) cursor: String?
     ) : ResponseEntity<ApiResponse<PassengerRouteQueryResponse>> {
-        val res = routeOwnerQueryService.query(passengerId, QueryFilter(null, from, to, cursor))
+        val res = routeOwnerQueryService.query(passengerId, QueryFilter( null, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             PassengerRouteQueryResponse(
                 items = res.items,
