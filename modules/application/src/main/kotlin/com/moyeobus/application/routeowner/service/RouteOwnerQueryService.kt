@@ -51,6 +51,7 @@ class RouteOwnerQueryService(
                 routeRequestNames, routeId
             )
 
+            val operatedDate = DateTimeUtil.formatDate(assignedTimes.first())
             val formattedTimes = assignedTimes
                 .map { DateTimeUtil.formatTime(it) }
 
@@ -59,6 +60,7 @@ class RouteOwnerQueryService(
                 routeId = routeId,
                 departure = departure,
                 destination = destination,
+                operatedDate = operatedDate,
                 assignedTime = formattedTimes,
                 status = status.toString()
             )
