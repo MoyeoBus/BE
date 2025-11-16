@@ -1,6 +1,6 @@
-package com.moyeobus.application.routeowner.port.dto
+package com.moyeobus.application.route.model
 
-data class RouteInfoDto(
+data class LocalRouteInfo(
     val routeId: Long,
     val departure: String,
     val destination: String,

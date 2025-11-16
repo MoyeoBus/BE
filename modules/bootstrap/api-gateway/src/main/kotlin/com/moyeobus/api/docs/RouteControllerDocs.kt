@@ -346,19 +346,28 @@ interface RouteControllerDocs {
                               "result": {
                                 "items": [
                                   {
-                                    "id": 94,
-                                    "route": {
-                                      "id": 101,
-                                      "operatorId": 1,
-                                      "localGovId": 1,
-                                      "busId": 1,
-                                      "routeDistance": 67735,
-                                      "routeTotalTime": 4832,
-                                      "routeComponents": []
-                                    }
+                                    "routeId": 216,
+                                    "departure": "군산시청",
+                                    "destination": "목적지",
+                                    "operatedDate": "2025-11-06",
+                                    "assignedTime": [
+                                      "08:30"
+                                    ],
+                                    "status": "CREATED"
+                                  },
+                                  {
+                                    "routeId": 215,
+                                    "departure": "전주시청",
+                                    "destination": "목적지",
+                                    "operatedDate": "2025-11-06",
+                                    "assignedTime": [
+                                      "08:00"
+                                    ],
+                                    "status": "CREATED"
+                                  }
                                 ],
-                                "nextCursor": "MTc1OTY2NzExMDAwMDoxMA==",
-                                "hasNext": true
+                                "nextCursor": null,
+                                "hasNext": false
                               },
                               "isSuccess": true
                             }

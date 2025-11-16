@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.time.Instant
 
 @Repository
 interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long> {
@@ -66,7 +67,16 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
     fun findAllByRouteId(@Param("routeId") routeId: Long): List<RouteDetailProjection>
 
 
-
+    @Query("""
+    SELECT rc.assignedTime
+    FROM RouteComponentEntity rc
+    WHERE rc.routeId = :routeId 
+      AND rc.name IN :names
+""")
+    fun findTimeByLocationAndRoute(
+        @Param("routeId") routeId: Long,
+        @Param("names") names: List<String>
+    ): List<Instant>
 
     @Query(
             """

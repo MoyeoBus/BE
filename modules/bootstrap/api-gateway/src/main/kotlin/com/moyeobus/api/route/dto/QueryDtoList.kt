@@ -1,6 +1,7 @@
 package com.moyeobus.api.route.dto
 
-import com.moyeobus.application.routeowner.port.dto.RouteInfoDto
+import com.moyeobus.application.route.model.LocalRouteInfo
+import com.moyeobus.application.routeowner.port.dto.PassengerRouteInfo
 
 data class QueryResponse(
     val items: List<RouteRequestResponse>,
@@ -10,13 +11,13 @@ data class QueryResponse(
 )
 
 data class PassengerRouteQueryResponse(
-    val items: List<RouteInfoDto>,
+    val items: List<PassengerRouteInfo>,
     val nextCursor: String?,
     val hasNext: Boolean,
 )
 
 data class LocalRouteQueryResponse(
-    val items: List<RouteInfoDto>,
+    val items: List<LocalRouteInfo>,
     val nextCursor: String?,
     val hasNext: Boolean,
 )

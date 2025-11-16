@@ -14,8 +14,7 @@ import java.time.ZoneOffset
 
 @Component
 class RouteComponentPersistenceAdapter(
-    private val repo: RouteComponentJpaRepository,
-    private val routeAdapter: RoutePersistenceAdapter
+    private val repo: RouteComponentJpaRepository
 ) : RouteComponentOutPort {
 
     override fun save(component: RouteComponent) {
@@ -54,6 +53,17 @@ class RouteComponentPersistenceAdapter(
             time = it.time
         ) }
         return items
+    }
+
+    override fun findTimeByLocationAndRoute(
+        names: List<String>,
+        routeId: Long
+    ): List<LocalDateTime> {
+        val res = repo.findTimeByLocationAndRoute(
+            routeId,
+            names
+        )
+        return res.map { LocalDateTime.ofInstant(it, ZoneOffset.UTC) }
     }
 
     override fun countStations(routeId: Long): Int {

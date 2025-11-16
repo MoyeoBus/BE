@@ -22,6 +22,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneOffset
+import kotlin.collections.map
 
 @Component
 class RouteRequestPersistenceAdapter(
@@ -114,6 +115,10 @@ class RouteRequestPersistenceAdapter(
         val res = repo.findById(requestId)
             .orElseThrow { NotFoundException("RouteRequest(id=$requestId)") }
         return res.toDomain()
+    }
+
+    override fun findDeparturesByPassengerAndRoute(passengerId: Long, routeId: Long): List<String> {
+        return repo.findDeparturesByPassengerAndRoute(passengerId, routeId)
     }
 
     override fun findByPending(): List<RouteRequest> {
