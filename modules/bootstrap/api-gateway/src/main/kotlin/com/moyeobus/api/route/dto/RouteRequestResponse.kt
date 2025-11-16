@@ -4,11 +4,10 @@ import com.moyeobus.domain.route.RouteRequest
 import java.time.LocalDateTime
 
 
-// TODO: 장소 테이블 구성 후 id를 name으로 변경
 data class RouteRequestResponse(
     val id: Long? = null,
-    val departureId: Long,
-    val destinationId: Long,
+    val departureNm: String,
+    val destinationNm: String,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val status: String,
@@ -16,8 +15,8 @@ data class RouteRequestResponse(
     companion object {
         fun from (r: RouteRequest) = RouteRequestResponse(
             id = r.id,
-            departureId = r.departure.id!!,
-            destinationId = r.destination.id!!,
+            departureNm = r.departure.name,
+            destinationNm = r.destination.name,
             startDateTime = r.startDateTime,
             endDateTime = r.endDateTime,
             status = r.status.name

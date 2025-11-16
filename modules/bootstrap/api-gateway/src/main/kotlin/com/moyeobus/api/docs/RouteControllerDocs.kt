@@ -119,61 +119,93 @@ interface RouteControllerDocs {
                                 summary = "노선 요청 목록, 요약 정보, 커서 포함",
                                 value = """
                                 {
-                                    "code": "COMMON_200",
-                                    "message": "요청이 정상적으로 처리되었습니다.",
-                                    "result": {
-                                        "items": [
-                                            {
-                                                "id": 6,
-                                                "departureId": 1,
-                                                "destinationId": 2,
-                                                "startDateTime": "2025-10-31T12:00:00",
-                                                "endDateTime": "2025-10-31T14:00:00",
-                                                "status": "PENDING"
-                                            },
-                                            {
-                                                "id": 5,
-                                                "departureId": 1,
-                                                "destinationId": 2,
-                                                "startDateTime": "2025-10-31T12:00:00",
-                                                "endDateTime": "2025-10-31T14:00:00",
-                                                "status": "PENDING"
-                                            },
-                                            {
-                                                "id": 4,
-                                                "departureId": 1,
-                                                "destinationId": 2,
-                                                "startDateTime": "2025-10-17T10:00:00",
-                                                "endDateTime": "2025-10-17T12:00:00",
-                                                "status": "PENDING"
-                                            },
-                                            {
-                                                "id": 3,
-                                                "departureId": 1,
-                                                "destinationId": 2,
-                                                "startDateTime": "2025-10-17T10:00:00",
-                                                "endDateTime": "2025-10-17T12:00:00",
-                                                "status": "PENDING"
-                                            },
-                                            {
-                                                "id": 2,
-                                                "departureId": 1,
-                                                "destinationId": 2,
-                                                "startDateTime": "2025-10-17T10:00:00",
-                                                "endDateTime": "2025-10-17T12:00:00",
-                                                "status": "PENDING"
-                                            }
-                                        ],
-                                        "summary": {
-                                            "totalCount": 5,
-                                            "approvedCount": 0,
-                                            "cancelledCount": 0,
-                                            "pendingCount": 5
-                                        },
-                                        "nextCursor": null,
-                                        "hasNext": false
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "items": [
+                                      {
+                                        "id": 9,
+                                        "departureNm": "천안시청",
+                                        "destinationNm": "보령시청",
+                                        "startDateTime": "2025-11-06T09:00:00",
+                                        "endDateTime": "2025-11-06T09:40:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 8,
+                                        "departureNm": "청주시청",
+                                        "destinationNm": "충주시청",
+                                        "startDateTime": "2025-11-06T08:30:00",
+                                        "endDateTime": "2025-11-06T09:10:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 7,
+                                        "departureNm": "여수시청",
+                                        "destinationNm": "목포시청",
+                                        "startDateTime": "2025-11-06T08:00:00",
+                                        "endDateTime": "2025-11-06T08:30:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 6,
+                                        "departureNm": "목포시청",
+                                        "destinationNm": "군산시청",
+                                        "startDateTime": "2025-11-06T09:00:00",
+                                        "endDateTime": "2025-11-06T09:40:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 5,
+                                        "departureNm": "군산시청",
+                                        "destinationNm": "전주시청",
+                                        "startDateTime": "2025-11-06T08:30:00",
+                                        "endDateTime": "2025-11-06T09:20:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 4,
+                                        "departureNm": "전주시청",
+                                        "destinationNm": "여수시청",
+                                        "startDateTime": "2025-11-06T08:00:00",
+                                        "endDateTime": "2025-11-06T08:50:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 3,
+                                        "departureNm": "안양역",
+                                        "destinationNm": "수원시청",
+                                        "startDateTime": "2025-11-06T09:00:00",
+                                        "endDateTime": "2025-11-06T09:40:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 2,
+                                        "departureNm": "수원시청",
+                                        "destinationNm": "서울특별시청",
+                                        "startDateTime": "2025-11-06T08:30:00",
+                                        "endDateTime": "2025-11-06T09:10:00",
+                                        "status": "APPROVED"
+                                      },
+                                      {
+                                        "id": 1,
+                                        "departureNm": "서울특별시청",
+                                        "destinationNm": "경복궁",
+                                        "startDateTime": "2025-11-06T08:00:00",
+                                        "endDateTime": "2025-11-06T08:40:00",
+                                        "status": "APPROVED"
+                                      }
+                                    ],
+                                    "summary": {
+                                      "totalCount": 9,
+                                      "approvedCount": 9,
+                                      "cancelledCount": 0,
+                                      "pendingCount": 0
                                     },
-                                    "isSuccess": true
+                                    "nextCursor": null,
+                                    "hasNext": false
+                                  },
+                                  "isSuccess": true
                                 }
                                 """
                             )
