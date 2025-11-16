@@ -26,10 +26,17 @@ interface AreaJpaRepository : JpaRepository<AreaEntity, Long>{
     )
     fun findAllParents() : List<AreaEntity>
 
-    @Query(
-        """
-            SELECT a FROM AreaEntity a where a.parentSigunguId = :parentSigunguId
-        """
-    )
-    fun findAllChildren(parentSigunguId: Long) : List<AreaEntity>
+//    @Query(
+//        """
+//            SELECT a FROM AreaEntity a where a.parentSigunguId = :parentSigunguId
+//        """
+//    )
+//    fun findAllChildren(parentSigunguId: Long) : List<AreaEntity>
+//
+//    @Query(
+//        """
+//            SELECT a FROM AreaEntity a where a.parentSigunguId = :parentSigunguId
+//        """
+//    )
+//    fun findAllChildren(parentSigunguId: Long) : List<AreaEntity>
 }

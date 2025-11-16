@@ -6,6 +6,7 @@ import com.moyeobus.api.route.dto.QueryResponse
 import com.moyeobus.api.route.dto.RouteRequestResponse
 import com.moyeobus.api.route.dto.Summary
 import com.moyeobus.application.route.model.RouteDetail
+import com.moyeobus.application.route.port.`in`.LocalQueryFilter
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
@@ -68,6 +69,24 @@ class RouteController(
         return ResponseEntity.ok(ApiResponse.onSuccess(routeQueryService.queryRouteDetail(routeId)))
     }
 
+//    @GetMapping("/local")
+//    fun queryRouteDetail(@RequestParam dosi: String,
+//                         @RequestParam sigungu: String,
+//                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
+//                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
+//                         @RequestParam(required = false) cursor: String?) : ResponseEntity<ApiResponse<PassengerRouteQueryResponse>> {
+//        val filter = LocalQueryFilter(dosi, sigungu, null, from, to, cursor)
+//        val res = routeQueryService.queryLo calRoute(filter)
+//
+//        return ResponseEntity.ok(ApiResponse.onSuccess(
+//            PassengerRouteQueryResponse(
+//                items = res.items,
+//                nextCursor = res.nextCursor,
+//                hasNext = res.hasNext
+//            )
+//        ))
+//    }
+
     // TODO: 쿠키 도입 후 사용자 정보 제거
     @GetMapping("/{passengerId}")
     override fun queryByUser(
@@ -76,7 +95,7 @@ class RouteController(
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
                     @RequestParam(required = false) cursor: String?
     ) : ResponseEntity<ApiResponse<PassengerRouteQueryResponse>> {
-        val res = routeOwnerQueryService.query(passengerId, QueryFilter(null, from, to, cursor))
+        val res = routeOwnerQueryService.query(passengerId, QueryFilter( null, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             PassengerRouteQueryResponse(
                 items = res.items,

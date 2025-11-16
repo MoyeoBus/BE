@@ -17,8 +17,7 @@ import java.time.ZoneOffset
 class RouteOwnerQueryService(
     private val cursorUtil: CursorUtil,
     private val passengerRouteRepository: PassengerRouteOutPort,
-    private val routeComponentRepository: RouteComponentOutPort,
-    private val routeRepository: RouteOutPort
+    private val routeComponentRepository: RouteComponentOutPort
 ) : RouteOwnerQueryUseCase {
 
     override fun query(id: Long, filter: QueryFilter): RouteOwnerQueryResult {
