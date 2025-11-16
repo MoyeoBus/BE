@@ -1,7 +1,9 @@
 package com.moyeobus.api.docs
 
+import com.moyeobus.api.route.dto.LocalRouteQueryResponse
 import com.moyeobus.api.route.dto.PassengerRouteQueryResponse
 import com.moyeobus.api.route.dto.QueryResponse
+import com.moyeobus.application.route.model.RouteDetail
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.global.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -199,6 +201,127 @@ interface RouteControllerDocs {
         @RequestParam(required = false)
         cursor: String?,
     ): ResponseEntity<ApiResponse<QueryResponse>>
+
+    @Operation(
+        summary = "노선 상세 조회",
+        description = "특정 routeId에 대한 노선 상세 정보를 반환합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "상세 조회 성공",
+                                value = """
+                            {
+                                "code": "COMMON_200",
+                                "message": "요청이 정상적으로 처리되었습니다.",
+                                "result": {
+                                    "routeInfo": {
+                                        "busNumber": 1,
+                                        "departureName": "서울역",
+                                        "destinationName": "강남역",
+                                        "operateDate": "2025-11-10",
+                                        "departTime": "08:00",
+                                        "arrivalTime": "08:45"
+                                    },
+                                    "items": [
+                                        {
+                                            "order": 1,
+                                            "station": "서울역",
+                                            "time": "08:00",
+                                            "isDestinationYn": false
+                                        }
+                                    ]
+                                },
+                                "isSuccess": true
+                            }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "404",
+                description = "해당 routeId 없음"
+            )
+        ]
+    )
+    fun queryRouteDetail(
+        @Parameter(example = "1", description = "조회할 노선 ID")
+        @PathVariable routeId: Long
+    ): ResponseEntity<ApiResponse<RouteDetail>>
+
+    @Operation(
+        summary = "지역 기반 노선 조회",
+        description = "도/시(dosi)와 시/군/구(sigungu), 날짜 범위, 커서를 기준으로 노선 목록을 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "지역 노선 조회 성공",
+                                value = """
+                            {
+                                "code": "COMMON_200",
+                                "message": "요청이 정상적으로 처리되었습니다.",
+                                "result": {
+                                    "items": [
+                                        {
+                                            "routeId": 173,
+                                            "operateDate": "2025-11-10",
+                                            "departure": "서울역",
+                                            "destination": "강남역",
+                                            "distance": 41539,
+                                            "duration": 2785
+                                        }
+                                    ],
+                                    "nextCursor": null,
+                                    "hasNext": false
+                                },
+                                "isSuccess": true
+                            }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun queryLocalRoute(
+        @Parameter(example = "서울특별시", description = "도/시 명")
+        @RequestParam dosi: String,
+
+        @Parameter(example = "종로구", description = "시/군/구 명")
+        @RequestParam sigungu: String,
+
+        @Parameter(example = "2025-10-01 00:00:00", description = "조회 시작일 (yyyy-MM-dd HH:mm:ss)")
+        @RequestParam(required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        from: LocalDateTime?,
+
+        @Parameter(example = "2025-11-01 23:59:59", description = "조회 종료일 (yyyy-MM-dd HH:mm:ss)")
+        @RequestParam(required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        to: LocalDateTime?,
+
+        @Parameter(example = "MTc1OTY1ODA1MDcwMzo1", description = "커서 기반 페이지네이션 cursor")
+        @RequestParam(required = false)
+        cursor: String?,
+    ): ResponseEntity<ApiResponse<LocalRouteQueryResponse>>
 
 
     @Operation(
