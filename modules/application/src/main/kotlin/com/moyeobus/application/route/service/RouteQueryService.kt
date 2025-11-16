@@ -2,22 +2,21 @@ package com.moyeobus.application.route.service
 
 import com.moyeobus.application.address.port.out.AreaOutPort
 import com.moyeobus.application.bus.port.out.BusOutPort
+import com.moyeobus.application.route.model.LocalRouteInfo
 import com.moyeobus.application.route.model.RouteDetail
 import com.moyeobus.application.route.model.RouteInfo
 import com.moyeobus.application.route.port.`in`.LocalQueryFilter
+import com.moyeobus.application.route.port.`in`.LocalRouteQueryResult
 import com.moyeobus.application.route.port.`in`.RouteQueryUseCase
 import com.moyeobus.application.route.port.out.LocalRouteQuery
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
-import com.moyeobus.application.routeowner.port.dto.RouteInfoDto
-import com.moyeobus.application.routeowner.port.`in`.RouteOwnerQueryResult
 import com.moyeobus.global.util.CursorUtil
 
 import com.moyeobus.global.util.CursorWrapper
 import com.moyeobus.global.util.DateTimeUtil
 import org.springframework.stereotype.Service
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 @Service
 class RouteQueryService(
@@ -48,10 +47,8 @@ class RouteQueryService(
 
     }
 
-    override fun queryLocalRoute(filter: LocalQueryFilter): RouteOwnerQueryResult {
+    override fun queryLocalRoute(filter: LocalQueryFilter): LocalRouteQueryResult {
         val decodedCursor = CursorUtil.decode(filter.cursor)
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        val dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd")
 
         val dosiId = areaRepo.findDosiId(filter.dosi)
         val sigungu = areaRepo.findSigunguByDosi(dosiId, filter.sigungu)
@@ -69,7 +66,7 @@ class RouteQueryService(
             .findAllByRouteIdIn(routeIds)
             .groupBy { it.routeId }
 
-        val dtoList: List<RouteInfoDto> = routeIds.map { routeId ->
+        val dtoList: List<LocalRouteInfo> = routeIds.map { routeId ->
             val components = componentsByRouteId[routeId] ?: emptyList()
             val departure = components.firstOrNull()?.name ?: "출발지 미정"
             val destination = components.lastOrNull()?.name ?: "도착지 미정"
@@ -81,7 +78,7 @@ class RouteQueryService(
 
             val status = routeStatusMap[routeId] ?: "UNKNOWN"
 
-            RouteInfoDto(
+            LocalRouteInfo(
                 routeId = routeId,
                 departure = departure,
                 destination = destination,
@@ -95,7 +92,7 @@ class RouteQueryService(
         val nextCursorCreatedAt = queryItems.nextCursorCreatedAt
             ?.toInstant(ZoneOffset.UTC)
 
-        return RouteOwnerQueryResult(
+        return LocalRouteQueryResult(
             items = dtoList,
             nextCursor = if (queryItems.hasNext) {
                 CursorUtil.encode(CursorWrapper(nextCursorCreatedAt, queryItems.nextCursorId))
