@@ -13,6 +13,10 @@ data class RouteComponent (
 
     val assignedTime: LocalDateTime,
 
+    val distance: Int,
+
+    val duration: Int,
+
     val isRequested: Boolean
 )
 
