@@ -143,7 +143,7 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
         WHERE r.routeId = :routeId AND r.passengerId = :passengerId
     """
     )
-    fun findByPassengerAndRoute(@Param("passengerId") passengerId: Long,
+    fun findDeparturesByPassengerAndRoute(@Param("passengerId") passengerId: Long,
                                 @Param("routeId") routeId: Long) : List<String>
 
 

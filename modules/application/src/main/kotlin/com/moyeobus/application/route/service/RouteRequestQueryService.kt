@@ -21,7 +21,6 @@ class RouteRequestQueryService(
         val decodedCursor = decodeCursor(filter.cursor)
         val routeRequestQuery = RouteRequestQuery.from(filter, decodedCursor)
         val queryItems = routeRequestRepository.findBy(routeRequestQuery)
-        println(queryItems)
 
         val nextCursorCreatedAt = queryItems.nextCursorCreatedAt
             ?.toInstant(ZoneOffset.UTC)

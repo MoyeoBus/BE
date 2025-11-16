@@ -46,7 +46,7 @@ class RouteOwnerQueryService(
 
             val status = routeStatusMap[routeId] ?: "UNKNOWN"
 
-            val routeRequestNames = routeRequestRepository.findByPassengerAndRoute(passengerId, routeId)
+            val routeRequestNames = routeRequestRepository.findDeparturesByPassengerAndRoute(passengerId, routeId)
             val assignedTimes = routeComponentRepository.findTimeByLocationAndRoute(
                 routeRequestNames, routeId
             )
