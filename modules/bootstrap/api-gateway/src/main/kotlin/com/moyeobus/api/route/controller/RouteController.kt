@@ -96,6 +96,7 @@ class RouteController(
                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
                     @RequestParam(required = false) cursor: String?
     ) : ResponseEntity<ApiResponse<PassengerRouteQueryResponse>> {
+
         val res = routeOwnerQueryService.query(passengerId, QueryFilter( null, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             PassengerRouteQueryResponse(
