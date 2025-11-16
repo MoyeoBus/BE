@@ -32,4 +32,11 @@ interface AreaJpaRepository : JpaRepository<AreaEntity, Long>{
     """)
     fun findSigunguByDosi(@Param("dosiId") dosiId: Long,
                           @Param("sigungu") sigungu: String) : AreaEntity
+
+    @Query(
+        """
+            SELECT a FROM AreaEntity a where a.parentSigunguId = :parentSigunguId
+        """
+    )
+    fun findAllChildren(parentSigunguId: Long) : List<AreaEntity>
 }
