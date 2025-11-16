@@ -1,11 +1,9 @@
 package com.moyeobus.application.routeowner.port.dto
 
-data class RouteInfoDto(
+data class PassengerRouteInfo(
     val routeId: Long,
     val departure: String,
     val destination: String,
-    val operateDate: String,
-    val departureTime: String,
-    val destinationTime: String,
+    val assignedTime: List<String>,
     val status: String
 )
