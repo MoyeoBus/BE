@@ -1,8 +1,11 @@
 package com.moyeobus.infra.persistence.route.repository
 
+import com.moyeobus.domain.route.GeoPoint
 import com.moyeobus.infra.persistence.route.dto.RouteDetailProjection
 import com.moyeobus.infra.persistence.route.dto.RouteInfoProjection
 import com.moyeobus.infra.persistence.route.dto.RouteTimeProjection
+import com.moyeobus.infra.persistence.route.dto.TrackInfoProjection
+import com.moyeobus.infra.persistence.route.dto.TrackItemProjection
 import com.moyeobus.infra.persistence.route.entity.RouteComponentEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -72,11 +75,92 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
     FROM RouteComponentEntity rc
     WHERE rc.routeId = :routeId 
       AND rc.name IN :names
-""")
+    """)
     fun findTimeByLocationAndRoute(
         @Param("routeId") routeId: Long,
         @Param("names") names: List<String>
     ): List<Instant>
+
+
+    @Query(
+        value = """
+        WITH current AS (
+            SELECT id
+            FROM route_component
+            WHERE route_id = :routeId
+              AND is_requested = 1
+              AND name = :currentStation
+            LIMIT 1
+        ),
+        next AS (
+            SELECT MIN(id) AS id
+            FROM route_component
+            WHERE route_id = :routeId
+              AND is_requested = 1
+              AND id > (SELECT id FROM current)
+        )
+        
+        SELECT 
+            :routeId AS routeId,
+            (SELECT name FROM route_component WHERE id = (SELECT id FROM next)) AS nextStation,
+            (
+                SELECT SUM(duration)
+                FROM route_component
+                WHERE route_id = :routeId
+                  AND id > (SELECT id FROM current)
+                  AND id <= (SELECT id FROM next)
+            ) AS gapTime,
+            (
+                SELECT SUM(distance)
+                FROM route_component
+                WHERE route_id = :routeId
+                  AND id > (SELECT id FROM current)
+                  AND id <= (SELECT id FROM next)
+            ) AS remainDistance
+    """,
+        nativeQuery = true
+    )
+    fun findRouteTrackInfo(
+        @Param("routeId") routeId: Long,
+        @Param("currentStation") currentStation: String
+    ): TrackInfoProjection
+
+    @Query(
+        value = """
+        SELECT 
+            rc.name AS station,
+            DATE_FORMAT(rc.assigned_time, '%H:%i') AS time,
+            CASE
+                WHEN rc.id = (
+                    SELECT MIN(id)
+                    FROM route_component
+                    WHERE route_id = :routeId AND is_requested = 1
+                ) THEN '출발'
+                
+                WHEN rc.id = (
+                    SELECT MAX(id)
+                    FROM route_component
+                    WHERE route_id = :routeId AND is_requested = 1
+                ) THEN '종점'
+                
+                WHEN rc.assigned_time < NOW() THEN '통과'
+                
+                ELSE '예정'
+            END AS tag
+        FROM route_component rc
+        WHERE rc.route_id = :routeId AND rc.is_requested = 1
+        ORDER BY rc.assigned_time ASC
+    """,
+        nativeQuery = true
+    )
+    fun findTrackItems(@Param("routeId") routeId: Long): List<TrackItemProjection>
+
+    @Query("""
+        SELECT rc.lat, rc.lon
+        FROM RouteComponentEntity rc
+        where routeId = :routeId
+    """)
+    fun findTrackPoints(@Param("routeId") routeId: Long): List<GeoPoint>
 
     @Query(
             """
