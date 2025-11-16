@@ -12,7 +12,7 @@ spring:
     hibernate:
           ddl-auto: update
   flyway:
-    enabled: true
+    enabled: false
     validate-on-migrate: true
     clean-disabled: false
     baseline-on-migrate: true
