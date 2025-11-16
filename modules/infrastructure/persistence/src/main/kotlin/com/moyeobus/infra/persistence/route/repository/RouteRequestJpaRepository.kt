@@ -138,6 +138,17 @@ interface RouteRequestJpaRepository : JpaRepository<RouteRequestEntity, Long> {
     fun findByAddressIds(@Param("addressIds") addressIds: List<Long?>) : List<RouteRequestEntity>
 
     @Query("""
+        SELECT r.departure.name
+        FROM RouteRequestEntity r 
+        WHERE r.routeId = :routeId AND r.passengerId = :passengerId
+    """
+    )
+    fun findByPassengerAndRoute(@Param("passengerId") passengerId: Long,
+                                @Param("routeId") routeId: Long) : List<String>
+
+
+
+    @Query("""
     SELECT r 
     FROM RouteRequestEntity r 
     WHERE r.routeId in :routeIds

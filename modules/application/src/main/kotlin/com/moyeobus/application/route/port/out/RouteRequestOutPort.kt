@@ -19,6 +19,7 @@ interface RouteRequestOutPort {
     fun findBy(query: RouteRequestQuery): RouteRequestPage
     fun findByAddress(addresses: List<Address>) : List<RouteRequest>
     fun findById(requestId: Long): RouteRequest
+    fun findByPassengerAndRoute(passengerId: Long, routeId: Long) : List<String>
     fun findByPending() : List<RouteRequest>
     fun findByRoutes(routeIds: List<Long?>) : List<RouteRequest>
     fun findDepartureCountByRoute(routeIds: List<Long?>) : List<RequestAddressCount>
