@@ -7,5 +7,6 @@ interface RouteOutPort {
     fun findById(id: Long) : Route
     fun findStatus(id: Long) : String
     fun findByLocal(id: Long) : List<Route>
+    fun findBy(query: LocalRouteQuery) : LocalRoutePage
     fun findByOperator(id: Long) : List<Route>
 }
