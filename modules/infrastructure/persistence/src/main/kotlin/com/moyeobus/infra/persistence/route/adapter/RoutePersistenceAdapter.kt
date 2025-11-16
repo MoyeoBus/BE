@@ -1,12 +1,17 @@
 package com.moyeobus.infra.persistence.route.adapter
 
+import com.moyeobus.application.route.port.out.LocalRoutePage
+import com.moyeobus.application.route.port.out.LocalRouteQuery
 import com.moyeobus.application.route.port.out.RouteOutPort
+import com.moyeobus.application.routeowner.port.out.RouteOwnerPage
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteStatus
 import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
 import com.moyeobus.infra.persistence.route.repository.RouteJpaRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import java.time.ZoneOffset
 
 @Component
 class RoutePersistenceAdapter(
@@ -32,6 +37,30 @@ class RoutePersistenceAdapter(
     override fun findByLocal(id: Long): List<Route> {
         val res = repo.findByLocal(id)
         return res.map { toDomain(it) }
+    }
+
+    override fun findBy(query: LocalRouteQuery): LocalRoutePage {
+        val pageSize = query.limit
+        val list = repo.pageByLocal(
+            localGovId = query.localGovId,
+            status = query.status?.name,
+            fromAt = query.from?.toInstant(ZoneOffset.UTC),
+            toAt = query.to?.toInstant(ZoneOffset.UTC),
+            cursorCreatedAt = query.cursorCreatedAt?.toInstant(ZoneOffset.UTC),
+            cursorId = query.cursorId,
+            org = PageRequest.of(0, pageSize + 1),
+        )
+
+        val hasNext = list.size > pageSize
+        val items = list.take(pageSize)
+        val last = items.lastOrNull()
+
+        return LocalRoutePage(
+            items = items.map { toDomain(it) },
+            hasNext = hasNext,
+            nextCursorCreatedAt = last?.createdAt?.let { java.time.LocalDateTime.ofInstant(it, ZoneOffset.UTC) },
+            nextCursorId = last?.id,
+        )
     }
 
     override fun findByOperator(id: Long): List<Route> {
