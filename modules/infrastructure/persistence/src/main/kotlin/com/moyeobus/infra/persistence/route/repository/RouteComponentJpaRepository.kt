@@ -172,4 +172,15 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
     )
     fun countComponents(@Param("id") id: Long): Int
 
+    @Query(
+        """
+        SELECT COUNT(DISTINCT route_id)
+        FROM route_component
+        WHERE route_id IN :ids
+          AND DATE(assigned_time) = CURDATE()
+        """,
+        nativeQuery = true
+    )
+    fun countTodayOperate(@Param("ids") routeIds: List<Long>): Int
+
 }
