@@ -11,13 +11,10 @@ import com.moyeobus.application.localgov.port.`in`.LocalGovStatusWrapper
 import com.moyeobus.application.localgov.port.`in`.LocalGovTimeResult
 import com.moyeobus.application.localgov.port.out.LocalGovernmentOutPort
 import com.moyeobus.application.localgov.port.`in`.LocalGovernmentUseCase
-import com.moyeobus.application.route.model.RouteTrackInfo
-import com.moyeobus.application.route.model.TrackItemOutput
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
-import com.moyeobus.domain.route.GeoPoint
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.YearMonth
@@ -131,17 +128,5 @@ class LocalGovernmentQueryService(
 
     override fun queryDestination(routeId: Long): List<LocalGovStationWrapper> {
         return routeRequestRepository.countDestinationByRouteId(routeId)
-    }
-
-    override fun queryRouteTrackInfos(routeId: Long, currentStation: String): RouteTrackInfo {
-        return routeComponentRepository.findTrackInfo(routeId, currentStation)
-    }
-
-    override fun queryRouteTrackItems(routeId: Long): List<TrackItemOutput> {
-        return routeComponentRepository.findTrackItems(routeId)
-    }
-
-    override fun queryRouteTrackPoints(routeId: Long): List<GeoPoint> {
-        return routeComponentRepository.findTrackPoints(routeId)
     }
 }
