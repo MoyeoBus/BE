@@ -28,7 +28,7 @@ interface SurveyAnswerJpaRepository : JpaRepository<SurveyAnswerEntity, Long> {
         ) AS ratio
     FROM SurveyAnswerEntity a
     JOIN SurveyOptionEntity o
-      ON a.optionId = o.id
+      ON a.surveyOptionId = o.id
     WHERE a.departureLocalGovId = :localGovId
        OR a.destinationLocalGovId = :localGovId
     GROUP BY o.reason
