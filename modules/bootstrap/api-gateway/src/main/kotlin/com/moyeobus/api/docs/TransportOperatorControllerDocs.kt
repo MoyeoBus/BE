@@ -1,5 +1,7 @@
 package com.moyeobus.api.docs
 
+import com.moyeobus.api.localgov.dto.OperationResult
+import com.moyeobus.api.localgov.dto.RouteTrackResponse
 import com.moyeobus.api.operator.dto.RequestAreaRankingResult
 import com.moyeobus.api.operator.dto.RequestStationRankingResult
 import com.moyeobus.api.operator.dto.RouteDistanceRankingResult
@@ -10,7 +12,9 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 
 interface TransportOperatorControllerDocs {
 
@@ -174,4 +178,181 @@ interface TransportOperatorControllerDocs {
         @Parameter(example = "1", description = "운수사 ID")
         @PathVariable operatorId: Long
     ): ResponseEntity<ApiResponse<RouteDistanceRankingResult>>
+
+
+    @Operation(
+        summary = "운수사 운행 현황 조회",
+        description = "특정 운수사(operatorId)의 오늘 운행 횟수, 버스 운행 현황, 최근 운행 이력을 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "운수사 운행 현황 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "노선 추적 조회 성공 예시",
+                                summary = "정상 조회된 노선 추적 정보",
+                                value =
+                                    """
+                                {
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "info": {
+                                      "routeId": 219,
+                                      "nextStation": "광화문",
+                                      "gapTime": 252,
+                                      "remainDistance": 1056
+                                    },
+                                    "items": [
+                                      {
+                                        "station": "서울특별시청",
+                                        "time": "08:00",
+                                        "tag": "출발"
+                                      },
+                                      {
+                                        "station": "광화문",
+                                        "time": "08:00",
+                                        "tag": "종점"
+                                      }
+                                    ],
+                                    "points": [
+                                      {
+                                        "lat": 126.97775402959569,
+                                        "lon": 37.56651331084051
+                                      },
+                                      {
+                                        "lat": 126.97790509874943,
+                                        "lon": 37.567055243687506
+                                      },
+                                      {
+                                        "lat": 126.97728271413804,
+                                        "lon": 37.56704084315428
+                                      },
+                                      {
+                                        "lat": 126.97705826414102,
+                                        "lon": 37.5751752958502
+                                      },
+                                      {
+                                        "lat": 126.97479764602366,
+                                        "lon": 37.57574136046887
+                                      },
+                                      {
+                                        "lat": 126.97414607226652,
+                                        "lon": 37.5770241866185
+                                      },
+                                      {
+                                        "lat": 126.97489741654962,
+                                        "lon": 37.57837326265234
+                                      }
+                                    ]
+                                  },
+                                  "isSuccess": true
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/{operatorId}/operate")
+    fun getOperateInfo(
+        @Parameter(description = "운수사 ID", required = true)
+        @PathVariable operatorId: Long
+    ): ResponseEntity<ApiResponse<OperationResult>>
+
+    @Operation(
+        summary = "노선 추적 정보 조회",
+        description = "특정 노선(routeId) 기준으로 현재 정류장을 포함한 노선 추적 정보를 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "노선 추적 조회 성공 예시",
+                                summary = "정상 조회된 노선 추적 정보",
+                                value =
+                                    """
+                                {
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "info": {
+                                      "routeId": 219,
+                                      "nextStation": "광화문",
+                                      "gapTime": 252,
+                                      "remainDistance": 1056
+                                    },
+                                    "items": [
+                                      {
+                                        "station": "서울특별시청",
+                                        "time": "08:00",
+                                        "tag": "출발"
+                                      },
+                                      {
+                                        "station": "광화문",
+                                        "time": "08:00",
+                                        "tag": "종점"
+                                      }
+                                    ],
+                                    "points": [
+                                      {
+                                        "lat": 126.97775402959569,
+                                        "lon": 37.56651331084051
+                                      },
+                                      {
+                                        "lat": 126.97790509874943,
+                                        "lon": 37.567055243687506
+                                      },
+                                      {
+                                        "lat": 126.97728271413804,
+                                        "lon": 37.56704084315428
+                                      },
+                                      {
+                                        "lat": 126.97705826414102,
+                                        "lon": 37.5751752958502
+                                      },
+                                      {
+                                        "lat": 126.97479764602366,
+                                        "lon": 37.57574136046887
+                                      },
+                                      {
+                                        "lat": 126.97414607226652,
+                                        "lon": 37.5770241866185
+                                      },
+                                      {
+                                        "lat": 126.97489741654962,
+                                        "lon": 37.57837326265234
+                                      }
+                                    ]
+                                  },
+                                  "isSuccess": true
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun getRouteTracking(
+        @Parameter(description = "조회할 노선의 ID", example = "173")
+        @PathVariable routeId: Long,
+
+        @Parameter(description = "현재 차량이 위치한 정류장 이름", example = "서울역")
+        @RequestParam currentStation: String
+    ): ResponseEntity<ApiResponse<RouteTrackResponse>>
 }
