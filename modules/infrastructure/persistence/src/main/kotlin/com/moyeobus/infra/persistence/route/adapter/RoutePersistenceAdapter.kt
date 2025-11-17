@@ -1,9 +1,9 @@
 package com.moyeobus.infra.persistence.route.adapter
 
+import com.moyeobus.application.route.model.BusUsageCount
 import com.moyeobus.application.route.port.out.LocalRoutePage
 import com.moyeobus.application.route.port.out.LocalRouteQuery
 import com.moyeobus.application.route.port.out.RouteOutPort
-import com.moyeobus.application.routeowner.port.out.RouteOwnerPage
 import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteStatus
 import com.moyeobus.infra.exception.NotFoundException
@@ -39,6 +39,12 @@ class RoutePersistenceAdapter(
         return res.map { toDomain(it) }
     }
 
+    override fun findNotCompletedByOperator(id: Long): List<Route> {
+        val res = repo.findNotCompletedByOperator(id)
+        return res.map { toDomain(it) }
+    }
+
+
     override fun findBy(query: LocalRouteQuery): LocalRoutePage {
         val pageSize = query.limit
         val list = repo.pageByLocal(
@@ -66,6 +72,11 @@ class RoutePersistenceAdapter(
     override fun findByOperator(id: Long): List<Route> {
         val res = repo.findByOperator(id)
         return res.map { toDomain(it) }
+    }
+
+    override fun countBusUsage(operatorId: Long): BusUsageCount {
+        val res = repo.countBusUsage(operatorId)
+        return BusUsageCount(res.operateCount, res.completedCount)
     }
 
     fun toEntity(domain: Route): RouteEntity = RouteEntity(
