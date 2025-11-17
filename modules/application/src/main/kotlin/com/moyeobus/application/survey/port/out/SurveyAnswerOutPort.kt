@@ -1,7 +1,9 @@
 package com.moyeobus.application.survey.port.out
 
+import com.moyeobus.application.survey.model.RequestSurveySummary
 import com.moyeobus.domain.survey.SurveyAnswer
 
 interface SurveyAnswerOutPort {
     fun save(answer: SurveyAnswer)
+    fun queryByLocal(localGovId: Long) : List<RequestSurveySummary>
 }
