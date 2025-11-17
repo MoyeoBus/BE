@@ -91,6 +91,10 @@ class RouteComponentPersistenceAdapter(
         return repo.countComponents(routeId)
     }
 
+    override fun countTodayOperate(routeIds: List<Long>): Int {
+        return repo.countTodayOperate(routeIds)
+    }
+
     private fun RouteComponent.toEntity(): RouteComponentEntity =
         RouteComponentEntity(
             id = this.id,
