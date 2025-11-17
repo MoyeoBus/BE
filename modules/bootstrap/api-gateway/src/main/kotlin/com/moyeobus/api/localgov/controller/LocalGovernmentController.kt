@@ -2,8 +2,6 @@ package com.moyeobus.api.localgov.controller
 
 import com.moyeobus.api.docs.LocalGovernmentControllerDocs
 import com.moyeobus.api.localgov.dto.LocalGovStationResult
-import com.moyeobus.api.localgov.dto.RouteTrackResponse
-import com.moyeobus.api.localgov.dto.TrackItem
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
@@ -71,25 +69,4 @@ class LocalGovernmentController(
         val response = LocalGovStationResult(localGovernmentQueryService.queryDestination(routeId))
         return ResponseEntity.ok(ApiResponse.onSuccess(response))
     }
-
-    @GetMapping("/{routeId}/track")
-    override fun getRouteTracking(
-        @PathVariable routeId: Long,
-        @RequestParam currentStation: String
-    ) : ResponseEntity<ApiResponse<RouteTrackResponse>> {
-        val info = localGovernmentQueryService.queryRouteTrackInfos(routeId, currentStation)
-        val outputs = localGovernmentQueryService.queryRouteTrackItems(routeId)
-        val points = localGovernmentQueryService.queryRouteTrackPoints(routeId)
-
-        val items = outputs.map { TrackItem(it.station, it.time, it.tag) }
-
-        val response = RouteTrackResponse(
-            info = info,
-            items = items,
-            points = points
-        )
-
-        return ResponseEntity.ok(ApiResponse.onSuccess(response))
-    }
-
 }
