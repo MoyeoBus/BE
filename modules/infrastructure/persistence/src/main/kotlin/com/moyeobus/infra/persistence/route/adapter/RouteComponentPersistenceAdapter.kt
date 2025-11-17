@@ -1,6 +1,8 @@
 package com.moyeobus.infra.persistence.route.adapter
 
 import com.moyeobus.application.route.model.RouteItem
+import com.moyeobus.application.route.model.RouteTrackInfo
+import com.moyeobus.application.route.model.TrackItemOutput
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteInfoWrapper
 import com.moyeobus.application.route.port.out.RouteTimeRange
@@ -66,8 +68,31 @@ class RouteComponentPersistenceAdapter(
         return res.map { LocalDateTime.ofInstant(it, ZoneOffset.UTC) }
     }
 
+    override fun findTrackInfo(
+        routeId: Long,
+        currentStation: String
+    ): RouteTrackInfo {
+        val res = repo.findRouteTrackInfo(routeId, currentStation)
+        return RouteTrackInfo(res.routeId, res.nextStation, res.gapTime, res.remainDistance)
+    }
+
+    override fun findTrackItems(
+        routeId: Long
+    ): List<TrackItemOutput> {
+        val res = repo.findTrackItems(routeId)
+        return res.map { TrackItemOutput(it.station, it.time, it.tag) }
+    }
+
+    override fun findTrackPoints(routeId: Long): List<GeoPoint> {
+        return repo.findTrackPoints(routeId)
+    }
+
     override fun countStations(routeId: Long): Int {
         return repo.countComponents(routeId)
+    }
+
+    override fun countTodayOperate(routeIds: List<Long>): Int {
+        return repo.countTodayOperate(routeIds)
     }
 
     private fun RouteComponent.toEntity(): RouteComponentEntity =
@@ -78,6 +103,8 @@ class RouteComponentPersistenceAdapter(
             lat = this.location.lat,
             lon = this.location.lon,
             assignedTime = this.assignedTime.toInstant(ZoneOffset.UTC),
+            distance = this.distance,
+            duration = this.duration,
             isRequested = this.isRequested
         )
 
@@ -89,6 +116,8 @@ class RouteComponentPersistenceAdapter(
             name = this.name,
             location = GeoPoint(lat = this.lat, lon = this.lon),
             assignedTime = LocalDateTime.ofInstant(this.assignedTime, ZoneOffset.UTC),
+            distance = this.distance,
+            duration = this.duration,
             isRequested = this.isRequested
         )
 

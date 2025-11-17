@@ -132,6 +132,8 @@ class RouteGenerationService(
                         name = name,
                         location = GeoPoint(guide.x, guide.y),
                         assignedTime = currentTime,
+                        distance = guide.distance,
+                        duration = guide.duration,
                         isRequested = isRequested
                     )
                 )

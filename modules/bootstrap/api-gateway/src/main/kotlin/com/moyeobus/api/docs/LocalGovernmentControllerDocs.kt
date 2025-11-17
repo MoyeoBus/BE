@@ -1,6 +1,7 @@
 package com.moyeobus.api.docs
 
 import com.moyeobus.api.localgov.dto.LocalGovStationResult
+import com.moyeobus.api.localgov.dto.RouteTrackResponse
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult

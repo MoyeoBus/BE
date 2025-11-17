@@ -50,10 +50,8 @@ class LocalGovernmentController(
     @GetMapping("/{localGovId}/route")
     override fun getStatusByRoute (
         @PathVariable localGovId: Long
-    ) : ResponseEntity<ApiResponse<LocalGovRouteResult>> {
+    ) : ResponseEntity<ApiResponse<LocalGovRouteResult>>  {
         return ResponseEntity.ok(ApiResponse.onSuccess(localGovernmentQueryService.queryRoute(localGovId)))
-
-
     }
 
     @GetMapping("/{routeId}/departures")

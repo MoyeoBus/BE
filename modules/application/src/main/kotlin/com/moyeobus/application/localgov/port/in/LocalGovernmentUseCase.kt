@@ -1,5 +1,9 @@
 package com.moyeobus.application.localgov.port.`in`
 
+import com.moyeobus.application.route.model.BusUsageCount
+import com.moyeobus.application.route.model.RouteTrackInfo
+import com.moyeobus.application.route.model.TrackItemOutput
+import com.moyeobus.domain.route.GeoPoint
 import java.time.LocalDate
 import java.time.YearMonth
 
