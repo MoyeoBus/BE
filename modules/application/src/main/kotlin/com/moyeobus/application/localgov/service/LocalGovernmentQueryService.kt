@@ -15,6 +15,8 @@ import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
 import com.moyeobus.application.route.port.out.RouteRequestOutPort
 import com.moyeobus.application.routeowner.port.out.PassengerRouteOutPort
+import com.moyeobus.application.survey.model.RequestSurveySummary
+import com.moyeobus.application.survey.port.out.SurveyAnswerOutPort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.YearMonth
@@ -27,7 +29,8 @@ class LocalGovernmentQueryService(
     private val routeRequestRepository: RouteRequestOutPort,
     private val routeComponentRepository: RouteComponentOutPort,
     private val localGovRepository: LocalGovernmentOutPort,
-    private val passengerRouteRepository: PassengerRouteOutPort
+    private val passengerRouteRepository: PassengerRouteOutPort,
+    private val surveyRepository: SurveyAnswerOutPort
 ) : LocalGovernmentUseCase {
     override fun queryLocal(id: Long): LocalGovStatusResult {
         val localGov = localGovRepository.findById(id)
@@ -128,5 +131,9 @@ class LocalGovernmentQueryService(
 
     override fun queryDestination(routeId: Long): List<LocalGovStationWrapper> {
         return routeRequestRepository.countDestinationByRouteId(routeId)
+    }
+
+    override fun querySurvey(id: Long): List<RequestSurveySummary> {
+        return surveyRepository.queryByLocal(id)
     }
 }
