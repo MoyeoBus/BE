@@ -1,5 +1,6 @@
 package com.moyeobus.infra.persistence.route.repository
 
+import com.moyeobus.infra.persistence.route.dto.BusUsageProjection
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -30,6 +31,29 @@ interface RouteJpaRepository : JpaRepository<RouteEntity, Long> {
         Where r.operatorId = :id
     """)
     fun findByOperator(id: Long) : List<RouteEntity>
+
+    @Query("""
+        SELECT r
+        FROM RouteEntity r
+        Where r.operatorId = :id and status = 'CREATED'
+    """)
+    fun findNotCompletedByOperator(id: Long) : List<RouteEntity>
+
+
+
+    @Query(
+        """
+    SELECT
+        SUM(CASE WHEN r.status = 'CREATED' THEN 1 ELSE 0 END) AS operateCount,
+        SUM(CASE WHEN r.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completedCount
+    FROM route r
+    WHERE r.operator_id = :operatorId
+    """,
+        nativeQuery = true
+    )
+    fun countBusUsage(
+        @Param("operatorId") operatorId: Long
+    ): BusUsageProjection
 
     @Query(
         """
