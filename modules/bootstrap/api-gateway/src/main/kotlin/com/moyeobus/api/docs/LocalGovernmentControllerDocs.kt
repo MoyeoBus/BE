@@ -448,7 +448,7 @@ interface LocalGovernmentControllerDocs {
         ]
     )
     fun getStatusByDeparture(
-        @Parameter(description = "조회 대상 노선 ID", example = "42")
+        @Parameter(description = "조회 대상 노선 ID", example = "1")
         @PathVariable routeId: Long
     ): ResponseEntity<ApiResponse<LocalGovStationResult>>
 
@@ -491,7 +491,7 @@ interface LocalGovernmentControllerDocs {
         ]
     )
     fun getStatusByDestination(
-        @Parameter(description = "조회 대상 노선 ID", example = "42")
+        @Parameter(description = "조회 대상 노선 ID", example = "1")
         @PathVariable routeId: Long
     ): ResponseEntity<ApiResponse<LocalGovStationResult>>
 }

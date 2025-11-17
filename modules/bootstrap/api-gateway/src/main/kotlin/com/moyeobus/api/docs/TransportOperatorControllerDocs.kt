@@ -349,10 +349,10 @@ interface TransportOperatorControllerDocs {
         ]
     )
     fun getRouteTracking(
-        @Parameter(description = "조회할 노선의 ID", example = "173")
+        @Parameter(description = "조회할 노선의 ID", example = "2")
         @PathVariable routeId: Long,
 
-        @Parameter(description = "현재 차량이 위치한 정류장 이름", example = "서울역")
+        @Parameter(description = "현재 차량이 위치한 정류장 이름", example = "부산광역시청")
         @RequestParam currentStation: String
     ): ResponseEntity<ApiResponse<RouteTrackResponse>>
 }
