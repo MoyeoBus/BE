@@ -2,6 +2,7 @@ package com.moyeobus.api.localgov.controller
 
 import com.moyeobus.api.docs.LocalGovernmentControllerDocs
 import com.moyeobus.api.localgov.dto.LocalGovStationResult
+import com.moyeobus.api.localgov.dto.SurveyPieResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
@@ -69,4 +70,14 @@ class LocalGovernmentController(
         val response = LocalGovStationResult(localGovernmentQueryService.queryDestination(routeId))
         return ResponseEntity.ok(ApiResponse.onSuccess(response))
     }
+
+    @GetMapping("/{localGovId}/survey")
+    override fun getSurveyByLocalGov (
+        @PathVariable localGovId: Long
+    ) : ResponseEntity<ApiResponse<SurveyPieResult>> {
+        val res = localGovernmentQueryService.querySurvey(localGovId)
+        val response = SurveyPieResult(res)
+        return ResponseEntity.ok(ApiResponse.onSuccess(response))
+    }
+
 }

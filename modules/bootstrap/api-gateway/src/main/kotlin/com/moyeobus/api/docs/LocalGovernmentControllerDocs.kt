@@ -2,6 +2,7 @@ package com.moyeobus.api.docs
 
 import com.moyeobus.api.localgov.dto.LocalGovStationResult
 import com.moyeobus.api.localgov.dto.RouteTrackResponse
+import com.moyeobus.api.localgov.dto.SurveyPieResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovDateResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovRouteResult
 import com.moyeobus.application.localgov.port.`in`.LocalGovStatusResult
@@ -494,4 +495,46 @@ interface LocalGovernmentControllerDocs {
         @Parameter(description = "조회 대상 노선 ID", example = "1")
         @PathVariable routeId: Long
     ): ResponseEntity<ApiResponse<LocalGovStationResult>>
+
+    @Operation(
+        summary = "지자체 내 노선 생성 설문 조회",
+        description = "특정 지자체(localGovId)를 출발지 및 도착지로 갖는 노선 요청에 대한 설문 조사 결과를 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "설문 결과 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "도착지 통계 성공 예시",
+                                value = """
+                                {
+                                  "code": "COMMON_200",
+                                  "message": "요청이 정상적으로 처리되었습니다.",
+                                  "result": {
+                                    "items": [
+                                      {
+                                        "reason": "환승이 너무 불편해서",
+                                        "count": 1,
+                                        "ratio": "100.0%"
+                                      }
+                                    ]
+                                  },
+                                  "isSuccess": true
+                                }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun getSurveyByLocalGov (
+        @PathVariable localGovId: Long
+    ) : ResponseEntity<ApiResponse<SurveyPieResult>>
 }

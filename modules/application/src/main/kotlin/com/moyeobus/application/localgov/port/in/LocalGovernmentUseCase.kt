@@ -1,9 +1,6 @@
 package com.moyeobus.application.localgov.port.`in`
 
-import com.moyeobus.application.route.model.BusUsageCount
-import com.moyeobus.application.route.model.RouteTrackInfo
-import com.moyeobus.application.route.model.TrackItemOutput
-import com.moyeobus.domain.route.GeoPoint
+import com.moyeobus.application.survey.model.RequestSurveySummary
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -14,4 +11,5 @@ interface LocalGovernmentUseCase {
     fun queryRoute(id: Long) : LocalGovRouteResult
     fun queryDeparture(routeId: Long) : List<LocalGovStationWrapper>
     fun queryDestination(routeId: Long) : List<LocalGovStationWrapper>
+    fun querySurvey(id: Long) : List<RequestSurveySummary>
 }

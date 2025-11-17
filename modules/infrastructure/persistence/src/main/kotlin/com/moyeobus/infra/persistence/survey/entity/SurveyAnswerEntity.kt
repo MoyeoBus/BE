@@ -17,4 +17,6 @@ class SurveyAnswerEntity(
     val departureLocalGovId: Long,
 
     val destinationLocalGovId: Long,
+
+    val surveyOptionId: Long
 ) : BaseEntity()
