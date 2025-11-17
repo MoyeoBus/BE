@@ -19,4 +19,5 @@ interface RouteComponentOutPort {
     fun findTrackItems(routeId: Long) : List<TrackItemOutput>
     fun findTrackPoints(routeId: Long) : List<GeoPoint>
     fun countStations(routeId: Long): Int
+    fun countTodayOperate(routeIds: List<Long>): Int
 }
