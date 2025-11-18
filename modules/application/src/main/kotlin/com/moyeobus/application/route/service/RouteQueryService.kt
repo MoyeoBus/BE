@@ -100,4 +100,8 @@ class RouteQueryService(
             hasNext = queryItems.hasNext,
         )
     }
+
+    override fun queryStatus(id: Long): String {
+        return routeRepo.findStatus(id)
+    }
 }
