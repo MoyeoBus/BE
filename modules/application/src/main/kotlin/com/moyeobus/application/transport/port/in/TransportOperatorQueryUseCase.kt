@@ -16,7 +16,7 @@ interface TransportOperatorQueryUseCase {
     fun queryBusUsage(operatorId: Long) : BusUsageCount
     fun queryTodayOperate(operatorId: Long) : Int
     fun queryHistory(operatorId: Long) : List<OperationHistory>
-    fun queryRouteTrackInfos(routeId: Long, currentStation: String) : RouteTrackInfo
+    fun queryRouteTrackInfos(routeId: Long) : RouteTrackInfo
     fun queryRouteTrackItems(routeId: Long) : List<TrackItemOutput>
     fun queryRouteTrackPoints(routeId: Long) : List<GeoPoint>
 }
