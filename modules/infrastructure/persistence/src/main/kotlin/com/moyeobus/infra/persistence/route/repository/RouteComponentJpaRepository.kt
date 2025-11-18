@@ -81,6 +81,16 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
         @Param("names") names: List<String>
     ): List<Instant>
 
+    @Query("""
+        SELECT rc.name
+        FROM RouteComponentEntity rc
+        WHERE rc.routeId = :routeId
+          AND rc.isRequested = true
+          AND rc.assignedTime <= CURRENT_TIMESTAMP
+        ORDER BY rc.assignedTime DESC
+        LIMIT 1
+    """)
+    fun findCurrent(@Param("routeId") routeId: Long) : String?
 
     @Query(
         value = """
@@ -103,6 +113,8 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
         SELECT 
             :routeId AS routeId,
             (SELECT name FROM route_component WHERE id = (SELECT id FROM next)) AS nextStation,
+            (SELECT lat FROM route_component WHERE id = (SELECT id FROM next)) AS nextLat,
+            (SELECT lon FROM route_component WHERE id = (SELECT id FROM next)) AS nextLon,
             (
                 SELECT SUM(duration)
                 FROM route_component
@@ -129,6 +141,8 @@ interface RouteComponentJpaRepository : JpaRepository<RouteComponentEntity, Long
         value = """
         SELECT 
             rc.name AS station,
+            rc.lat as lat,
+            rc.lon as lon,
             DATE_FORMAT(rc.assigned_time, '%H:%i') AS time,
             CASE
                 WHEN rc.id = (
