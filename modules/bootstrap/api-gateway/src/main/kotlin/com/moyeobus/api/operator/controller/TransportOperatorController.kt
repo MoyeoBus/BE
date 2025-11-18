@@ -83,6 +83,11 @@ class TransportOperatorController(
             }
 
             RouteStatus.OPERATED.toString() -> {
+
+                if (operatorId == null) {
+                    throw IllegalArgumentException("operatorId is required for OPERATED status.")
+                }
+
                 val operationCnt = queryService.queryTodayOperate(operatorId)
                 val busUsage = queryService.queryBusUsage(operatorId)
                 val operationHistory = queryService.queryHistory(operatorId)
