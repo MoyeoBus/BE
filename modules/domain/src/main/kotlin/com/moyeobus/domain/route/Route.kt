@@ -21,4 +21,4 @@ data class Route (
     }
 }
 
-enum class RouteStatus {CREATED, PENDING, OPERATED}
+enum class RouteStatus {CREATED, OPERATING, OPERATED}

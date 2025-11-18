@@ -118,13 +118,15 @@ class TransportOperatorQueryService(
                 routeId = routeId,
                 departureNm = firstStationName,
                 destinationNm = lastStationName,
-                status =status
+                status = status
             )
         }
         return histories
     }
 
-    override fun queryRouteTrackInfos(routeId: Long, currentStation: String): RouteTrackInfo {
+    override fun queryRouteTrackInfos(routeId: Long): RouteTrackInfo {
+        val currentStation = routeComponentRepository.findCurrentStation(routeId)
+            ?: return RouteTrackInfo(routeId, "없음", GeoPoint(0.0,0.0),0,0)
         return routeComponentRepository.findTrackInfo(routeId, currentStation)
     }
 

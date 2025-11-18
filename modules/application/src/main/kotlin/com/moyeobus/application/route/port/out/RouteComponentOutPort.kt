@@ -12,6 +12,7 @@ interface RouteComponentOutPort {
     fun saveAll(components: List<RouteComponent>)
     fun findById(id: Long) : RouteInfoWrapper
     fun findAllByRouteIdIn(routeIds: List<Long>): List<RouteComponent>
+    fun findCurrentStation(routeId: Long): String?
     fun findTimeRange(routeId: Long) : RouteTimeRange
     fun findAllByRouteId(routeId: Long) : List<RouteItem>
     fun findTimeByLocationAndRoute(names: List<String>, routeId: Long) : List<LocalDateTime>
