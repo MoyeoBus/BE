@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -16,8 +17,11 @@ class AddressController(
     private val addressQueryService: AddressQueryUseCase
 ) : AddressControllerDocs {
 
-    @GetMapping("/{sigunguId}")
-    override fun getStations(@PathVariable sigunguId: Long) : ResponseEntity<ApiResponse<List<StationDto>>> {
-        return ResponseEntity.ok(ApiResponse.onSuccess(addressQueryService.queryStations(sigunguId)))
+    @GetMapping
+    override fun getStations(
+        @RequestParam dosi: String,
+        @RequestParam sigungu: String
+    ) : ResponseEntity<ApiResponse<List<StationDto>>> {
+        return ResponseEntity.ok(ApiResponse.onSuccess(addressQueryService.queryStations(dosi, sigungu)))
     }
 }
