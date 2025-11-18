@@ -3,11 +3,13 @@ package com.moyeobus.api.docs
 import com.moyeobus.application.address.dto.StationDto
 import com.moyeobus.global.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 
 interface AddressControllerDocs {
 
@@ -32,59 +34,14 @@ interface AddressControllerDocs {
                                   "message": "요청이 정상적으로 처리되었습니다.",
                                   "result": [
                                     {
-                                      "id": 31,
-                                      "name": "제주도청",
-                                      "lat": 33.4996,
-                                      "lon": 126.5312,
-                                      "postCode": "63122"
+                                      "id": 12,
+                                      "name": "둔산동",
+                                      "lat": 36.362,
+                                      "lon": 127.3565,
+                                      "postCode": "35220"
                                     }
                                   ],
                                   "isSuccess": true
-                                }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            ),
-            io.swagger.v3.oas.annotations.responses.ApiResponse(
-                responseCode = "400",
-                description = "잘못된 요청 (sigunguId가 숫자가 아님)",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        examples = [
-                            ExampleObject(
-                                name = "잘못된 요청 예시",
-                                value = """
-                                {
-                                  "code": "COMMON_400",
-                                  "message": "잘못된 요청입니다.",
-                                  "result": "sigunguId의 형식을 확인해주세요.",
-                                  "isSuccess": false,
-                                  "path": "/api/v1/addresses/%EA%B0%80%EB%82%98%EB%8B%A4"
-                                }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            ),
-            io.swagger.v3.oas.annotations.responses.ApiResponse(
-                responseCode = "404",
-                description = "존재하지 않는 행정구역 ID",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        examples = [
-                            ExampleObject(
-                                name = "존재하지 않는 ID 예시",
-                                value = """
-                                {
-                                  "code": "COMMON_404",
-                                  "message": "Area(id=99999)",
-                                  "isSuccess": false,
-                                  "path": "/api/v1/addresses/99999"
                                 }
                                 """
                             )
@@ -95,6 +52,9 @@ interface AddressControllerDocs {
         ]
     )
     fun getStations(
-        @PathVariable sigunguId: Long
+        @Parameter(example = "대전광역시")
+        @RequestParam dosi: String,
+        @Parameter(example = "서구")
+        @RequestParam sigungu: String
     ): ResponseEntity<ApiResponse<List<StationDto>>>
 }
