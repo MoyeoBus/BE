@@ -323,6 +323,6 @@ interface TransportOperatorControllerDocs {
         @Parameter(description = "조회할 노선의 ID", example = "2")
         @PathVariable routeId: Long,
         @Parameter(description = "과거 노선일 때만 필요한 운수사의 ID", example = "1")
-        @RequestParam operatorId: Long
+        @RequestParam operatorId: Long?
     ): ResponseEntity<ApiResponse<Any>>
 }
