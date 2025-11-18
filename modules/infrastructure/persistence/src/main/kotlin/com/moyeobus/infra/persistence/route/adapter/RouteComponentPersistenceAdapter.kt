@@ -42,6 +42,10 @@ class RouteComponentPersistenceAdapter(
         return res.map { it.toDomain() }
     }
 
+    override fun findCurrentStation(routeId: Long): String? {
+        return repo.findCurrent(routeId)
+    }
+
     override fun findTimeRange(routeId: Long): RouteTimeRange {
         val res = repo.findTimeRange(routeId)
         return RouteTimeRange(res.date, res.departureTime, res.destinationTime)
@@ -72,15 +76,31 @@ class RouteComponentPersistenceAdapter(
         routeId: Long,
         currentStation: String
     ): RouteTrackInfo {
-        val res = repo.findRouteTrackInfo(routeId, currentStation)
-        return RouteTrackInfo(res.routeId, res.nextStation, res.gapTime, res.remainDistance)
+
+        val projection = repo.findRouteTrackInfo(routeId, currentStation)
+
+        return projection.takeIf { it.nextStation != null }?.let {
+            RouteTrackInfo(
+                routeId = it.routeId,
+                nextStation = it.nextStation!!,
+                nextStationPoint = GeoPoint(it.nextLat!!, it.nextLon!!),
+                gapTime = it.gapTime ?: 0,
+                remainDistance = it.remainDistance ?: 0
+            )
+        } ?: RouteTrackInfo(
+            routeId = routeId,
+            nextStation = "없음",
+            nextStationPoint = GeoPoint(0.0, 0.0),
+            gapTime = 0,
+            remainDistance = 0
+        )
     }
 
     override fun findTrackItems(
         routeId: Long
     ): List<TrackItemOutput> {
         val res = repo.findTrackItems(routeId)
-        return res.map { TrackItemOutput(it.station, it.time, it.tag) }
+        return res.map { TrackItemOutput(it.station, GeoPoint(lat = it.lat, lon = it.lon) ,it.time, it.tag) }
     }
 
     override fun findTrackPoints(routeId: Long): List<GeoPoint> {
