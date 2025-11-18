@@ -61,7 +61,7 @@ class TransportOperatorController(
     @GetMapping("/{routeId}/track")
     override fun getRouteTracking(
         @PathVariable routeId: Long,
-        @RequestParam(required = false) operatorId: Long
+        @RequestParam(required = false) operatorId: Long?
     ) : ResponseEntity<ApiResponse<Any>> {
         val status = routeQueryService.queryStatus(routeId)
         println(status)
