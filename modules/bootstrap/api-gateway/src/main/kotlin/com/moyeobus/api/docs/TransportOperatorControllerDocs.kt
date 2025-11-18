@@ -194,60 +194,31 @@ interface TransportOperatorControllerDocs {
                         mediaType = "application/json",
                         examples = [
                             ExampleObject(
-                                name = "노선 추적 조회 성공 예시",
-                                summary = "정상 조회된 노선 추적 정보",
+                                name = "운수사 운행 현황 조회 성공 예시",
+                                summary = "정상 조회된 운수사 운행 현황",
                                 value =
                                     """
                                 {
                                   "code": "COMMON_200",
                                   "message": "요청이 정상적으로 처리되었습니다.",
                                   "result": {
-                                    "info": {
-                                      "routeId": 219,
-                                      "nextStation": "광화문",
-                                      "gapTime": 252,
-                                      "remainDistance": 1056
+                                    "operationCount": 1,
+                                    "busUsage": {
+                                      "operateCount": 2,
+                                      "completedCount": 0
                                     },
-                                    "items": [
+                                    "history": [
                                       {
-                                        "station": "서울특별시청",
-                                        "time": "08:00",
-                                        "tag": "출발"
+                                        "routeId": 219,
+                                        "departureNm": "서울특별시청",
+                                        "destinationNm": "목적지",
+                                        "status": "CREATED"
                                       },
                                       {
-                                        "station": "광화문",
-                                        "time": "08:00",
-                                        "tag": "종점"
-                                      }
-                                    ],
-                                    "points": [
-                                      {
-                                        "lat": 126.97775402959569,
-                                        "lon": 37.56651331084051
-                                      },
-                                      {
-                                        "lat": 126.97790509874943,
-                                        "lon": 37.567055243687506
-                                      },
-                                      {
-                                        "lat": 126.97728271413804,
-                                        "lon": 37.56704084315428
-                                      },
-                                      {
-                                        "lat": 126.97705826414102,
-                                        "lon": 37.5751752958502
-                                      },
-                                      {
-                                        "lat": 126.97479764602366,
-                                        "lon": 37.57574136046887
-                                      },
-                                      {
-                                        "lat": 126.97414607226652,
-                                        "lon": 37.5770241866185
-                                      },
-                                      {
-                                        "lat": 126.97489741654962,
-                                        "lon": 37.57837326265234
+                                        "routeId": 220,
+                                        "departureNm": "수원시청",
+                                        "destinationNm": "목적지",
+                                        "status": "CREATED"
                                       }
                                     ]
                                   },
@@ -351,8 +322,7 @@ interface TransportOperatorControllerDocs {
     fun getRouteTracking(
         @Parameter(description = "조회할 노선의 ID", example = "2")
         @PathVariable routeId: Long,
-
-        @Parameter(description = "현재 차량이 위치한 정류장 이름", example = "부산광역시청")
-        @RequestParam currentStation: String
-    ): ResponseEntity<ApiResponse<RouteTrackResponse>>
+        @Parameter(description = "과거 노선일 때만 필요한 운수사의 ID", example = "1")
+        @RequestParam operatorId: Long
+    ): ResponseEntity<ApiResponse<Any>>
 }
