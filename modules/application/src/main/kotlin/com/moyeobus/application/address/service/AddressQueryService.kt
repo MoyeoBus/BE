@@ -11,8 +11,10 @@ class AddressQueryService(
     private val repo: AddressOutPort,
     private val areaRepo: AreaOutPort
 ) : AddressQueryUseCase {
-    override fun queryStations(id: Long): List<StationDto> {
-        val area = areaRepo.findById(id)
+    override fun queryStations(dosi: String,
+                               sigungu: String): List<StationDto> {
+        val dosiId = areaRepo.findDosiId(dosi)
+        val area = areaRepo.findSigunguByDosi(dosiId, sigungu)
         val res = repo.findByArea(area)
         return res
     }
