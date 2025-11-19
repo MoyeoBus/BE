@@ -6,6 +6,7 @@ import com.moyeobus.domain.route.RequestStatus
 import java.time.LocalDateTime
 
 data class RouteRequestQuery(
+    val passengerId: Long,
     val status: RequestStatus? = null,
     @get:JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val from: LocalDateTime? = null,
@@ -17,7 +18,8 @@ data class RouteRequestQuery(
     val cursorId: Long? = null,
 ) {
     companion object {
-        fun from(q: QueryFilter, p: RouteRequestCursorWrapper) = RouteRequestQuery(
+        fun from(id: Long, q: QueryFilter, p: RouteRequestCursorWrapper) = RouteRequestQuery(
+            passengerId = id,
             status = q.status?.let { RequestStatus.valueOf(it) },
             from = q.from,
             to = q.to,

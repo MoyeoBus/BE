@@ -1,5 +1,5 @@
 package com.moyeobus.application.route.port.`in`
 
 interface RouteRequestQueryUseCase {
-    fun query(filter: QueryFilter): QueryResult
+    fun query(passengerId: Long,filter: QueryFilter): QueryResult
 }
