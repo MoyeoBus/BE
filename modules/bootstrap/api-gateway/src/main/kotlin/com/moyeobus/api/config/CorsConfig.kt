@@ -12,7 +12,7 @@ class CorsConfig {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/api/**")
-                    .allowedOrigins("*", "https://moyeo-bus-fe-web.vercel.app", "https://moyeobus.com")
+                    .allowedOrigins("https://moyeo-bus-fe-web.vercel.app", "https://moyeobus.com")
                     .allowedMethods("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(false)
