@@ -46,7 +46,7 @@ class RouteController(
         return ResponseEntity.ok(routeGenerationUseCase.generateRoute())
     }
 
-    @GetMapping("/{passengerId}")
+    @GetMapping("/requests/{passengerId}")
     override fun query(
         @PathVariable("passengerId") passengerId: Long,
         @RequestParam(required = false) status: String?,
