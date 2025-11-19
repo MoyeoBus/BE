@@ -83,7 +83,7 @@ class RouteRequestPersistenceAdapter(
     override fun findBy(query: RouteRequestQuery): RouteRequestPage {
         val pageSize = query.limit
         val list = repo.pageBy(
-            passengerId = 1L,
+            passengerId = query.passengerId,
             status = query.status?.name,
             fromAt = query.from?.toInstant(ZoneOffset.UTC),
             toAt = query.to?.toInstant(ZoneOffset.UTC),

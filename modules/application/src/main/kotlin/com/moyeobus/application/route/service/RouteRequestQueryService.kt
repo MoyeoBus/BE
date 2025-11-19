@@ -17,9 +17,9 @@ import java.util.Base64
 class RouteRequestQueryService(
     private val routeRequestRepository: RouteRequestOutPort
 ) : RouteRequestQueryUseCase {
-    override fun query(filter: QueryFilter): QueryResult {
+    override fun query(passengerId: Long, filter: QueryFilter): QueryResult {
         val decodedCursor = decodeCursor(filter.cursor)
-        val routeRequestQuery = RouteRequestQuery.from(filter, decodedCursor)
+        val routeRequestQuery = RouteRequestQuery.from(passengerId, filter, decodedCursor)
         val queryItems = routeRequestRepository.findBy(routeRequestQuery)
 
         val nextCursorCreatedAt = queryItems.nextCursorCreatedAt

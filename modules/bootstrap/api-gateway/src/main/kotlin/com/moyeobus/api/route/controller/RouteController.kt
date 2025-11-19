@@ -46,14 +46,15 @@ class RouteController(
         return ResponseEntity.ok(routeGenerationUseCase.generateRoute())
     }
 
-    @GetMapping
+    @GetMapping("/{passengerId}")
     override fun query(
+        @PathVariable("passengerId") passengerId: Long,
         @RequestParam(required = false) status: String?,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") from: LocalDateTime?,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") to: LocalDateTime?,
         @RequestParam(required = false) cursor: String?,
     ): ResponseEntity<ApiResponse<QueryResponse>> {
-        val res = routeRequestQueryUseCase.query(QueryFilter(status, from, to, cursor))
+        val res = routeRequestQueryUseCase.query(passengerId, QueryFilter(status, from, to, cursor))
         return ResponseEntity.ok(ApiResponse.onSuccess(
             QueryResponse(
                 items = res.items.map { RouteRequestResponse.from(it) },

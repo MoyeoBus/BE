@@ -216,6 +216,8 @@ interface RouteControllerDocs {
         ]
     )
     fun query(
+        @PathVariable passengerId: Long,
+
         @Parameter(example = "APPROVED", description = "노선 요청 상태 (APPROVED, CANCELLED, PENDING)")
         @RequestParam(required = false) status: String?,
 
