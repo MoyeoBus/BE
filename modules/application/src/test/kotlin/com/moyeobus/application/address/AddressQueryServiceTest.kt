@@ -1,4 +1,4 @@
-package address
+package com.moyeobus.application.address
 
 import com.moyeobus.application.address.dto.StationDto
 import com.moyeobus.application.address.port.out.AddressOutPort
@@ -56,7 +56,6 @@ class AddressQueryServiceTest {
         assertThrows<IllegalArgumentException> {
             service.queryStations(dosi, sigungu)
         }
-
 
         verify { areaRepo.findDosiId("인천특별시") }
     }
