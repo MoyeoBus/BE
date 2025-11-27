@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = [JpaConfig::class])
 class AreaPersistenceAdapterTest @Autowired constructor(
-    val areaRepo: AreaJpaRepository,
+    val areaRepo: AreaJpaRepository
 ){
 
     @Test
