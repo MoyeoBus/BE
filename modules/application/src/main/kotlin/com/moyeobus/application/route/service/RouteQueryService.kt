@@ -50,8 +50,8 @@ class RouteQueryService(
     override fun queryLocalRoute(filter: LocalQueryFilter): LocalRouteQueryResult {
         val decodedCursor = CursorUtil.decode(filter.cursor)
 
-        val dosiId = areaRepo.findDosiId(filter.dosi)
-        val sigungu = areaRepo.findSigunguByDosi(dosiId, filter.sigungu)
+        val dosiId = areaRepo.findDosiId(filter.dosi).getOrThrow()
+        val sigungu = areaRepo.findSigunguByDosi(dosiId, filter.sigungu).getOrThrow()
 
         val localRouteQuery = LocalRouteQuery.from(sigungu.id!!,filter, decodedCursor)
 
