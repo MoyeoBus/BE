@@ -13,18 +13,26 @@ class AreaPersistenceAdapter(
     private val repo: AreaJpaRepository
 ) : AreaOutPort {
     override fun findById(id: Long) : Area{
-        val res = repo.findById(id).orElseThrow(
-            { NotFoundException("Area(id=$id)") })
+        val res = repo.findById(id).orElseThrow { NotFoundException("Area(id=$id)") }
         return mapper.toDomain(res)
     }
 
-    override fun findDosiId(dosi: String): Long {
-        return repo.findDosiId(dosi)
+    override fun findDosiId(dosi: String): Result<Long> {
+        val id = repo.findDosiId(dosi)
+        return if (id != null) {
+            Result.success(id)
+        } else {
+            Result.failure(NotFoundException("Area(id=$id)"))
+        }
     }
 
-    override fun findSigunguByDosi(dosiId: Long, sigungu: String) : Area {
+    override fun findSigunguByDosi(dosiId: Long, sigungu: String) : Result<Area> {
         val res = repo.findSigunguByDosi(dosiId, sigungu)
-        return mapper.toDomain(res)
+        return if(res != null) {
+            Result.success(mapper.toDomain(res))
+        } else {
+            Result.failure(NotFoundException("Area(id=$dosiId)"))
+        }
     }
 
     override fun findChildrenByParent(id: Long): List<Area> {
