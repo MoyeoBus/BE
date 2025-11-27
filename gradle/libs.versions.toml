@@ -1,7 +1,6 @@
 [versions]
 jackson = "2.16.1"
 mockk = "1.13.5"
-junit-platform = "1.10.2"
 fixture = "1.2.0"
 
 [libraries]
@@ -22,7 +21,6 @@ spring-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 database-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client" }
 
-test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 test-fixture = { module = "com.appmattus.fixture:fixture", version.ref = "fixture" }
 
 [bundles]
@@ -38,6 +36,5 @@ bootstrap = [
     "jackson-datatype-jsr310",
 ]
 test = [
-    "test-junit-platform-launcher",
     "test-fixture",
 ]
