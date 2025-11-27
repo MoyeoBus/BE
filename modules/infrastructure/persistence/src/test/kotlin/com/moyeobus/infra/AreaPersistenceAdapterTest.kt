@@ -35,6 +35,7 @@ class AreaPersistenceAdapterTest @Autowired constructor(
     @Test
     fun `DB에 존재하는 도시와 시군구 문자열로 시군구 객체를 반환한다`() {
         val res = areaRepo.findSigunguByDosi(11000, "종로구")
+        assertThat(res).isNotNull
         assertEquals(11110, res!!.id)
     }
 

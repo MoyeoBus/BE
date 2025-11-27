@@ -1,11 +1,10 @@
 package com.moyeobus.infra
 
-import com.moyeobus.domain.route.Area
 import com.moyeobus.infra.persistence.address.entity.AreaEntity
 import com.moyeobus.infra.persistence.address.repotiory.AddressJpaRepository
 import com.moyeobus.infra.persistence.address.repotiory.AreaJpaRepository
 import com.moyeobus.infra.persistence.config.JpaConfig
-import io.mockk.verify
+
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase

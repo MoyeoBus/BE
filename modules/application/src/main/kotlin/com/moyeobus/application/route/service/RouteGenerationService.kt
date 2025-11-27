@@ -209,7 +209,9 @@ class RouteGenerationService(
      * 이를 하나의 요청으로 취급하여 같은 승객 요청이 여러 노선에 중복 반영되지 않도록 한다.
      */
     fun isSameSpot(a: RouteRequest, b: RouteRequest): Boolean {
-        return a.departure.id == b.departure.id && a.destination.id == b.destination.id
+        return a.departure.id != null && b.departure.id != null &&
+                a.destination.id != null && b.destination.id != null &&
+                a.departure.id == b.departure.id && a.destination.id == b.destination.id
     }
 
     fun isCloseTime(a: RouteRequest, b: RouteRequest, minutes: Long): Boolean {

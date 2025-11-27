@@ -22,7 +22,7 @@ class AreaPersistenceAdapter(
         return if (id != null) {
             Result.success(id)
         } else {
-            Result.failure(NotFoundException("Area(id=$id)"))
+            Result.failure(NotFoundException("Area(dosiName=$dosi)"))
         }
     }
 
