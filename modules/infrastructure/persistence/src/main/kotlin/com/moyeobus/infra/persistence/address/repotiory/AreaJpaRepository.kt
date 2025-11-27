@@ -23,7 +23,7 @@ interface AreaJpaRepository : JpaRepository<AreaEntity, Long>{
     @Query("""
         SELECT a.id From AreaEntity a where a.sigunguName = :dosi
     """)
-    fun findDosiId(@Param("dosi") dosi: String) : Long
+    fun findDosiId(@Param("dosi") dosi: String) : Long?
 
     @Query("""
         SELECT a From AreaEntity a 
@@ -31,7 +31,7 @@ interface AreaJpaRepository : JpaRepository<AreaEntity, Long>{
         and a.sigunguName = :sigungu
     """)
     fun findSigunguByDosi(@Param("dosiId") dosiId: Long,
-                          @Param("sigungu") sigungu: String) : AreaEntity
+                          @Param("sigungu") sigungu: String) : AreaEntity?
 
     @Query(
         """

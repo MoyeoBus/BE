@@ -176,6 +176,9 @@ class RouteGenerationService(
         return savedRoute
     }
 
+    /**
+     * 두 지점 간 거리 계산 함수.
+     */
     fun distance(a: Address, b: Address): Double {
         val R = 6371e3 // 지구 반지름 (미터)
         val lat1 = Math.toRadians(a.lat)
@@ -189,6 +192,9 @@ class RouteGenerationService(
         return 2 * R * atan2(sqrt(h), sqrt(1 - h)) // 단위: meter
     }
 
+    /**
+     * 두 지점 간 거리 계산을 통해 동일한 노선에 포함될 수 있는지 판단.
+     */
     fun canBeInSameRouteByDistance(prev: RouteRequest, next: RouteRequest): Boolean {
         val prevEnd = prev.destination
         val nextStart = next.departure
@@ -198,8 +204,14 @@ class RouteGenerationService(
         return distMeters <= 2000
     }
 
+    /**
+     * 동일한 출발지·도착지를 가진 요청이 짧은 시간 간격으로 중복 제출된 경우,
+     * 이를 하나의 요청으로 취급하여 같은 승객 요청이 여러 노선에 중복 반영되지 않도록 한다.
+     */
     fun isSameSpot(a: RouteRequest, b: RouteRequest): Boolean {
-        return a.departure.id == b.departure.id && a.destination.id == b.destination.id
+        return a.departure.id != null && b.departure.id != null &&
+                a.destination.id != null && b.destination.id != null &&
+                a.departure.id == b.departure.id && a.destination.id == b.destination.id
     }
 
     fun isCloseTime(a: RouteRequest, b: RouteRequest, minutes: Long): Boolean {
