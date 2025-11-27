@@ -78,7 +78,9 @@ allprojects {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
         // test
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         testImplementation("io.mockk:mockk:1.13.5")
+        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
         testImplementation("com.appmattus.fixture:fixture:1.2.0")
     }
     // Ktlint 설정
