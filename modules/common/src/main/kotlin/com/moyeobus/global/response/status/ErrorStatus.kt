@@ -18,8 +18,9 @@ enum class ErrorStatus(
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 요청 메서드입니다."),
 
     // JWT
-    EMPTY_JWT(HttpStatus.UNAUTHORIZED, "COMMON_404", "토큰이 비어있습니다."),
-    INVALID_JWT(HttpStatus.UNAUTHORIZED, "COMMON_404", "유효하지 않은 토큰입니다."),
+    EMPTY_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_001", "토큰이 비어있습니다."),
+    INVALID_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_002", "필요한 정보를 포함하지 않은 토큰입니다."),
+    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_003", "유효기간이 만료된 토큰입니다."),
 
     // USER
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER_001", "이미 존재하는 사용자이며, 비밀번호가 틀렸습니다."),
