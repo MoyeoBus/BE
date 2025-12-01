@@ -10,7 +10,7 @@ import java.util.Optional.empty
 import java.util.Optional.of
 
 @Component
-object CookieUtils {
+object CookieUtil {
     fun getCookie(request: HttpServletRequest, name: String?): Optional<Cookie> {
         val cookies: Array<Cookie>? = request.cookies
         if (cookies != null) {
