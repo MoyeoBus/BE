@@ -16,6 +16,8 @@ class PassengerEntity (
     var id: Long? = null,
 
     var email: String,
+    var password: String?,
+
     var autoLoginAgreed: Boolean,
 
     @Enumerated(EnumType.STRING)

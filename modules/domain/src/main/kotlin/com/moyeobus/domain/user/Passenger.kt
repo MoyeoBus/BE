@@ -5,6 +5,8 @@ data class Passenger(
 
     var email: String,
 
+    var password: String?,
+
     var autoLoginAgreed: Boolean,
 
     var userType: UserType
