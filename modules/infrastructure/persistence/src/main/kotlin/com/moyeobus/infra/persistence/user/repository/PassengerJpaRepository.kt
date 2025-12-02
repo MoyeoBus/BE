@@ -12,4 +12,6 @@ interface PassengerJpaRepository : JpaRepository<PassengerEntity, Long>{
         WHERE p.email = :email
     """)
     fun findByEmail(email: String): PassengerEntity?
+
+    fun existsByEmail(email: String): Boolean
 }
