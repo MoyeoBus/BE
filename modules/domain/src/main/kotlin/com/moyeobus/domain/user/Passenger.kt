@@ -12,4 +12,4 @@ data class Passenger(
     var userType: UserType
 )
 
-enum class UserType { KAKAO, GOOGLE, GUEST }
+enum class UserType { KAKAO, GOOGLE, LOCAL }

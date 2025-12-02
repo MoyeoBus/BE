@@ -24,7 +24,7 @@ class PassengerEntity (
     var userType: UserType
 )
 
-enum class UserType { KAKAO, GOOGLE, GUEST;
+enum class UserType { KAKAO, GOOGLE, LOCAL;
 
     companion object {
         fun from(provider: OAuth2Provider): UserType {
