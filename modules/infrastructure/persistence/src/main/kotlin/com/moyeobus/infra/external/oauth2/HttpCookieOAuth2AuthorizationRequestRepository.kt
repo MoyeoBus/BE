@@ -1,6 +1,6 @@
 package com.moyeobus.infra.external.oauth2
 
-import com.moyeobus.infra.external.oauth2.util.CookieUtils
+import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
@@ -13,8 +13,8 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest =
-        CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-            .map { cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest::class.java) }
+        CookieUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+            .map { cookie -> CookieUtil.deserialize(cookie, OAuth2AuthorizationRequest::class.java) }
             .orElse(null)
 
     override fun saveAuthorizationRequest(
@@ -27,20 +27,20 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
             return
         }
 
-        CookieUtils.addCookie(
+        CookieUtil.addCookie(
             response,
             OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
-            CookieUtils.serialize(authorizationRequest),
+            CookieUtil.serialize(authorizationRequest),
             COOKIE_EXPIRE_SECONDS
         )
 
         request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME)?.takeIf { StringUtils.hasText(it) }?.let {
-            CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, it, COOKIE_EXPIRE_SECONDS)
+            CookieUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, it, COOKIE_EXPIRE_SECONDS)
             println("redirect_uri 쿠키 저장됨: $it")
         } ?: println("redirect_uri 쿠키 없음")
 
         request.getParameter(MODE_PARAM_COOKIE_NAME)?.takeIf { StringUtils.hasText(it) }?.let {
-            CookieUtils.addCookie(response, MODE_PARAM_COOKIE_NAME, it, COOKIE_EXPIRE_SECONDS)
+            CookieUtil.addCookie(response, MODE_PARAM_COOKIE_NAME, it, COOKIE_EXPIRE_SECONDS)
             println("mode 쿠키 저장됨: $it")
         } ?: println("mode 쿠키 없음")
     }
@@ -51,15 +51,15 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     ): OAuth2AuthorizationRequest? = loadAuthorizationRequest(request)
 
     fun deleteAllCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtils.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
     }
 
     fun removeAuthorizationRequestCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtils.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
     }
 
     companion object {

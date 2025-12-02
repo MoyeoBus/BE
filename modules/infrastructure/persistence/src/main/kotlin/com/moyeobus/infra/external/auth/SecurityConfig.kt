@@ -1,20 +1,22 @@
-package com.moyeobus.infra.external.oauth2.config
+package com.moyeobus.infra.external.auth
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.moyeobus.global.response.ApiResponse
+import com.moyeobus.global.response.status.ErrorStatus
 import com.moyeobus.infra.external.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import com.moyeobus.infra.external.oauth2.handler.OAuth2AuthenticationFailureHandler
 import com.moyeobus.infra.external.oauth2.handler.OAuth2AuthenticationSuccessHandler
 import com.moyeobus.infra.external.oauth2.service.CustomOAuth2UserService
-import com.moyeobus.infra.external.oauth2.util.CookieUtils
+import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
 import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import jakarta.servlet.RequestDispatcher
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository
-
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -23,7 +25,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.logout.LogoutHandler
 
 @Configuration
 @EnableWebSecurity
@@ -37,8 +42,9 @@ class SecurityConfig(
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val jwtUtil: JwtUtil,
     private val userRepository: PassengerJpaRepository,
-    private val cookieUtil: CookieUtils
-    //private val userDetailsService: UserDetailsService
+    private val cookieUtil: CookieUtil,
+    private val userDetailsService: UserDetailsService,
+    private val tokenBlackListService: TokenBlackListService
 ) {
 
     @Bean
@@ -46,7 +52,20 @@ class SecurityConfig(
         configuration.authenticationManager
 
     @Bean
-    fun bCryptPasswordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun loginFilter(): LoginFilter {
+        return LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, userRepository)
+    }
+
+    @Bean
+    fun logoutHandler(): LogoutHandler {
+        return CustomLogoutHandler(tokenBlackListService, jwtUtil)
+    }
+
 
     @Bean
     fun httpExchangeRepository(): HttpExchangeRepository = InMemoryHttpExchangeRepository()
@@ -73,18 +92,27 @@ class SecurityConfig(
         http.httpBasic { it.disable() }
 
         http.exceptionHandling {
-            it.authenticationEntryPoint { _, response, _ ->
+            it.authenticationEntryPoint { request, response, _ ->
                 response.status = HttpServletResponse.SC_UNAUTHORIZED
                 response.contentType = "application/json"
-                response.writer.write("{\"error\": \"Unauthorized request\"}")
+                val actualPath = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) as? String
+                    ?: request.requestURI
+
+                val errorJson = ApiResponse.onFailure(
+                    code = ErrorStatus.UNAUTHORIZED.code,
+                    message = ErrorStatus.UNAUTHORIZED.message,
+                    data = null,
+                    requestUri = actualPath
+                )
+
+                ObjectMapper().writeValue(response.outputStream, errorJson)
             }
         }
-
         http.authorizeHttpRequests {
             it.requestMatchers(
                 "/oauth2/**", "/register/*", "/login",
                 "/swagger-ui/**", "/v3/api-docs/**",
-                 "/socket/**", "/api/**",
+                 "/socket/**", "/api/v1/login", "/api/v1/signup",
                 "/oauth/login"
             ).permitAll()
                 .anyRequest().authenticated()
@@ -101,12 +129,19 @@ class SecurityConfig(
                 .failureHandler(oAuth2AuthenticationFailureHandler)
         }
 
-//        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter::class.java)
-//        http.addFilterAt(
-//            LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, userRepository),
-//            UsernamePasswordAuthenticationFilter::class.java
-//        )
-//        http.addFilterBefore(CustomLogoutFilter(jwtUtil), LogoutFilter::class.java)
+        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterAt(
+            loginFilter(),
+            UsernamePasswordAuthenticationFilter::class.java
+        )
+        http.logout { logout ->
+            logout
+                .logoutUrl("/logout")
+                .addLogoutHandler(logoutHandler())
+                .logoutSuccessHandler { request, response, authentication ->
+                    response.status = 204
+                }
+        }
 
         http.sessionManagement {
             it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

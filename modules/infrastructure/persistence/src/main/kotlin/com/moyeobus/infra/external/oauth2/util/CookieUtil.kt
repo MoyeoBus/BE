@@ -10,7 +10,9 @@ import java.util.Optional.empty
 import java.util.Optional.of
 
 @Component
-object CookieUtils {
+object CookieUtil {
+    const val COOKIE_EXPIRE_TIME: Int = 30 * 60 // 30분
+
     fun getCookie(request: HttpServletRequest, name: String?): Optional<Cookie> {
         val cookies: Array<Cookie>? = request.cookies
         if (cookies != null) {
@@ -19,6 +21,16 @@ object CookieUtils {
             }
         }
         return empty<Cookie?>()
+    }
+
+    fun createCookie(key: String, value: String): Cookie {
+        return Cookie(key, value).apply {
+            path = "/"
+            maxAge = COOKIE_EXPIRE_TIME
+            isHttpOnly = true
+            secure = true
+            setAttribute("SameSite", "Strict")
+        }
     }
 
     fun addCookie(response: HttpServletResponse, name: String?, value: String?, maxAge: Int) {
@@ -45,6 +57,34 @@ object CookieUtils {
             }
         }
     }
+
+    fun expireCookie(
+        response: HttpServletResponse,
+        name: String,
+        path: String,
+        httpOnly: Boolean,
+        secure: Boolean,
+        sameSite: String
+    ) {
+        val cookie = Cookie(name, "").apply {
+            this.path = path
+            this.isHttpOnly = httpOnly
+            this.secure = secure
+            this.maxAge = 0
+            this.setAttribute("SameSite", sameSite)
+        }
+        response.addCookie(cookie)
+    }
+
+    fun getAccessTokenFromRequest(request: HttpServletRequest): String? =
+        request.cookies
+            ?.firstOrNull { it.name == "access" }
+            ?.value
+
+    fun getRefreshTokenFromRequest(request: HttpServletRequest): String? =
+        request.cookies
+            ?.firstOrNull { it.name == "refresh" }
+            ?.value
 
     fun serialize(`object`: Any?): String? {
         return Base64.getUrlEncoder()

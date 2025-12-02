@@ -57,6 +57,7 @@ class CustomOAuth2UserService(
             val user = PassengerEntity(
                 id = null,
                 email = oauthEmail,
+                password = "",
                 autoLoginAgreed = false,
                 userType = UserType.from(oAuth2UserInfo.provider)
             )

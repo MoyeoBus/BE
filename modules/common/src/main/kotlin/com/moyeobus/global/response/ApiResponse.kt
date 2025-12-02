@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.moyeobus.global.response.status.SuccessStatus
 
 @JsonPropertyOrder("code", "message", "result", "isSuccess")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class ApiResponse<T>(
     val isSuccess: Boolean,
     val code: String,
     val message: String,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     val result: T?,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     val path: String?
 ) {
 

@@ -3,7 +3,7 @@ package com.moyeobus.infra.external.oauth2.handler
 import com.moyeobus.infra.external.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import com.moyeobus.infra.external.oauth2.service.OAuth2UserPrincipal
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserUnlinkManager
-import com.moyeobus.infra.external.oauth2.util.CookieUtils
+import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
@@ -43,9 +43,9 @@ class OAuth2AuthenticationSuccessHandler(
 
             response.addHeader("access", accessToken)
             response.addHeader("refresh", refreshToken)
-            CookieUtils.addCookie(response, "access_token", accessToken, 3600)
-            CookieUtils.addCookie(response, "google_oauth_token", googleAccessToken, 3600)
-            CookieUtils.addCookie(response, "refresh_token", refreshToken, 86400)
+            CookieUtil.addCookie(response, "access_token", accessToken, 3600)
+            CookieUtil.addCookie(response, "google_oauth_token", googleAccessToken, 3600)
+            CookieUtil.addCookie(response, "refresh_token", refreshToken, 86400)
 
         }
 
@@ -76,8 +76,8 @@ class OAuth2AuthenticationSuccessHandler(
         val access = jwtUtil.createAccess(principal.username)
         val refresh = jwtUtil.createRefresh(principal.username)
 
-        CookieUtils.addCookie(response, "access_token", access, 3600)
-        CookieUtils.addCookie(response, "refresh_token", refresh, 86400)
+        CookieUtil.addCookie(response, "access_token", access, 3600)
+        CookieUtil.addCookie(response, "refresh_token", refresh, 86400)
 
         return UriComponentsBuilder.fromUriString(targetUrl)
             .build().toUriString()
