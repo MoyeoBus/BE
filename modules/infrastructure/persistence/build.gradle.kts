@@ -12,7 +12,7 @@ dependencies {
     implementation(projects.modules.domain)
     implementation(projects.modules.common)
     implementation(projects.modules.application)
-    implementation(libs.org.redison.starter)
+    implementation(libs.org.redisson.starter)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.oauth2.client)
