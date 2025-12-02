@@ -217,4 +217,27 @@ class ExceptionAdvice : ResponseEntityExceptionHandler() {
             )
         )
     }
+
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+
+
+        val errorMessage = ex.bindingResult.fieldErrors.firstOrNull()?.defaultMessage
+            ?: "잘못된 요청입니다."
+
+        val path = (request as ServletWebRequest).request.requestURI
+
+        return ResponseEntity.badRequest().body(
+            ApiResponse.onFailure(
+                code = "COMMON_400",
+                message = errorMessage,
+                data = null,
+                requestUri = path
+            )
+        )
+    }
 }
