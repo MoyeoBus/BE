@@ -3,7 +3,7 @@ jackson = "2.16.1"
 mockk = "1.13.5"
 fixture = "1.2.0"
 jwt = "0.12.3"
-redison = "3.23.2"
+redisson = "3.52.0"
 
 [libraries]
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
@@ -17,7 +17,7 @@ jwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
 jwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
 
 
-org-redison-starter = {module = "org.redisson:redisson-spring-boot-starter", version.ref = "redison"}
+org-redisson-starter = {module = "org.redisson:redisson-spring-boot-starter", version.ref = "redisson"}
 
 
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
