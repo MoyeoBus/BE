@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
+import java.time.Duration
+import java.time.Instant
 
 import java.util.*
 import javax.crypto.SecretKey
@@ -57,7 +59,7 @@ class JwtUtil(
         }
     }
 
-    fun createAccess(email: String?): String? {
+    fun createAccess(email: String?): String {
         return Jwts.builder()
             .claim("category", "access")
             .claim("email", email)
@@ -68,7 +70,7 @@ class JwtUtil(
             .compact()
     }
 
-    fun createRefresh(email: String?): String? {
+    fun createRefresh(email: String?): String {
         return Jwts.builder()
             .claim("category", "refresh")
             .claim("email", email)
@@ -90,7 +92,6 @@ class JwtUtil(
         val email = getEmail(token)
         require(!(email == null || email.isEmpty())) { "JWT token does not contain a valid googleId." }
 
-        // DB에서 googleId 기반으로 사용자 찾기
         val passenger = passengerRepository.findByEmail(email)
             ?:throw UsernameNotFoundException(email)
 
@@ -98,7 +99,6 @@ class JwtUtil(
 
         val authorities: MutableList<GrantedAuthority?> = ArrayList<GrantedAuthority?>()
 
-        // Spring Security User 객체 생성 (googleId를 username으로 사용)
         val userDetails: UserDetails = User(
             passenger.email, "", authorities
         )
@@ -113,6 +113,21 @@ class JwtUtil(
         }
         throw InvalidTokenException()
     }
+
+    fun getRefreshTokenExpireTime(refreshToken: String): Long =
+        runCatching {
+            val claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .body
+
+            val expiration = claims.expiration ?: return 0L
+            val now = Instant.now()
+            val exp = expiration.toInstant()
+
+            Duration.between(now, exp).seconds.coerceAtLeast(0)
+        }.getOrElse { 0L }
 
     companion object {
         private val ACCESS_TOKEN_EXPIRE_TIME = (15 * 60 * 1000 // 30분
