@@ -14,6 +14,10 @@ class PassengerPersistenceAdapter(
     private val repo: PassengerJpaRepository,
     private val encoder: PasswordEncoder
 ) : PassengerOutPort {
+    override fun existsByEmail(email: String): Boolean {
+        return repo.existsByEmail(email)
+    }
+
     override fun findById(id: Long): Passenger {
         val res = repo.findById(id).orElseThrow(
             { NotFoundException("Passenger(id=$id)")}
@@ -26,7 +30,15 @@ class PassengerPersistenceAdapter(
         return mapper.toDomain(res)
     }
 
+    override fun save(new: Passenger) {
+        repo.save(mapper.toEntity(new))
+    }
+
     override fun matches(raw: String, encoded: String): Boolean {
         return encoder.matches(raw, encoded)
+    }
+
+    override fun encode(raw: String): String {
+        return encoder.encode(raw)
     }
 }
