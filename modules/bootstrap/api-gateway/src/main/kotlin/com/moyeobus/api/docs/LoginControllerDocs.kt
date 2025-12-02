@@ -50,7 +50,7 @@ interface LoginControllerDocs {
                                     "code": "COMMON_401",
                                     "message": "인증이 필요합니다.",
                                     "path": "/api/v1/login",
-                                    "success": false
+                                    "isSuccess": false
                                 }
                                 """
                             )
