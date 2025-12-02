@@ -57,6 +57,9 @@ jobs:
             MYSQL_DB=${{ secrets.MYSQL_DB }}
             MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            REDIS_HOST=${{ secrets.REDIS_HOST }}
+            REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}
+            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
             KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
             EOF
             
