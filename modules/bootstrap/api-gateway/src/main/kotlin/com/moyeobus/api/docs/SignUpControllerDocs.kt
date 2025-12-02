@@ -13,7 +13,7 @@ interface SignUpControllerDocs {
 
     @Operation(
         summary = "회원가입",
-        description = "사용자의 이메일과 비밀번호를 입력받아 계정을 생성합니다."
+        description = "사용자의 이메일과 비밀번호를 입력받아 계정을 생성합니다.\n\n⚠️ 비밀번호는 최소 7자 이상이어야 합니다."
     )
     @ApiResponses(
         value = [
