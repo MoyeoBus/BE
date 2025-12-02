@@ -1,5 +1,8 @@
 package com.moyeobus.infra.external.auth
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.moyeobus.global.response.ApiResponse
+import com.moyeobus.global.response.status.ErrorStatus
 import com.moyeobus.infra.external.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import com.moyeobus.infra.external.oauth2.handler.OAuth2AuthenticationFailureHandler
 import com.moyeobus.infra.external.oauth2.handler.OAuth2AuthenticationSuccessHandler
@@ -7,6 +10,7 @@ import com.moyeobus.infra.external.oauth2.service.CustomOAuth2UserService
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
 import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import jakarta.servlet.RequestDispatcher
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository
@@ -88,13 +92,22 @@ class SecurityConfig(
         http.httpBasic { it.disable() }
 
         http.exceptionHandling {
-            it.authenticationEntryPoint { _, response, _ ->
+            it.authenticationEntryPoint { request, response, _ ->
                 response.status = HttpServletResponse.SC_UNAUTHORIZED
                 response.contentType = "application/json"
-                response.writer.write("{\"error\": \"Unauthorized request\"}")
+                val actualPath = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI) as? String
+                    ?: request.requestURI
+
+                val errorJson = ApiResponse.onFailure(
+                    code = ErrorStatus.UNAUTHORIZED.code,
+                    message = ErrorStatus.UNAUTHORIZED.message,
+                    data = null,
+                    requestUri = actualPath
+                )
+
+                ObjectMapper().writeValue(response.outputStream, errorJson)
             }
         }
-
         http.authorizeHttpRequests {
             it.requestMatchers(
                 "/oauth2/**", "/register/*", "/login",
