@@ -23,8 +23,6 @@ import org.springframework.util.StreamUtils;
 
 import java.nio.charset.StandardCharsets;
 
-
-@Component
 class LoginFilter(
     authenticationManager: AuthenticationManager,
     private val jwtUtil: JwtUtil,
@@ -36,6 +34,8 @@ class LoginFilter(
         super.setAuthenticationManager(authenticationManager)
         setFilterProcessesUrl("/api/v1/login")
     }
+
+    private val logger = org.slf4j.LoggerFactory.getLogger(LoginFilter::class.java)
 
     override fun attemptAuthentication(
         request: HttpServletRequest,
@@ -79,12 +79,16 @@ class LoginFilter(
             val access = jwtUtil.createAccess(email)
             val refresh = jwtUtil.createRefresh(email)
 
+
             response.addCookie(cookieUtil.createCookie("access", access))
             response.addCookie(cookieUtil.createCookie("refresh", refresh))
             response.status = HttpStatus.OK.value()
 
         } catch (e: Exception) {
+            logger.error("토큰 생성 중 오류 발생: ${e.message}", e)
             response.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
+            response.contentType = "application/json"
+            response.writer.write("""{"error": "로그인 처리 중 오류가 발생했습니다."}""")
         }
     }
 }
