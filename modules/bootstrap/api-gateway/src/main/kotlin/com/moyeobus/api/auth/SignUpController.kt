@@ -1,5 +1,6 @@
 package com.moyeobus.api.auth
 
+import com.moyeobus.api.docs.SignUpControllerDocs
 import com.moyeobus.application.auth.port.`in`.SignUpCommand
 import com.moyeobus.application.auth.port.`in`.SignUpUseCase
 import com.moyeobus.global.response.ApiResponse
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/signup")
 class SignUpController(
     private val signUpService: SignUpUseCase
-) {
+) : SignUpControllerDocs {
 
     @PostMapping
-    fun signUp(@Validated @RequestBody request: SignUpCommand): ResponseEntity<ApiResponse<Void>>{
+    override fun signUp(@Validated @RequestBody request: SignUpCommand): ResponseEntity<ApiResponse<Void>>{
         signUpService.processSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccessCreated())
     }
