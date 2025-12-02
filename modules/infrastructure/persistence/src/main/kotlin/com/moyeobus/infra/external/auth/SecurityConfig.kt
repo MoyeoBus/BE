@@ -19,9 +19,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.logout.LogoutHandler
 
 @Configuration
 @EnableWebSecurity
@@ -35,8 +38,9 @@ class SecurityConfig(
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val jwtUtil: JwtUtil,
     private val userRepository: PassengerJpaRepository,
-    private val cookieUtil: CookieUtil
-    //private val userDetailsService: UserDetailsService
+    private val cookieUtil: CookieUtil,
+    private val userDetailsService: UserDetailsService,
+    private val tokenBlackListService: TokenBlackListService
 ) {
 
     @Bean
@@ -46,6 +50,16 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun loginFilter(): LoginFilter {
+        return LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, userRepository)
+    }
+
+    @Bean
+    fun logoutHandler(): LogoutHandler {
+        return CustomLogoutHandler(tokenBlackListService, jwtUtil)
     }
 
 
@@ -85,7 +99,7 @@ class SecurityConfig(
             it.requestMatchers(
                 "/oauth2/**", "/register/*", "/login",
                 "/swagger-ui/**", "/v3/api-docs/**",
-                 "/socket/**", "/api/**",
+                 "/socket/**", "/api/v1/login", "/api/v1/signup",
                 "/oauth/login"
             ).permitAll()
                 .anyRequest().authenticated()
@@ -102,12 +116,19 @@ class SecurityConfig(
                 .failureHandler(oAuth2AuthenticationFailureHandler)
         }
 
-//        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter::class.java)
-//        http.addFilterAt(
-//            LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, userRepository),
-//            UsernamePasswordAuthenticationFilter::class.java
-//        )
-//        http.addFilterBefore(CustomLogoutFilter(jwtUtil), LogoutFilter::class.java)
+        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterAt(
+            loginFilter(),
+            UsernamePasswordAuthenticationFilter::class.java
+        )
+        http.logout { logout ->
+            logout
+                .logoutUrl("/logout")
+                .addLogoutHandler(logoutHandler())
+                .logoutSuccessHandler { request, response, authentication ->
+                    response.status = 204
+                }
+        }
 
         http.sessionManagement {
             it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
