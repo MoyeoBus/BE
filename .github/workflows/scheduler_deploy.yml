@@ -1,9 +1,10 @@
-name: CI/CD Deploy to NHN Cloud
+name: CI/CD Deploy to NHN Cloud for scheduler server
 
 on:
   push:
     branches: [ main ]
     paths:
+      - '.github/workflows/scheduler_deploy.yml'
       - 'modules-scheduler/bootstrap/**'
       - 'modules-scheduler/application/**'
       - 'modules-scheduler/domain/**'
@@ -64,6 +65,10 @@ jobs:
             EOF
             
             docker load -i myapp.tar
+            docker run -d \
+              --name scheduler \
+              --env-file .env \
+              myapp:latest
             
             sleep 10
 
