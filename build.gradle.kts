@@ -99,51 +99,48 @@ allprojects {
 }
 
 
-// bootstrap
-project(":modules:bootstrap") {
-    subprojects {
-        apply(plugin = "org.springframework.boot")
-        apply(plugin = "io.spring.dependency-management")
-        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    }
+// bootstrap 하위 모듈들에 플러그인 적용
+subprojects.filter { it.path.contains(":bootstrap:") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-// application
-project(":modules:application") {
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+// bootstrap 모듈에 플러그인 적용
+subprojects.filter { it.path.contains(":bootstrap") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-// domain
-project(":modules:domain") {
-    // POJO
+// application 하위 모듈들에 플러그인 적용
+subprojects.filter { it.path.contains(":application") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-// infra
-project(":modules:infrastructure") {
-    subprojects {
-        apply(plugin = "org.springframework.boot")
-        apply(plugin = "io.spring.dependency-management")
-        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    }
+// infrastructure 하위 모듈들에 플러그인 적용
+subprojects.filter { it.path.contains(":infrastructure:") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-// common
-project(":modules:common") {
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+// common 모듈에 플러그인 적용
+subprojects.filter { it.path.contains(":common") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
-// external
-project(":modules:external") {
-    subprojects {
-        apply(plugin = "org.springframework.boot")
-        apply(plugin = "io.spring.dependency-management")
-        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    }
+// external 하위 모듈들에 플러그인 적용
+subprojects.filter { it.path.contains(":external:") }.forEach { project ->
+    project.apply(plugin = "org.springframework.boot")
+    project.apply(plugin = "io.spring.dependency-management")
+    project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
+
 
 subprojects {
     tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
