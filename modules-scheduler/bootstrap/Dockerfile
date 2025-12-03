@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # JAR 파일 복사
-COPY modules/bootstrap/build/libs/*.jar app.jar
+COPY modules-scheduler/bootstrap/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
