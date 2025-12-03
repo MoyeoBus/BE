@@ -18,7 +18,6 @@ repositories {
 
 dependencies {
     implementation(projects.modulesScheduler.application)
-    implementation(projects.modulesScheduler.domain)
     implementation(libs.spring.boot.starter.web)
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
