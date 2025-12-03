@@ -6,9 +6,16 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 
+@Tag(
+    name = "회원가입 API",
+    description = """
+    📇 회원가입 API 그룹
+    """
+)
 interface SignUpControllerDocs {
 
     @Operation(

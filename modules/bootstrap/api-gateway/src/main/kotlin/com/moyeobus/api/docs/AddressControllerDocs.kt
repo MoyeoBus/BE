@@ -7,15 +7,21 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 
+@Tag(
+    name = "정류장 API",
+    description = """
+    🚏 지자체 내 버스 정류장 주소 API 그룹
+    """
+)
 interface AddressControllerDocs {
 
     @Operation(
         summary = "행정구역 내 정류장(주소) 조회",
-        description = "특정 시·군·구(sigunguId)에 포함된 모든 주소(정류장, 주요 지점 등)를 조회합니다."
+        description = "특정 도·시(`dosi`)와 시·군·구(`sigungu`)에 포함된 모든 주소(정류장, 주요 지점 등)를 조회합니다."
     )
     @ApiResponses(
         value = [

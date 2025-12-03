@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,11 +21,17 @@ import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 import java.time.YearMonth
 
+@Tag(
+    name = "지자체 API",
+    description = """
+    📍지역 지자체 통계 및 노선 정보 API 그룹
+    """
+)
 interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "지자체 전체 통계 조회",
-        description = "특정 지자체(localGovId)의 사용률을 파이차트로 조회합니다."
+        description ="특정 지자체(`localGovId`)의 사용률을 파이차트로 조회합니다."
     )
     @ApiResponses(
         value = [
@@ -233,7 +240,7 @@ interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "지자체 시간대별 통계 조회",
-        description = "지정된 날짜(stdDate)의 시간대별 노선 요청 통계를 조회합니다."
+        description = "특정 지자체(`localGovId`)에서 지정된 날짜(`stdDate`)의 시간대별 노선 요청 통계를 조회합니다."
     )
     @ApiResponses(
         value = [
@@ -352,7 +359,7 @@ interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "지자체 노선별 통계 조회",
-        description = "지자체의 노선(route)별 요청 통계를 조회합니다."
+        description = "특정 지자체(`localGovId`)의 노선(route)별 요청 통계를 조회합니다."
     )
     @ApiResponses(
         value = [
@@ -413,7 +420,7 @@ interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "출발지 기준 요청 통계 조회",
-        description = "특정 노선(routeId)에 대해 출발지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
+        description = "특정 노선(`routeId`)에 대해 출발지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
     )
     @ApiResponses(
         value = [
@@ -456,7 +463,7 @@ interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "도착지 기준 요청 통계 조회",
-        description = "특정 노선(routeId)에 대해 도착지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
+        description = "특정 노선(`routeId`)에 대해 도착지 기준으로 요청량을 집계하여 정류장별 통계를 반환합니다."
     )
     @ApiResponses(
         value = [
@@ -498,7 +505,7 @@ interface LocalGovernmentControllerDocs {
 
     @Operation(
         summary = "지자체 내 노선 생성 설문 조회",
-        description = "특정 지자체(localGovId)를 출발지 및 도착지로 갖는 노선 요청에 대한 설문 조사 결과를 조회합니다."
+        description = "특정 지자체(`localGovId`)를 출발지 및 도착지로 갖는 노선 요청에 대한 설문 조사 결과를 조회합니다."
     )
     @ApiResponses(
         value = [

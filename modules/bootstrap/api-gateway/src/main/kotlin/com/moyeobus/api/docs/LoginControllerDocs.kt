@@ -1,15 +1,20 @@
 package com.moyeobus.api.docs
 
 import com.moyeobus.application.auth.port.`in`.LoginCommand
-import com.moyeobus.global.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.ResponseEntity
 
+@Tag(
+    name = "로그인 API",
+    description = """
+    🪪 자체 로그인 및 OAuth 로그인 API 그룹
+    """
+)
 interface LoginControllerDocs {
 
     @Operation(
