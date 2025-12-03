@@ -21,12 +21,12 @@ jobs:
         run: |
           find . -type d -name "build" -exec rm -rf {} + || true
           ./gradlew clean
-          ./gradlew :modules:bootstrap:bootJar -x test
+          ./gradlew :modules-scheduler:bootstrap:bootJar -x test
 
       - name: Build Docker image
         run: |
           docker build --no-cache -t myapp:latest \
-            -f modules/bootstrap/Dockerfile .
+            -f modules-scheduler/bootstrap/Dockerfile .
 
       - name: Save Docker image
         run: docker save myapp:latest -o myapp.tar
