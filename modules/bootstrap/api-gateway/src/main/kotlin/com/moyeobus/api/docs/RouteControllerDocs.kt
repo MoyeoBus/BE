@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,11 +19,17 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
 
+@Tag(
+    name = "노선 API",
+    description = """
+    🗺️ 노선 도메인에 연관된 CRUD API 그룹
+    """
+)
 interface RouteControllerDocs {
 
     @Operation(
         summary = "노선 요청 생성",
-        description = "새로운 노선 요청을 생성합니다. 요청 생성 성공 시 201 Created 상태 코드가 반환됩니다."
+        description = "새로운 노선 요청을 생성합니다. <br/> 요청 생성 성공 시 201 Created 상태 코드가 반환됩니다."
     )
     @ApiResponses(
         value = [
@@ -231,14 +238,14 @@ interface RouteControllerDocs {
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         to: LocalDateTime?,
 
-        @Parameter(example = "MTc1OTY1ODA1MDcwMzo1", description = "페이지네이션 커서 값")
+        @Parameter(example = "MTc1OTY1ODA1MDcwMzo1", description = "페이지네이션 커서 값(초기 시행값은 null)")
         @RequestParam(required = false)
         cursor: String?,
     ): ResponseEntity<ApiResponse<QueryResponse>>
 
     @Operation(
         summary = "노선 상세 조회",
-        description = "특정 routeId에 대한 노선 상세 정보를 반환합니다."
+        description = "특정 `routeId`에 대한 노선 상세 정보를 반환합니다."
     )
     @ApiResponses(
         value = [
@@ -294,7 +301,7 @@ interface RouteControllerDocs {
 
     @Operation(
         summary = "지역 기반 노선 조회",
-        description = "도/시(dosi)와 시/군/구(sigungu), 날짜 범위, 커서를 기준으로 노선 목록을 조회합니다."
+        description = "도/시(`dosi`)와 시/군/구(`sigungu`), 날짜 범위(`from`,`to`), 커서를 기준으로 노선 목록을 조회합니다."
     )
     @ApiResponses(
         value = [
@@ -360,7 +367,7 @@ interface RouteControllerDocs {
 
     @Operation(
         summary = "사용자별 노선 조회",
-        description = "특정 승객(passengerId)이 참여하거나 생성한 노선 목록을 조회합니다. 상태(status), 날짜 필터(from, to), 페이지네이션(cursor)를 사용할 수 있습니다."
+        description = "특정 승객(`passengerId`)이 참여하거나 생성한 노선 목록을 조회합니다. <br/> 상태(`status`), 날짜 필터(`from`, `to`), 페이지네이션(`cursor`)를 사용할 수 있습니다."
     )
     @ApiResponses(
         value = [
@@ -435,7 +442,7 @@ interface RouteControllerDocs {
 
     @Operation(
         summary = "노선 요청 취소",
-        description = "특정 노선 요청을 취소합니다."
+        description = "특정 노선 요청(`requestId`)을 취소합니다."
     )
     @ApiResponses(
         value = [
