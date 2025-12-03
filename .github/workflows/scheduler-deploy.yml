@@ -2,7 +2,7 @@ name: CI/CD Deploy to NHN Cloud
 
 on:
   push:
-    branches: [ main ]
+    branches: [  feat/#93-scheduler-server ]
     paths:
       - 'modules-scheduler/bootstrap/api-gateway/**'
       - 'modules-scheduler/application/**'
