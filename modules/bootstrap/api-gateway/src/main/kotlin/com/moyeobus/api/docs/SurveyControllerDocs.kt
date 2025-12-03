@@ -7,9 +7,16 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 
+@Tag(
+    name = "설문 API",
+    description = """
+    📝 설문 조사 API 그룹
+    """
+)
 interface SurveyControllerDocs {
 
     @Operation(
@@ -90,7 +97,7 @@ interface SurveyControllerDocs {
 
     @Operation(
         summary = "설문 응답 생성",
-        description = "사용자의 설문 응답을 저장합니다."
+        description = "사용자의 설문 응답(`optionId`,`departureId`,`destinationId`)을 저장합니다."
     )
     @ApiResponses(
         value = [
