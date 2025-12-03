@@ -7,7 +7,6 @@ tasks.jar {
 
 tasks.bootJar {
     enabled = true
-    mainClass.set("com.moyeobus.api.MoyeoBusApplicationKt")
 }
 
 dependencies {
