@@ -12,7 +12,6 @@ dependencies {
     implementation(projects.modulesScheduler.domain)
     implementation(projects.modulesScheduler.common)
     implementation(projects.modulesScheduler.application)
-
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.spring.boot.starter.web)
     implementation("com.mysql:mysql-connector-j:8.3.0")
