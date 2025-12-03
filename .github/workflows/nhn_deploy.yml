@@ -2,8 +2,13 @@ name: CI/CD Deploy to NHN Cloud
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'modules/bootstrap/api-gateway/**'
+      - 'modules/application/**'
+      - 'modules/domain/**'
+      - 'modules/infrastructure/persistence/**'
+      - 'modules/common/**'
 
 jobs:
   deploy:
