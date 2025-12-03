@@ -1,0 +1,94 @@
+name: CI/CD Deploy to NHN Cloud
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'modules-scheduler/bootstrap/api-gateway/**'
+      - 'modules-scheduler/application/**'
+      - 'modules-scheduler/domain/**'
+      - 'modules-scheduler/infrastructure/persistence/**'
+      - 'modules-scheduler/common/**'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Build JAR
+        run: |
+          find . -type d -name "build" -exec rm -rf {} + || true
+          ./gradlew clean
+          ./gradlew :modules:bootstrap:bootJar -x test
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache -t myapp:latest \
+            -f modules/bootstrap/Dockerfile .
+
+      - name: Save Docker image
+        run: docker save myapp:latest -o myapp.tar
+
+      - name: Fix permission for tar file
+        run: chmod 644 myapp.tar
+
+      - name: Transfer files to NHN server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.NHN_SCHEDULER_HOST }}
+          username: ${{ secrets.NHN_USER }}
+          key: ${{ secrets.NHN_SSH_KEY }}
+          source: "myapp.tar"
+          target: "/home/ubuntu/app/"
+
+      - name: Deploy on NHN server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.NHN_SCHEDULER_HOST }}
+          username: ${{ secrets.NHN_USER }}
+          key: ${{ secrets.NHN_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+            
+            docker compose down || true
+            docker rmi myapp:latest || true
+            
+            cat > .env << 'EOF'
+            SPRING_PROFILES_ACTIVE=prod
+            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
+            MYSQL_DB=${{ secrets.MYSQL_DB }}
+            MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            EOF
+            
+            docker load -i myapp.tar
+            
+            sleep 10
+
+      - name: Send Discord success message
+        if: success()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          args: |
+            ✅ **배포 성공!**
+            - Repository: ${{ github.repository }}
+            - Commit Message: ${{ github.event.head_commit.message }}
+            - Triggered by: ${{ github.actor }}
+
+      - name: Send Discord failure message
+        if: failure()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          args: |
+            ❌ **배포 실패!**
+            - Repository: ${{ github.repository }}
+            - Commit Message: ${{ github.event.head_commit.message }}
+            - Triggered by: ${{ github.actor }}
+            - Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            - Error 발생함. 로그 확인 필요.
