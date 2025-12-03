@@ -4,12 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'modules/bootstrap/api-gateway/**'
-      - 'modules/application/**'
-      - 'modules/domain/**'
-      - 'modules/infrastructure/persistence/**'
-      - 'modules/common/**'
-
+      - 'modules-scheduler/bootstrap/**'
+      - 'modules-scheduler/application/**'
+      - 'modules-scheduler/domain/**'
+      - 'modules-scheduler/infrastructure/persistence/**'
+      - 'modules-scheduler/common/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,12 +21,12 @@ jobs:
         run: |
           find . -type d -name "build" -exec rm -rf {} + || true
           ./gradlew clean
-          ./gradlew :modules:bootstrap:api-gateway:bootJar -x test
+          ./gradlew :modules-scheduler:bootstrap:bootJar -x test
 
       - name: Build Docker image
         run: |
           docker build --no-cache -t myapp:latest \
-            -f modules/bootstrap/api-gateway/Dockerfile .
+            -f modules-scheduler/bootstrap/Dockerfile .
 
       - name: Save Docker image
         run: docker save myapp:latest -o myapp.tar
@@ -38,16 +37,16 @@ jobs:
       - name: Transfer files to NHN server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.NHN_HOST }}
+          host: ${{ secrets.NHN_SCHEDULER_HOST }}
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
-          source: "myapp.tar,docker-compose.yml"
+          source: "myapp.tar"
           target: "/home/ubuntu/app/"
 
       - name: Deploy on NHN server
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.NHN_HOST }}
+          host: ${{ secrets.NHN_SCHEDULER_HOST }}
           username: ${{ secrets.NHN_USER }}
           key: ${{ secrets.NHN_SSH_KEY }}
           script: |
@@ -62,17 +61,11 @@ jobs:
             MYSQL_DB=${{ secrets.MYSQL_DB }}
             MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-            REDIS_HOST=${{ secrets.REDIS_HOST }}
-            REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}
-            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-            KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
             EOF
             
             docker load -i myapp.tar
-            docker compose up -d
             
             sleep 10
-            docker compose logs --tail=100
 
       - name: Send Discord success message
         if: success()
