@@ -28,6 +28,7 @@ spring-boot-starter-logging = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-oauth2-client" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-kafka = { module = "org.springframework.kafka:spring-kafka" }
 
 
 
