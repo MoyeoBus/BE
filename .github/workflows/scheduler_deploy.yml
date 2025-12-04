@@ -62,6 +62,7 @@ jobs:
             MYSQL_DB=${{ secrets.MYSQL_DB }}
             MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            KAFKA_HOST=${{ secrets.KAFKA_HOST }}
             EOF
             
             docker load -i myapp.tar

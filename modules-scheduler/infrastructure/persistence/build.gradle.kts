@@ -13,6 +13,8 @@ dependencies {
     implementation(projects.modulesScheduler.application)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.kafka)
+
     implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("org.mapstruct:mapstruct:1.6.2")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
