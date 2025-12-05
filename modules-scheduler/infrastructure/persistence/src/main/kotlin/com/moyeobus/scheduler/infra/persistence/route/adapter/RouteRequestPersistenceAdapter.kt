@@ -29,7 +29,7 @@ class RouteRequestPersistenceAdapter(
     private fun RouteRequest.toEntity() =
         RouteRequestEntity(
             id = this.id,
-            passengerId = 1L,
+            passengerId = this.passengerId,
             routeId = this.routeId,
             departure = addressMapper.toEntity(this.departure),
             destination = addressMapper.toEntity(this.destination),
