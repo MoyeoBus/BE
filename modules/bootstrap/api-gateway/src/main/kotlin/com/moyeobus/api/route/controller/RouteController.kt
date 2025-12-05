@@ -10,7 +10,6 @@ import com.moyeobus.application.route.model.RouteDetail
 import com.moyeobus.application.route.port.`in`.LocalQueryFilter
 import com.moyeobus.application.route.port.`in`.QueryFilter
 import com.moyeobus.application.route.port.`in`.RouteCommand
-import com.moyeobus.application.route.port.`in`.RouteGenerationUseCase
 import com.moyeobus.application.route.port.`in`.RouteQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestQueryUseCase
 import com.moyeobus.application.route.port.`in`.RouteRequestUseCase
@@ -37,14 +36,8 @@ class RouteController(
     private val routeQueryService: RouteQueryUseCase,
     private val routeOwnerQueryService: RouteOwnerQueryUseCase,
     private val routeRequestUseCase: RouteRequestUseCase,
-    private val routeRequestQueryUseCase: RouteRequestQueryUseCase,
-    private val routeGenerationUseCase: RouteGenerationUseCase,
+    private val routeRequestQueryUseCase: RouteRequestQueryUseCase
 ) : RouteControllerDocs{
-
-    @GetMapping("/test")
-    fun test() : ResponseEntity<Any> {
-        return ResponseEntity.ok(routeGenerationUseCase.generateRoute())
-    }
 
     @GetMapping("/requests/{passengerId}")
     override fun query(
