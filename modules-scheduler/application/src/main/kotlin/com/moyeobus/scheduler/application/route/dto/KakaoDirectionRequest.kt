@@ -17,8 +17,8 @@ data class KakaoDirectionRequest(
          */
         fun fromSingle(start: Address, end: Address): KakaoDirectionRequest {
             return KakaoDirectionRequest(
-                origin = Point(start.lat.toString(), start.lon.toString()),
-                destination = Point(end.lat.toString(), end.lon.toString()),
+                origin = Point(start.lat, start.lon),
+                destination = Point(end.lat, end.lon),
                 waypoints = emptyList(),
                 priority = "RECOMMEND"
             )
