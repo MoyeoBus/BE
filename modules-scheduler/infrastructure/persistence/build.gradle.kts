@@ -9,8 +9,9 @@ repositories {
 }
 
 dependencies {
-    implementation(projects.modulesScheduler.common)
     implementation(projects.modulesScheduler.application)
+    implementation(projects.modulesScheduler.common)
+    implementation(projects.modulesScheduler.domain)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.kafka)
