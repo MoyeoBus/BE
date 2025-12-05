@@ -1,0 +1,37 @@
+package com.moyeobus.scheduler.global.response.status
+
+import com.moyeobus.scheduler.global.response.BaseStatusCode
+import org.springframework.http.HttpStatus
+
+
+enum class ErrorStatus(
+    override val httpStatus: HttpStatus,
+    override val code: String,
+    override val message: String
+) : BaseStatusCode {
+    // 일반 응답
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_500", "서버 에러, 관리자에게 문의 바랍니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_400", "잘못된 요청입니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON_401", "인증이 필요합니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON_403", "금지된 요청입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON_404", "요청한 리소스를 찾을 수 없습니다."),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 요청 메서드입니다."),
+
+    // JWT
+    EMPTY_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_001", "토큰이 비어있습니다."),
+    INVALID_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_002", "필요한 정보를 포함하지 않은 토큰입니다."),
+    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "TOKEN_003", "유효기간이 만료된 토큰입니다."),
+
+    // USER
+    USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER_001", "이미 존재하는 사용자이며, 비밀번호가 틀렸습니다."),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_002", "해당 사용자를 찾을 수 없습니다."),
+    EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER_003", "이미 사용 중인 이메일입니다.");
+
+    fun withDetail(detail: String): BaseStatusCode {
+        return object : BaseStatusCode {
+            override val httpStatus = this@ErrorStatus.httpStatus
+            override val code = this@ErrorStatus.code
+            override val message = detail
+        }
+    }
+}

@@ -134,6 +134,11 @@ subprojects.filter { it.path.contains(":common") }.forEach { project ->
     project.apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 }
 
+// domain POJO
+subprojects.filter { it.path.contains(":domain") }.forEach { project ->
+
+}
+
 // external 하위 모듈들에 플러그인 적용
 subprojects.filter { it.path.contains(":external:") }.forEach { project ->
     project.apply(plugin = "org.springframework.boot")

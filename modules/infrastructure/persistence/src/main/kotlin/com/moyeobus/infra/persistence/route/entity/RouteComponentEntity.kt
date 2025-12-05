@@ -1,5 +1,6 @@
 package com.moyeobus.infra.persistence.route.entity
 
+import com.moyeobus.global.entity.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -29,4 +30,4 @@ class RouteComponentEntity (
     val duration: Int,
 
     val isRequested: Boolean
-)
+): BaseEntity()

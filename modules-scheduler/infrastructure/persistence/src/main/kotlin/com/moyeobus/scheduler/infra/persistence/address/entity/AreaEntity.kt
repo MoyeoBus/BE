@@ -1,0 +1,16 @@
+package com.moyeobus.scheduler.infra.persistence.address.entity
+
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+
+@Entity
+@Table(name = "area")
+class AreaEntity (
+    @Id
+    val id: Long? = null,
+
+    val sigunguName: String,
+
+    val parentSigunguId: Long? = null
+)

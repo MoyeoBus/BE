@@ -10,6 +10,8 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_HOST}:9092
 
+kakao:
+  rest-api-key: ${KAKAO_API_KEY}
 
 server:
   port: 8080
