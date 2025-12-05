@@ -5,7 +5,7 @@ import com.moyeobus.scheduler.application.route.dto.KakaoDirectionRequest
 import com.moyeobus.scheduler.application.route.dto.KakaoDirectionResponse
 import com.moyeobus.scheduler.application.route.dto.Point
 import com.moyeobus.scheduler.application.route.dto.Waypoint
-import com.moyeobus.scheduler.application.route.port.`in`.RouteGenerationUseCase
+import com.moyeobus.scheduler.application.route.port.`in`.RouteGenerateUseCase
 import com.moyeobus.scheduler.application.route.port.out.KakaoMobilityOutPort
 import com.moyeobus.scheduler.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.scheduler.application.route.port.out.RouteOutPort
@@ -19,6 +19,7 @@ import com.moyeobus.scheduler.domain.route.RouteComponent
 import com.moyeobus.scheduler.domain.route.RouteRequest
 import com.moyeobus.scheduler.domain.route.RouteStatus
 import com.moyeobus.scheduler.domain.routeowner.PassengerRoute
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.ZoneId
 import kotlin.collections.forEach
@@ -37,7 +38,7 @@ class RouteGenerateService(
     private val routeRequestRepo: RouteRequestOutPort,
     private val routeComponentRepo: RouteComponentOutPort,
     private val kakaoMobilityClient: KakaoMobilityOutPort
-) : RouteGenerationUseCase {
+) : RouteGenerateUseCase {
 
     fun KakaoDirectionRequest.Companion.fromCluster(
         group: List<RouteRequest>
@@ -56,6 +57,7 @@ class RouteGenerateService(
         )
     }
 
+    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     override fun generateRoute(): List<Route> {
         val clusters = clusterByDistanceWithParticipants()
         val savedRoutes = mutableListOf<Route>()
