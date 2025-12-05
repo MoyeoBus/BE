@@ -19,6 +19,7 @@ import com.moyeobus.scheduler.domain.route.RouteComponent
 import com.moyeobus.scheduler.domain.route.RouteRequest
 import com.moyeobus.scheduler.domain.route.RouteStatus
 import com.moyeobus.scheduler.domain.routeowner.PassengerRoute
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.ZoneId
@@ -40,6 +41,8 @@ class RouteGenerateService(
     private val kakaoMobilityClient: KakaoMobilityOutPort
 ) : RouteGenerateUseCase {
 
+    private val log = KotlinLogging.logger { }
+
     fun KakaoDirectionRequest.Companion.fromCluster(
         group: List<RouteRequest>
     ): KakaoDirectionRequest {
@@ -51,30 +54,33 @@ class RouteGenerateService(
         }
 
         return KakaoDirectionRequest(
-            origin = Point(first.lon.toString(), first.lat.toString()),
-            destination = Point(last.lon.toString(), last.lat.toString()),
+            origin = Point(first.lon, first.lat),
+            destination = Point(last.lon, last.lat),
             waypoints = waypoints
         )
     }
 
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
-    override fun generateRoute(): List<Route> {
+    override fun generateRoute() {
         val clusters = clusterByDistanceWithParticipants()
         val savedRoutes = mutableListOf<Route>()
 
         clusters.forEach { cluster ->
-            val kakaoRoute = kakaoMobilityClient.getDirections(
-                KakaoDirectionRequest.fromCluster(cluster.acceptedRequests)
-            )
+            try {
+                val kakaoRoute = kakaoMobilityClient.getDirections(
+                    KakaoDirectionRequest.fromCluster(cluster.acceptedRequests)
+                )
 
-            val route = saveRoute(kakaoRoute, cluster)
+                val route = saveRoute(kakaoRoute, cluster)
 
-            savePassengersOfRoute(route, cluster.exceptedRequests)
+                savePassengersOfRoute(route, cluster.exceptedRequests)
 
-            savedRoutes.add(route)
-            assignRouteToParticipants(route, cluster.exceptedRequests)
+                savedRoutes.add(route)
+                assignRouteToParticipants(route, cluster.exceptedRequests)
+            } catch (e: Exception) {
+                log.error("클러스터 처리 실패: ${e.message}")
+            }
         }
-        return savedRoutes
     }
 
     private fun assignRouteToParticipants(route: Route, requests: List<RouteRequest>) {
@@ -86,7 +92,7 @@ class RouteGenerateService(
     }
 
     private fun savePassengersOfRoute(route: Route, requests: List<RouteRequest>) {
-        requests.forEach { req ->
+        requests.filter { it.passengerId != null }.forEach { req ->
             val passenger = passengerRepo.findById(req.passengerId!!)
             passengerRouteRepo.save(
                 PassengerRoute(
