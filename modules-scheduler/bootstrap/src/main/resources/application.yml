@@ -13,5 +13,11 @@ spring:
 kakao:
   rest-api-key: ${KAKAO_API_KEY}
 
+logging:
+  config: classpath:logback-spring.xml  # 또는 logback.xml
+  level:
+    root: INFO
+    com.moyeobus.scheduler: DEBUG  # 본인 패키지명으로 변경
+
 server:
   port: 8080
