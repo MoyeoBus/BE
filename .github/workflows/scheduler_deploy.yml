@@ -53,8 +53,11 @@ jobs:
           script: |
             cd /home/ubuntu/app
             
-            docker compose down || true
-            docker rmi scheduler:latest || true
+            docker stop scheduler || true
+            docker rm scheduler || true
+            
+            docker rmi myapp:latest || true
+          
             
             cat > .env << 'EOF'
             SPRING_PROFILES_ACTIVE=prod
