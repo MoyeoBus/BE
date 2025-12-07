@@ -4,7 +4,7 @@ on:
   push:
     branches: [ feat/#99-monitoring-system ]
     paths:
-      - '.github/workflows/nhn_deploy.yml'
+      - '.github/workflows/api_deploy.yml'
       - 'modules/bootstrap/api-gateway/**'
       - 'modules/application/**'
       - 'modules/domain/**'
