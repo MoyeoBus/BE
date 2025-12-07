@@ -77,7 +77,11 @@ springdoc:
   swagger-ui:
     path: /index.html
 
-
+logging:
+  config: classpath:logback-spring.xml  # 또는 logback.xml
+  level:
+    root: INFO
+    com.moyeobus: DEBUG  # 본인 패키지명으로 변경
 
 jwt:
   issuer: pjygcp9@gmail.com
