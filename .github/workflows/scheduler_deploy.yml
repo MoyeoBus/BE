@@ -71,9 +71,10 @@ jobs:
             
             docker load -i myapp.tar
             docker run -d \
-              --name scheduler \
-              --env-file .env \
-              myapp:latest
+            --name scheduler \
+            --env-file .env \
+            -v /var/log/spring-boot:/app/logs \
+            myapp:latest
             
             sleep 10
 
