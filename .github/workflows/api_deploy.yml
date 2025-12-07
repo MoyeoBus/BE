@@ -2,9 +2,9 @@ name: CI/CD Deploy to NHN Cloud for API Server
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feat/#99-monitoring-system ]
     paths:
-      - '.github/workflows/nhn_deploy.yml'
+      - '.github/workflows/api_deploy.yml'
       - 'modules/bootstrap/api-gateway/**'
       - 'modules/application/**'
       - 'modules/domain/**'
@@ -54,7 +54,6 @@ jobs:
           script: |
             cd /home/ubuntu/app
             
-            docker compose down || true
             docker rmi myapp:latest || true
             
             cat > .env << 'EOF'
@@ -70,7 +69,13 @@ jobs:
             EOF
             
             docker load -i myapp.tar
-            docker compose up -d
+            docker run -d \  
+            --name myapp \
+            --env-file /home/ubuntu/app/.env \
+            -p 8080:8080 \
+            -v /var/log/spring-boot:/app/logs \
+            myapp:latest
+            
             
             sleep 10
             docker compose logs --tail=100
