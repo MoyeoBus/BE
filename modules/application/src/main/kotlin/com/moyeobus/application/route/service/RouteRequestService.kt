@@ -13,11 +13,11 @@ class RouteRequestService(
     private val addressRepository: AddressOutPort,
     private val routeRequestRepository: RouteRequestOutPort
 ) : RouteRequestUseCase {
-    override fun request(command: RouteCommand) {
+    override fun request(passengerId: Long, command: RouteCommand) {
         val departure = addressRepository.findById(command.departureId)
         val destination = addressRepository.findById(command.destinationId)
         val routeRequest = RouteRequest(
-            passengerId = 1L,
+            passengerId = passengerId,
             departure = departure,
             destination = destination,
             startDateTime = command.startDateTime,
