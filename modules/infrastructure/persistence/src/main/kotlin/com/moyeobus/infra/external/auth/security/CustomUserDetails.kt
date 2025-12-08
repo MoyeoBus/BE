@@ -10,8 +10,13 @@ class CustomUserDetails(
     private val passenger: PassengerEntity
 ) : UserDetails {
 
+    val id: Long
+        get() = passenger.id!!
+
     val email: String
         get() = passenger.email
+
+
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return listOf(SimpleGrantedAuthority("ROLE_VIEWER"))
