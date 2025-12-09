@@ -20,4 +20,11 @@ class SwaggerConfig {
         Info()
             .title("MoyeoBus API")
             .version("v1.0")
+            .description(
+                """
+                  - ‼️`서버 DNS 변경 - https://api.moyeobus.com/api/v1` ‼️
+                  - `✅ = API 변동이 생겼으니 수정 필요`
+                  - `로그인 하면 해당 스웨거 페이지에 자동으로 쿠키가 생기니까 쿠키 비어있으면 로그인하면 돼.`
+                """.trimIndent()
+            )
 }
