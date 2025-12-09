@@ -20,7 +20,14 @@ class JwtFilter(
 ) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(JwtFilter::class.java)
+    private val allowOrigins = arrayOf(
+        "/api/v1/login",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/oauth/login",
+        "/api/v1/signup",
 
+    )
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -58,7 +65,9 @@ class JwtFilter(
                 log.debug("❌ JWT 토큰 만료됨")
             }
         } ?: run {
-            log.debug("❌ access 토큰 없음, URI=${request.requestURI}")
+            if(!allowOrigins.contains(request.requestURI)){
+                log.debug("❌ access 토큰 없음, URI=${request.requestURI}")
+            }
         }
 
         filterChain.doFilter(request, response)
