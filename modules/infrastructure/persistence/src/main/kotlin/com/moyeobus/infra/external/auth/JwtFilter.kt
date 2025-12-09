@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 class JwtFilter(
@@ -20,6 +21,16 @@ class JwtFilter(
 ) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(JwtFilter::class.java)
+    private val allowOrigins = listOf(
+        "/api/v1/login",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/oauth/login",
+        "/api/v1/signup",
+    )
+    private val pathMatcher = AntPathMatcher()
+
+
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -58,7 +69,10 @@ class JwtFilter(
                 log.debug("❌ JWT 토큰 만료됨")
             }
         } ?: run {
-            log.debug("❌ access 토큰 없음, URI=${request.requestURI}")
+            val uri = request.requestURI
+            if (allowOrigins.none { pattern -> pathMatcher.match(pattern, uri)}) {
+                log.debug("❌ access 토큰 없음, URI=$uri")
+            }
         }
 
         filterChain.doFilter(request, response)

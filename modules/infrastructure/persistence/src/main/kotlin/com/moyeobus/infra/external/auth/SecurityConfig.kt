@@ -110,7 +110,7 @@ class SecurityConfig(
         }
         http.authorizeHttpRequests {
             it.requestMatchers(
-                "/oauth2/**", "/register/*", "/login",
+                "/oauth2/**",
                 "/swagger-ui/**", "/v3/api-docs/**",
                  "/socket/**", "/api/v1/login", "/api/v1/signup",
                 "/oauth/login"

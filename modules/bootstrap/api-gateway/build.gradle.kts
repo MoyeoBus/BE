@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.modules.application)
     implementation(projects.modules.infrastructure.persistence)
     implementation(libs.spring.boot.starter.jpa)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.bundles.bootstrap)
     testImplementation(libs.bundles.test)
     testImplementation(libs.spring.boot.starter.test) {

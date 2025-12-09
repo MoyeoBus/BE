@@ -6,6 +6,7 @@ import com.moyeobus.api.route.dto.QueryResponse
 import com.moyeobus.application.route.model.RouteDetail
 import com.moyeobus.application.route.port.`in`.RouteCommand
 import com.moyeobus.global.response.ApiResponse
+import com.moyeobus.infra.external.auth.security.CustomUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -103,14 +105,21 @@ interface RouteControllerDocs {
                 )
             ]
         )
+        @AuthenticationPrincipal userDetail: CustomUserDetails,
         @RequestBody
         command: RouteCommand
     ): ResponseEntity<ApiResponse<Void>>
 
 
     @Operation(
-        summary = "노선 요청 조회",
-        description = "필터 조건에 맞는 노선 요청 내역을 페이지네이션 형태로 반환합니다."
+        summary = "노선 요청 조회 ✅",
+        description = """
+        필터 조건에 맞는 노선 요청 내역을 페이징하여 반환합니다.
+        
+        ### 🔄 Change Log
+        - **v1.1 (2025-12-09)** passengerId PathVariable 제거 후 쿠키 전송  
+        - **v1.0** 최초 배포
+        """
     )
     @ApiResponses(
         value = [
@@ -223,8 +232,7 @@ interface RouteControllerDocs {
         ]
     )
     fun query(
-        @PathVariable passengerId: Long,
-
+        @AuthenticationPrincipal userDetail: CustomUserDetails,
         @Parameter(example = "APPROVED", description = "노선 요청 상태 (APPROVED, CANCELLED, PENDING)")
         @RequestParam(required = false) status: String?,
 
@@ -366,8 +374,14 @@ interface RouteControllerDocs {
 
 
     @Operation(
-        summary = "사용자별 노선 조회",
-        description = "특정 승객(`passengerId`)이 참여하거나 생성한 노선 목록을 조회합니다. <br/> 상태(`status`), 날짜 필터(`from`, `to`), 페이지네이션(`cursor`)를 사용할 수 있습니다."
+        summary = "사용자별 노선 조회 ✅",
+        description = """
+        특정 승객(`Cookie`)이 참여하거나 생성한 노선 목록을 조회합니다. <br/> 상태(`status`), 날짜 필터(`from`, `to`), 페이지네이션(`cursor`)를 사용할 수 있습니다.
+        
+        ### 🔄 Change Log
+        - **v1.1 (2025-12-09)** passengerId PathVariable 제거 후 쿠키 전송  
+        - **v1.0** 최초 배포
+        """
     )
     @ApiResponses(
         value = [
@@ -421,9 +435,7 @@ interface RouteControllerDocs {
         ]
     )
     fun queryByUser(
-        @Parameter(example = "1", description = "조회할 승객 ID")
-        @PathVariable passengerId: Long,
-
+        @AuthenticationPrincipal userDetail: CustomUserDetails,
         @Parameter(example = "2025-11-01 00:00:00", description = "조회 시작일 (yyyy-MM-dd HH:mm:ss)")
         @RequestParam(required = false)
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

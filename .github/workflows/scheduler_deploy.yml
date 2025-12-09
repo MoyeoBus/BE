@@ -2,7 +2,7 @@ name: CI/CD Deploy to NHN Cloud for scheduler server
 
 on:
   push:
-    branches: [ feat/#99-monitoring-system ]
+    branches: [ main ]
     paths:
       - '.github/workflows/scheduler_deploy.yml'
       - 'modules-scheduler/bootstrap/**'
