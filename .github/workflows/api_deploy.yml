@@ -61,6 +61,9 @@ jobs:
           script: |
             cd /home/ubuntu/app
             
+            docker stop myapp || true
+            docker rm myapp || true
+            
             docker rmi myapp:latest || true
             
             cat > .env << 'EOF'
@@ -85,7 +88,6 @@ jobs:
             
             
             sleep 10
-            docker compose logs --tail=100
 
       - name: Send Discord success message
         if: success()
