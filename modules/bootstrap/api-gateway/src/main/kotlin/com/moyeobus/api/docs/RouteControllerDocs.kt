@@ -112,8 +112,14 @@ interface RouteControllerDocs {
 
 
     @Operation(
-        summary = "노선 요청 조회",
-        description = "필터 조건에 맞는 노선 요청 내역을 페이지네이션 형태로 반환합니다."
+        summary = "노선 요청 조회 ✅",
+        description = """
+        필터 조건에 맞는 노선 요청 내역을 페이징하여 반환합니다.
+        
+        ### 🔄 Change Log
+        - **v1.1 (2025-12-09)** passengerId PathVariable 제거 후 쿠키 전송  
+        - **v1.0** 최초 배포
+        """
     )
     @ApiResponses(
         value = [
@@ -368,8 +374,14 @@ interface RouteControllerDocs {
 
 
     @Operation(
-        summary = "사용자별 노선 조회",
-        description = "특정 승객(`passengerId`)이 참여하거나 생성한 노선 목록을 조회합니다. <br/> 상태(`status`), 날짜 필터(`from`, `to`), 페이지네이션(`cursor`)를 사용할 수 있습니다."
+        summary = "사용자별 노선 조회 ✅",
+        description = """
+        특정 승객(`Cookie`)이 참여하거나 생성한 노선 목록을 조회합니다. <br/> 상태(`status`), 날짜 필터(`from`, `to`), 페이지네이션(`cursor`)를 사용할 수 있습니다.
+        
+        ### 🔄 Change Log
+        - **v1.1 (2025-12-09)** passengerId PathVariable 제거 후 쿠키 전송  
+        - **v1.0** 최초 배포
+        """
     )
     @ApiResponses(
         value = [
