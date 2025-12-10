@@ -1,4 +1,4 @@
-package com.moyeobus.scheduler.infra.external.kafka
+package com.moyeobus.scheduler.infra.external.kafka.config
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
