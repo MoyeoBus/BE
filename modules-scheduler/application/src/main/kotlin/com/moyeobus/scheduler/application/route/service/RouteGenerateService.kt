@@ -1,5 +1,6 @@
 package com.moyeobus.scheduler.application.route.service
 
+import com.moyeobus.scheduler.application.event.EventOutport
 import com.moyeobus.scheduler.application.passenger.out.PassengerOutPort
 import com.moyeobus.scheduler.application.route.dto.KakaoDirectionRequest
 import com.moyeobus.scheduler.application.route.dto.KakaoDirectionResponse
@@ -33,6 +34,7 @@ import kotlin.math.sqrt
 
 @Service
 class RouteGenerateService(
+    private val kafkaProducerService: EventOutport,
     private val passengerRepo: PassengerOutPort,
     private val passengerRouteRepo: PassengerRouteOutPort,
     private val routeRepo: RouteOutPort,
@@ -60,7 +62,7 @@ class RouteGenerateService(
         )
     }
 
-    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 22 16 * * *", zone = "Asia/Seoul")
     override fun generateRoute() {
         val clusters = clusterByDistanceWithParticipants()
         val savedRoutes = mutableListOf<Route>()
@@ -77,10 +79,12 @@ class RouteGenerateService(
 
                 savedRoutes.add(route)
                 assignRouteToParticipants(route, cluster.exceptedRequests)
+                kafkaProducerService.sendEvent("route-created", route.id!!)
             } catch (e: Exception) {
                 log.error("클러스터 처리 실패: ${e.message}")
             }
         }
+
     }
 
     private fun assignRouteToParticipants(route: Route, requests: List<RouteRequest>) {

@@ -34,13 +34,13 @@ class KafkaProducerConfig(
 
 
     @Bean
-    fun producerFactory(): ProducerFactory<String, Any> =
+    fun producerFactory(): ProducerFactory<String, Long> =
         DefaultKafkaProducerFactory(producerConfig())
 
 
     @Bean
     fun kafkaTemplate(
-        producerFactory: ProducerFactory<String, Any>
-    ): KafkaTemplate<String, Any> =
+        producerFactory: ProducerFactory<String, Long>
+    ): KafkaTemplate<String, Long> =
         KafkaTemplate(producerFactory)
 }
