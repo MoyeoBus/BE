@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.spring.boot.starter.oauth2.client)
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.redis)
+    implementation(libs.spring.boot.starter.kafka)
     implementation(libs.bundles.jwt)
     implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("org.mapstruct:mapstruct:1.6.2")
