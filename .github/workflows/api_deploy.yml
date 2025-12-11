@@ -80,7 +80,7 @@ jobs:
             EOF
             
             docker load -i myapp.tar
-            docker run -d \  
+            docker run -d \
             --name myapp \
             --env-file /home/ubuntu/app/.env \
             -p 8080:8080 \
