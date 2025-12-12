@@ -2,7 +2,7 @@ name: CI/CD Deploy to NHN Cloud for WebSocket server
 
 on:
   push:
-    branches: [ feat/#106-socket-module ]
+    branches: [ main ]
     paths:
       - '.github/workflows/websocket_deploy.yml'
       - 'modules-websocket/bootstrap/**'
