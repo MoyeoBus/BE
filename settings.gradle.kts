@@ -95,4 +95,4 @@ class FileVisitor(
 }
 
 // modules와 modules-scheduler 둘 다 포함
-includeModulesFrom("modules", "modules-scheduler")
+includeModulesFrom("modules", "modules-scheduler", "modules-websocket")
