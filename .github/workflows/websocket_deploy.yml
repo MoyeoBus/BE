@@ -73,7 +73,6 @@ jobs:
             MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
             KAFKA_HOST=${{ secrets.KAFKA_HOST }}
-            KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
             EOF
             
             docker load -i myapp.tar
