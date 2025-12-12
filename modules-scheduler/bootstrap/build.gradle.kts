@@ -12,7 +12,6 @@ tasks.bootJar {
 
 dependencies {
     implementation(projects.modulesScheduler.common)
-    implementation(projects.modulesScheduler.external)
     implementation(projects.modulesScheduler.application)
     implementation(projects.modulesScheduler.infrastructure.persistence)
     implementation(libs.spring.boot.starter.jpa)
