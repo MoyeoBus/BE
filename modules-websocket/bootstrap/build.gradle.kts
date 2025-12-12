@@ -11,9 +11,9 @@ tasks.bootJar {
 
 
 dependencies {
-    implementation(projects.modulesScheduler.common)
-    implementation(projects.modulesScheduler.application)
-    implementation(projects.modulesScheduler.infrastructure.persistence)
+    implementation(projects.modulesWebsocket.common)
+    implementation(projects.modulesWebsocket.application)
+    implementation(projects.modulesWebsocket .infrastructure.persistence)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.bundles.bootstrap)
     testImplementation(libs.bundles.test)

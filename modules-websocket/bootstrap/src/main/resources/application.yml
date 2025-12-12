@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:3306/${MYSQL_DB}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+
+logging:
+  config: classpath:logback-spring.xml  # 또는 logback.xml
+  level:
+    root: INFO
+    com.moyeobus.scheduler: DEBUG  # 본인 패키지명으로 변경
+
+server:
+  port: 8080
