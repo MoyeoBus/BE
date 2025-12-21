@@ -65,4 +65,39 @@ class RouteQueryServiceTest {
         assertEquals(3, result.items.size)
         assertEquals(expectedStations, result.items)
     }
+
+    @Test
+    fun `정류장이 하나만 있는 경우 출발지와 도착지가 동일하다`() {
+        // given
+        val routeId = 1L
+        val expectedRoute = Route(
+            id = routeId,
+            operatorId = 1L,
+            localGovId = 1L,
+            busId = 3L,
+            routeDistance = 100,
+            routeTotalTime = 30,
+            status = RouteStatus.OPERATED
+        )
+        val singleStation = listOf(
+            RouteItem(order = 1, station = "석계동", time = "20:40")
+        )
+
+        every { routeRepo.findById(routeId) } returns expectedRoute
+        every { busRepo.findNumberById(3L) } returns 3000L
+        every { routeComponentRepo.findTimeRange(routeId) } returns RouteTimeRange(
+            date = "2025-12-21",
+            departureTime = "20:37",
+            destinationTime = "20:55"
+        )
+        every { routeComponentRepo.findAllByRouteId(routeId) } returns singleStation
+
+        // when
+        val result = service.queryRouteDetail(routeId)
+
+        // then
+        assertEquals("석계동", result.routeInfo.departureName)
+        assertEquals("석계동", result.routeInfo.destinationName)
+    }
+
 }
