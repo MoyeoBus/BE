@@ -2,8 +2,6 @@ package com.moyeobus.application.route
 
 import com.moyeobus.application.address.port.out.AreaOutPort
 import com.moyeobus.application.bus.port.out.BusOutPort
-import com.moyeobus.application.route.model.RouteDetail
-import com.moyeobus.application.route.model.RouteInfo
 import com.moyeobus.application.route.model.RouteItem
 import com.moyeobus.application.route.port.out.RouteComponentOutPort
 import com.moyeobus.application.route.port.out.RouteOutPort
@@ -13,8 +11,6 @@ import com.moyeobus.domain.route.Route
 import com.moyeobus.domain.route.RouteStatus
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDateTime
-import java.util.Date
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
