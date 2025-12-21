@@ -100,4 +100,34 @@ class RouteQueryServiceTest {
         assertEquals("석계동", result.routeInfo.destinationName)
     }
 
+    @Test
+    fun `정류장이 없는 경우 출발지와 도착지가 UNKNOWN이다`() {
+        // given
+        val routeId = 1L
+        val expectedRoute = Route(
+            id = routeId,
+            operatorId = 1L,
+            localGovId = 1L,
+            busId = 3L,
+            routeDistance = 100,
+            routeTotalTime = 30,
+            status = RouteStatus.OPERATED
+        )
+
+        every { routeRepo.findById(routeId) } returns expectedRoute
+        every { busRepo.findNumberById(3L) } returns 3000L
+        every { routeComponentRepo.findTimeRange(routeId) } returns RouteTimeRange(
+            date = "2025-12-21",
+            departureTime = "20:37",
+            destinationTime = "20:55"
+        )
+        every { routeComponentRepo.findAllByRouteId(routeId) } returns emptyList()
+
+        // when
+        val result = service.queryRouteDetail(routeId)
+
+        // then
+        assertEquals("UNKNOWN", result.routeInfo.departureName)
+        assertEquals("UNKNOWN", result.routeInfo.destinationName)
+    }
 }
