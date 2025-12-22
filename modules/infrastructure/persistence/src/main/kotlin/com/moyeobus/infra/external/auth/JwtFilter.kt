@@ -43,25 +43,20 @@ class JwtFilter(
         val accessToken = CookieUtil.getAccessTokenFromRequest(request)
         val refreshToken = CookieUtil.getRefreshTokenFromRequest(request)
 
-        val uri = request.requestURI
-        if (allowOrigins.contains(uri)) {
-            return
-        }
-
-
-        refreshToken?.let {
-            if (tokenBlackListService.isAlreadyBlackListed(it)) {
+        refreshToken?.let { token ->
+            if (tokenBlackListService.isAlreadyBlackListed(token)) {
                 expireCookie(response, "access", "/", true, true, "None")
                 expireCookie(response, "refresh", "/", true, true, "None")
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
                 return
             }
+
             if (pathMatcher.match(tokenReissueApi, request.requestURI)) {
                 val email = jwtUtil.getEmail(refreshToken)
                 val reissuedAccess = jwtUtil.createAccess(email)
 
 
-                response.addCookie(cookieUtil.createCookie("access", reissuedAccess))
+                response.addCookie(cookieUtil.createAccessCookie(reissuedAccess))
                 return
             }
         }
