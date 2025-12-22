@@ -155,7 +155,7 @@ class SecurityConfig(
         )
         http.logout { logout ->
             logout
-                .logoutUrl("/logout")
+                .logoutUrl("/api/v1/logout")
                 .addLogoutHandler(logoutHandler())
                 .logoutSuccessHandler { request, response, authentication ->
                     response.status = 204
