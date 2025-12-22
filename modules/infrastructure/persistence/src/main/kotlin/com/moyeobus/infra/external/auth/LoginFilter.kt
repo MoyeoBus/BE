@@ -80,8 +80,8 @@ class LoginFilter(
             val refresh = jwtUtil.createRefresh(email)
 
 
-            response.addCookie(cookieUtil.createCookie("access", access))
-            response.addCookie(cookieUtil.createCookie("refresh", refresh))
+            response.addCookie(cookieUtil.createAccessCookie(access))
+            response.addCookie(cookieUtil.createRefreshCookie(refresh))
             response.status = HttpStatus.OK.value()
 
         } catch (e: Exception) {
