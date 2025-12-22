@@ -148,7 +148,7 @@ class SecurityConfig(
                 .failureHandler(oAuth2AuthenticationFailureHandler)
         }
 
-        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(JwtFilter(cookieUtil, jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
         http.addFilterAt(
             loginFilter(),
             UsernamePasswordAuthenticationFilter::class.java

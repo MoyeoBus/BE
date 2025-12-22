@@ -15,6 +15,7 @@ import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 class JwtFilter(
+    private val cookieUtil: CookieUtil,
     private val jwtUtil: JwtUtil,
     private val userDetailsService: UserDetailsService,
     private val tokenBlackListService: TokenBlackListService
@@ -28,6 +29,7 @@ class JwtFilter(
         "/oauth/login",
         "/api/v1/signup",
     )
+    private val tokenReissueApi = "/api/v1/tokens"
     private val pathMatcher = AntPathMatcher()
 
 
@@ -41,12 +43,25 @@ class JwtFilter(
         val accessToken = CookieUtil.getAccessTokenFromRequest(request)
         val refreshToken = CookieUtil.getRefreshTokenFromRequest(request)
 
+        val uri = request.requestURI
+        if (allowOrigins.contains(uri)) {
+            return
+        }
+
 
         refreshToken?.let {
             if (tokenBlackListService.isAlreadyBlackListed(it)) {
                 expireCookie(response, "access", "/", true, true, "None")
                 expireCookie(response, "refresh", "/", true, true, "None")
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
+                return
+            }
+            if (pathMatcher.match(tokenReissueApi, request.requestURI)) {
+                val email = jwtUtil.getEmail(refreshToken)
+                val reissuedAccess = jwtUtil.createAccess(email)
+
+
+                response.addCookie(cookieUtil.createCookie("access", reissuedAccess))
                 return
             }
         }
