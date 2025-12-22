@@ -1,5 +1,7 @@
 package com.moyeobus.infra.external.oauth2.util
 
+import com.moyeobus.infra.external.oauth2.util.JwtUtil.Companion.ACCESS_TOKEN_EXPIRE_TIME
+import com.moyeobus.infra.external.oauth2.util.JwtUtil.Companion.REFRESH_TOKEN_EXPIRE_TIME
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,7 +13,6 @@ import java.util.Optional.of
 
 @Component
 object CookieUtil {
-    const val COOKIE_EXPIRE_TIME: Int = 30 * 60 // 30분
 
     fun getCookie(request: HttpServletRequest, name: String?): Optional<Cookie> {
         val cookies: Array<Cookie>? = request.cookies
@@ -23,10 +24,20 @@ object CookieUtil {
         return empty<Cookie?>()
     }
 
-    fun createCookie(key: String, value: String): Cookie {
-        return Cookie(key, value).apply {
+    fun createAccessCookie(value: String): Cookie {
+        return Cookie("access", value).apply {
             path = "/"
-            maxAge = COOKIE_EXPIRE_TIME
+            maxAge = (ACCESS_TOKEN_EXPIRE_TIME / 1000).toInt()
+            isHttpOnly = true
+            secure = true
+            setAttribute("SameSite", "Strict")
+        }
+    }
+
+    fun createRefreshCookie(value: String): Cookie {
+        return Cookie("refresh", value).apply {
+            path = "/"
+            maxAge = (REFRESH_TOKEN_EXPIRE_TIME / 1000).toInt()
             isHttpOnly = true
             secure = true
             setAttribute("SameSite", "Strict")
