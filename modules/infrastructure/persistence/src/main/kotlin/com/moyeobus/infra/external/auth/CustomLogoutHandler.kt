@@ -29,8 +29,8 @@ class CustomLogoutHandler(
                 jwtUtil.getRefreshTokenExpireTime(it)
             )
 
-            expireCookie(response, "refresh", "/", true, true, "None")
-            expireCookie(response, "access", "/", true, true, "None")
+            expireCookie(response, "refresh", "/", true, true, "Strict")
+            expireCookie(response, "access", "/", true, true, "Strict")
         }
 
         SecurityContextHolder.clearContext()
