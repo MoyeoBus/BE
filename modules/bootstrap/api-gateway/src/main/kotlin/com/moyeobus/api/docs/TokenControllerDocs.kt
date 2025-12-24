@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 )
 interface TokenControllerDocs {
     @Operation(
-        summary = "토큰 재발급",
+        summary = "토큰 재발급 ✅ (Http 메서드 변경; GET -> POST)",
         description = "유효기간이 남아있는 리프레쉬 토큰으로 새로운 액세스 토큰을 발급받습니다."
     )
     @ApiResponses(
