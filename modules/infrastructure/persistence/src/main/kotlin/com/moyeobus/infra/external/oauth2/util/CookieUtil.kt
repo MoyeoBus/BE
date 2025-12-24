@@ -51,7 +51,7 @@ object CookieUtil {
         // cookie.setDomain("");
         cookie.isHttpOnly = false
         cookie.secure = true
-        cookie.setAttribute("SameSite", "None")
+        cookie.setAttribute("SameSite", "Strict")
         response.addCookie(cookie)
     }
 
