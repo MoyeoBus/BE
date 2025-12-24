@@ -15,6 +15,7 @@ import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 class JwtFilter(
+    private val cookieUtil: CookieUtil,
     private val jwtUtil: JwtUtil,
     private val userDetailsService: UserDetailsService,
     private val tokenBlackListService: TokenBlackListService
@@ -28,6 +29,7 @@ class JwtFilter(
         "/oauth/login",
         "/api/v1/signup",
     )
+    private val tokenReissueApi = "/api/v1/tokens"
     private val pathMatcher = AntPathMatcher()
 
 
@@ -41,11 +43,18 @@ class JwtFilter(
         val accessToken = CookieUtil.getAccessTokenFromRequest(request)
         val refreshToken = CookieUtil.getRefreshTokenFromRequest(request)
 
+        val isReissueRequest = pathMatcher.match(tokenReissueApi, request.requestURI)
+                && request.method == "POST"
 
-        refreshToken?.let {
-            if (tokenBlackListService.isAlreadyBlackListed(it)) {
-                expireCookie(response, "access", "/", true, true, "None")
-                expireCookie(response, "refresh", "/", true, true, "None")
+        if (isReissueRequest) {
+            handleTokenReissue(response, refreshToken)
+            return
+        }
+
+        refreshToken?.let { token ->
+            if (tokenBlackListService.isAlreadyBlackListed(token)) {
+                expireCookie(response, "access", "/", true, true, "Strict")
+                expireCookie(response, "refresh", "/", true, true, "Strict")
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
                 return
             }
@@ -76,5 +85,49 @@ class JwtFilter(
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    private fun handleTokenReissue(
+        response: HttpServletResponse,
+        refreshToken: String?
+    ) {
+        if (refreshToken == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token이 필요합니다.")
+            return
+        }
+
+        if(!jwtUtil.getCategory(refreshToken).equals("refresh")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "전달받은 토큰은 Refresh Token이 아닙니다.")
+            return
+        }
+
+        if (jwtUtil.isExpired(refreshToken)) {
+            expireCookie(response, "access", "/", true, true, "Strict")
+            expireCookie(response, "refresh", "/", true, true, "Strict")
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token이 만료되었습니다. 다시 로그인해주세요.")
+            return
+        }
+
+        if (tokenBlackListService.isAlreadyBlackListed(refreshToken)) {
+            expireCookie(response, "access", "/", true, true, "Strict")
+            expireCookie(response, "refresh", "/", true, true, "Strict")
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
+            return
+        }
+
+        try {
+            val email = jwtUtil.getEmail(refreshToken)
+            val reissuedAccess = jwtUtil.createAccess(email)
+            response.addCookie(cookieUtil.createAccessCookie(reissuedAccess))
+
+            response.status = HttpServletResponse.SC_OK
+            response.contentType = "application/json"
+            response.characterEncoding = "UTF-8"
+            response.writer.write("""{"message": "액세스 토큰이 재발급되었습니다."}""")
+
+        } catch (e: Exception) {
+            log.error("❌ Token 재발급 실패", e)
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "토큰 재발급에 실패했습니다.")
+        }
     }
 }

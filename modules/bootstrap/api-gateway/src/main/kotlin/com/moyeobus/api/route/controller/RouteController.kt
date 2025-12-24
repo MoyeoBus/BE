@@ -110,7 +110,7 @@ class RouteController(
         routeRequestUseCase.request(userDetail.id, command)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(ApiResponse.Companion.onSuccessCreated())
+            .body(ApiResponse.onSuccessCreated())
     }
 
     @PatchMapping("/{requestId}")
@@ -118,7 +118,7 @@ class RouteController(
         routeRequestUseCase.cancel(requestId)
         return ResponseEntity
             .ok()
-            .body(ApiResponse.Companion.onSuccessVoid());
+            .body(ApiResponse.onSuccessVoid());
     }
 
 }

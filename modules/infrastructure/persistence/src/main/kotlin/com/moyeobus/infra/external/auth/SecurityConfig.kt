@@ -148,14 +148,14 @@ class SecurityConfig(
                 .failureHandler(oAuth2AuthenticationFailureHandler)
         }
 
-        http.addFilterBefore(JwtFilter(jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(JwtFilter(cookieUtil, jwtUtil, userDetailsService, tokenBlackListService), UsernamePasswordAuthenticationFilter::class.java)
         http.addFilterAt(
             loginFilter(),
             UsernamePasswordAuthenticationFilter::class.java
         )
         http.logout { logout ->
             logout
-                .logoutUrl("/logout")
+                .logoutUrl("/api/v1/logout")
                 .addLogoutHandler(logoutHandler())
                 .logoutSuccessHandler { request, response, authentication ->
                     response.status = 204

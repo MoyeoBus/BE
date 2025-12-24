@@ -130,9 +130,11 @@ class JwtUtil(
         }.getOrElse { 0L }
 
     companion object {
-        private val ACCESS_TOKEN_EXPIRE_TIME = (15 * 60 * 1000 // 15분
-                ).toLong()
-        private val REFRESH_TOKEN_EXPIRE_TIME = (60 * 60 * 1000 // 1시
-                ).toLong()
+        private const val MINUTE = 60 * 1000L
+        private const val HOUR = 60 * MINUTE
+
+        // TODO: 동작 확인 이후 각각 15분, 1시간으로 변경
+        const val ACCESS_TOKEN_EXPIRE_TIME = 1 * MINUTE
+        const val REFRESH_TOKEN_EXPIRE_TIME = 5 * MINUTE
     }
 }
