@@ -44,6 +44,7 @@ class JwtFilter(
         val refreshToken = CookieUtil.getRefreshTokenFromRequest(request)
 
         val isReissueRequest = pathMatcher.match(tokenReissueApi, request.requestURI)
+                && request.method == "POST"
 
         if (isReissueRequest) {
             handleTokenReissue(response, refreshToken)
@@ -52,8 +53,8 @@ class JwtFilter(
 
         refreshToken?.let { token ->
             if (tokenBlackListService.isAlreadyBlackListed(token)) {
-                expireCookie(response, "access", "/", true, true, "None")
-                expireCookie(response, "refresh", "/", true, true, "None")
+                expireCookie(response, "access", "/", true, true, "Strict")
+                expireCookie(response, "refresh", "/", true, true, "Strict")
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
                 return
             }
@@ -95,16 +96,21 @@ class JwtFilter(
             return
         }
 
+        if(!jwtUtil.getCategory(refreshToken).equals("refresh")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "전달받은 토큰은 Refresh Token이 아닙니다.")
+            return
+        }
+
         if (jwtUtil.isExpired(refreshToken)) {
-            expireCookie(response, "access", "/", true, true, "None")
-            expireCookie(response, "refresh", "/", true, true, "None")
+            expireCookie(response, "access", "/", true, true, "Strict")
+            expireCookie(response, "refresh", "/", true, true, "Strict")
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token이 만료되었습니다. 다시 로그인해주세요.")
             return
         }
 
         if (tokenBlackListService.isAlreadyBlackListed(refreshToken)) {
-            expireCookie(response, "access", "/", true, true, "None")
-            expireCookie(response, "refresh", "/", true, true, "None")
+            expireCookie(response, "access", "/", true, true, "Strict")
+            expireCookie(response, "refresh", "/", true, true, "Strict")
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃한 사용자의 토큰입니다.")
             return
         }
