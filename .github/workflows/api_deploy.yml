@@ -2,7 +2,7 @@ name: CI/CD Deploy to NHN Cloud for API Server
 
 on:
   push:
-    branches: [ feat/#110-reissue-access-token ]
+    branches: [ main ]
     paths:
       - '.github/workflows/api_deploy.yml'
       - 'modules/bootstrap/api-gateway/**'
