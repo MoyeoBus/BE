@@ -13,7 +13,7 @@ tasks.bootJar {
 dependencies {
     implementation(projects.modulesWebsocket.common)
     implementation(projects.modulesWebsocket.application)
-    implementation(projects.modulesWebsocket .infrastructure.persistence)
+    implementation(projects.modulesWebsocket.infrastructure.persistence)
     implementation(libs.spring.boot.starter.jpa)
     implementation(libs.bundles.bootstrap)
     testImplementation(libs.bundles.test)
@@ -24,6 +24,7 @@ dependencies {
     testImplementation(libs.database.mariadb)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.2")
 }
 repositories {
     mavenCentral()
