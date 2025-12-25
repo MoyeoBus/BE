@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>SSE Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #log { white-space: pre-line; border: 1px solid #ccc; padding: 10px; }
+    </style>
+</head>
+<body>
+
+<h2>SSE 테스트</h2>
+<button onclick="connect()">연결</button>
+<button onclick="disconnect()">연결 해제</button>
+
+<div id="log"></div>
+
+<script>
+    let eventSource = null;
+
+    function log(message) {
+      document.getElementById("log").innerText += message + "\n";
+    }
+
+    function connect() {
+      eventSource = new EventSource("http://localhost:8082/sse/subscribe?userId=1");
+
+      eventSource.onopen = () => {
+        log("✅ SSE 연결됨");
+      };
+
+      eventSource.onmessage = (event) => {
+        log("📩 메시지 수신: " + event.data);
+      };
+
+      eventSource.onerror = (err) => {
+        log("❌ SSE 에러 발생");
+        eventSource.close();
+      };
+    }
+
+    function disconnect() {
+      if (eventSource) {
+        eventSource.close();
+        log("🔌 SSE 연결 종료");
+      }
+    }
+</script>
+
+</body>
+</html>

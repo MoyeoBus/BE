@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Location Sender</title>
+</head>
+<body>
+
+<h2>버스 위치 송신 중…</h2>
+<pre id="log"></pre>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+    const socket = new SockJS("http://localhost:8082/bus-location");
+    const stompClient = Stomp.over(socket);
+
+    const busId = 12;
+    let lat = 37.5665;
+    let lng = 126.9780;
+
+    function log(msg) {
+      document.getElementById("log").innerText += msg + "\n";
+    }
+
+    stompClient.connect({}, () => {
+      log("✅ WebSocket 연결됨");
+
+      // 매초 위치 전송
+      setInterval(() => {
+        // 임의 이동 (아주 조금씩)
+        lat += (Math.random() - 0.5) * 0.0001;
+        lng += (Math.random() - 0.5) * 0.0001;
+
+        const payload = {
+          busId: busId,
+          lat: lat,
+          lng: lng
+        };
+
+        stompClient.send(
+          "/app/bus/location",
+          {},
+          JSON.stringify(payload)
+        );
+
+        log(`📤 전송: busId=${busId}, lat=${lat}, lng=${lng}`);
+      }, 1000);
+    });
+</script>
+
+</body>
+</html>
