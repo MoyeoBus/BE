@@ -20,31 +20,39 @@
     let eventSource = null;
 
     function log(message) {
-      document.getElementById("log").innerText += message + "\n";
+        document.getElementById("log").innerText += message + "\n";
     }
 
     function connect() {
-      eventSource = new EventSource("http://localhost:8082/sse/subscribe?userId=1");
+        eventSource = new EventSource(
+            "http://localhost:8082/sse/subscribe?userId=1"
+        );
 
-      eventSource.onopen = () => {
-        log("✅ SSE 연결됨");
-      };
+        eventSource.onopen = () => {
+            log("✅ SSE 연결됨");
+        };
 
-      eventSource.onmessage = (event) => {
-        log("📩 메시지 수신: " + event.data);
-      };
+        // 🔥 서버에서 name("broadcast")로 보낸 이벤트 수신
+        eventSource.addEventListener("broadcast", (event) => {
+            log("📍 버스 위치 수신: " + event.data);
+        });
 
-      eventSource.onerror = (err) => {
-        log("❌ SSE 에러 발생");
-        eventSource.close();
-      };
+        // (선택) connect 이벤트 수신
+        eventSource.addEventListener("connect", (event) => {
+            log("🔗 서버 연결 확인: " + event.data);
+        });
+
+        eventSource.onerror = (err) => {
+            log("❌ SSE 에러 발생");
+            eventSource.close();
+        };
     }
 
     function disconnect() {
-      if (eventSource) {
-        eventSource.close();
-        log("🔌 SSE 연결 종료");
-      }
+        if (eventSource) {
+            eventSource.close();
+            log("🔌 SSE 연결 종료");
+        }
     }
 </script>
 
