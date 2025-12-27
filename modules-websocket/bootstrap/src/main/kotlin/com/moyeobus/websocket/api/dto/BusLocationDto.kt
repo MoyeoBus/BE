@@ -1,4 +1,4 @@
-package com.moyeobus.websocket.dto
+package com.moyeobus.websocket.api.dto
 
 data class BusLocationDto(
     val id: Long,

@@ -1,6 +1,6 @@
-package com.moyeobus.websocket.application.service
+package com.moyeobus.websocket.api.application.service
 
-import com.moyeobus.websocket.application.port.`in`.SocketUseCase
+import com.moyeobus.websocket.api.application.port.`in`.SocketUseCase
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -10,22 +10,22 @@ import java.util.concurrent.ConcurrentHashMap
 class SseService : SocketUseCase{
     private val emitters = ConcurrentHashMap<Long, SseEmitter>()
 
-    override fun subscribe(userId: Long) : SseEmitter {
+    override fun subscribe(routeId: Long) : SseEmitter {
         val emitter = SseEmitter(Long.MAX_VALUE)
 
-        emitters[userId] = emitter
+        emitters[routeId] = emitter
 
         // 연결 종료 시 정리
         emitter.onCompletion {
-            emitters.remove(userId)
+            emitters.remove(routeId)
         }
 
         emitter.onTimeout {
-            emitters.remove(userId)
+            emitters.remove(routeId)
         }
 
         emitter.onError {
-            emitters.remove(userId)
+            emitters.remove(routeId)
         }
 
         // 최초 연결 확인용 이벤트 (권장)
@@ -36,7 +36,7 @@ class SseService : SocketUseCase{
                     .data("connected")
             )
         } catch (e: Exception) {
-            emitters.remove(userId)
+            emitters.remove(routeId)
         }
 
         return emitter
@@ -45,8 +45,8 @@ class SseService : SocketUseCase{
      * 특정 사용자에게 이벤트 전송
      */
     @Async
-    override fun sendToUser(userId: Long, data: Any) {
-        val emitter = emitters[userId] ?: return
+    override fun sendToUser(routeId: Long, data: Any) {
+        val emitter = emitters[routeId] ?: return
 
         try {
             emitter.send(
@@ -55,7 +55,7 @@ class SseService : SocketUseCase{
                     .data(data)
             )
         } catch (e: Exception) {
-            emitters.remove(userId)
+            emitters.remove(routeId)
         }
     }
 
@@ -64,7 +64,7 @@ class SseService : SocketUseCase{
      */
     @Async
     override fun broadcast(data: Any) {
-        emitters.forEach { (userId, emitter) ->
+        emitters.forEach { (routeId, emitter) ->
             try {
                 emitter.send(
                     SseEmitter.event()
@@ -72,7 +72,7 @@ class SseService : SocketUseCase{
                         .data(data)
                 )
             } catch (e: Exception) {
-                emitters.remove(userId)
+                emitters.remove(routeId)
             }
         }
     }
