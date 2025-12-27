@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
+
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
