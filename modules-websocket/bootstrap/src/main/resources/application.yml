@@ -10,6 +10,10 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_HOST}:9092
 
+springdoc:
+  swagger-ui:
+    path: /index.html
+
 logging:
   config: classpath:logback-spring.xml  # 또는 logback.xml
   level:
