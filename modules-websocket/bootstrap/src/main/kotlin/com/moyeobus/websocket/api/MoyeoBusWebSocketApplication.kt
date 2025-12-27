@@ -1,4 +1,4 @@
-package com.moyeobus.websocket
+package com.moyeobus.websocket.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
