@@ -1,7 +1,7 @@
 package com.moyeobus.websocket.domain.routeowner
 
-import com.moyeobus.scheduler.domain.passenger.Passenger
-import com.moyeobus.scheduler.domain.route.Route
+import com.moyeobus.websocket.domain.passenger.Passenger
+import com.moyeobus.websocket.domain.route.Route
 
 
 data class PassengerRoute(
