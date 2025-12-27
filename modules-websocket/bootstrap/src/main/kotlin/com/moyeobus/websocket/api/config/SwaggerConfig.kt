@@ -1,4 +1,4 @@
-package com.moyeobus.api.config
+package com.moyeobus.websocket.api.config
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
@@ -18,14 +18,11 @@ class SwaggerConfig {
 
     private fun apiInfo(): Info =
         Info()
-            .title("MoyeoBus API")
+            .title("MoyeoBus SSE API")
             .version("v1.0")
             .description(
                 """
-                  - ‼️`서버 DNS 변경 - https://api.moyeobus.com/api/v1` ‼️ </br></br>
-                  - ‼️`로그아웃, 토큰 재발급 API 추가`‼️ </br></br>
-                  - `✅ = API 변동이 생겼으니 수정 필요` </br></br>
-                  - `로그인 하면 해당 스웨거 페이지에 자동으로 쿠키가 생기니까 쿠키 비어있으면 로그인하면 돼.`
+                  실시간 통신 기능에 필요한 API를 모아놓은 서버 입니다.
                 """.trimIndent()
             )
 }

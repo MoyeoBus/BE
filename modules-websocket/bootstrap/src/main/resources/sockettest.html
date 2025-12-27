@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Location Sender</title>
+</head>
+<body>
+
+<h2>버스 위치 송신 중…</h2>
+<pre id="log"></pre>
+
+<script>
+    const busId = 12;
+    let lat = 37.5665;
+    let lon = 126.9780;
+
+    function log(msg) {
+        document.getElementById("log").innerText += msg + "\n";
+    }
+
+    log("✅ HTTP 기반 위치 전송 시작");
+
+    setInterval(() => {
+        // 위치를 아주 조금씩 변경
+        lat += (Math.random() - 0.5) * 0.0001;
+        lon += (Math.random() - 0.5) * 0.0001;
+
+        const payload = {
+            busId: busId,
+            lat: lat,
+            lon: lon
+        };
+
+        fetch("http://localhost:8082/sse/bus/location", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            log(`📤 전송: busId=${busId}, lat=${lat}, lon=${lon}`);
+        })
+        .catch(err => {
+            log("❌ 전송 실패: " + err);
+        });
+
+    }, 1000);
+</script>
+
+</body>
+</html>
