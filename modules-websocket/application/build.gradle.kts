@@ -11,7 +11,7 @@ tasks.bootJar {
 
 dependencies {
     implementation(projects.modulesWebsocket.common)
-    implementation(projects.modulesWebsocket.domain)
+    implementation(project(":modules-websocket:domain"))
     // Only need Spring annotations (@Service) for this module
     implementation("org.springframework:spring-context")
     implementation("org.springframework.boot:spring-boot-starter-web")
