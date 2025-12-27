@@ -25,7 +25,7 @@
 
     function connect() {
         eventSource = new EventSource(
-            "http://localhost:8082/sse/subscribe?userId=1"
+            "http://localhost:8082/sse/subscribe/1"
         );
 
         eventSource.onopen = () => {

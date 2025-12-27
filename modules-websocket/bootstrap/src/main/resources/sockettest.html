@@ -12,7 +12,7 @@
 <script>
     const busId = 12;
     let lat = 37.5665;
-    let lng = 126.9780;
+    let lon = 126.9780;
 
     function log(msg) {
         document.getElementById("log").innerText += msg + "\n";
@@ -23,12 +23,12 @@
     setInterval(() => {
         // 위치를 아주 조금씩 변경
         lat += (Math.random() - 0.5) * 0.0001;
-        lng += (Math.random() - 0.5) * 0.0001;
+        lon += (Math.random() - 0.5) * 0.0001;
 
         const payload = {
             busId: busId,
             lat: lat,
-            lng: lng
+            lon: lon
         };
 
         fetch("http://localhost:8082/sse/bus/location", {
@@ -39,7 +39,7 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            log(`📤 전송: busId=${busId}, lat=${lat}, lng=${lng}`);
+            log(`📤 전송: busId=${busId}, lat=${lat}, lon=${lon}`);
         })
         .catch(err => {
             log("❌ 전송 실패: " + err);
