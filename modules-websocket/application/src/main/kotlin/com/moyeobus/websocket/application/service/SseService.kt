@@ -11,7 +11,7 @@ class SseService : SocketUseCase{
     private val emitters = ConcurrentHashMap<Long, SseEmitter>()
 
     override fun subscribe(userId: Long) : SseEmitter {
-        val emitter = SseEmitter(60_000L)
+        val emitter = SseEmitter(Long.MAX_VALUE)
 
         emitters[userId] = emitter
 
