@@ -30,9 +30,10 @@ jobs:
 
       - name: Build JAR
         run: |
-          find . -type d -name "build" -exec rm -rf {} + || true
-          ./gradlew clean
-          ./gradlew :modules-websocket:bootstrap:bootJar -x test
+            find . -type d -name "build" -exec rm -rf {} + || true
+            rm -rf .gradle/
+            ./gradlew clean --no-daemon
+            ./gradlew :modules-websocket:bootstrap:bootJar -x test --no-daemon --stacktrace
 
       - name: Build Docker image
         run: |
