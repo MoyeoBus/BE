@@ -24,7 +24,7 @@ class LoginController() : LoginControllerDocs{
         response: HttpServletResponse
     ) {
         val redirectUrl = String.format(
-            "https://moyeo-bus-fe.vercel.app/oauth2/authorization/%s",
+            "https://app.moyeobus.com/oauth2/authorization/%s",
             provider
         )
         response.sendRedirect(redirectUrl)
