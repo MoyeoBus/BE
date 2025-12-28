@@ -86,6 +86,7 @@ logging:
   level:
     root: INFO
     com.moyeobus: DEBUG  # 본인 패키지명으로 변경
+    org.springframework.security: DEBUG
 
 jwt:
   issuer: pjygcp9@gmail.com
