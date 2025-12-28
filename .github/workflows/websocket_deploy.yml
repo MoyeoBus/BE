@@ -83,6 +83,7 @@ jobs:
             docker run -d \
             --name websocket \
             --env-file .env \
+            -p 8080:8080 \
             -v /var/log/spring-boot:/app/logs \
             myapp:latest
             
