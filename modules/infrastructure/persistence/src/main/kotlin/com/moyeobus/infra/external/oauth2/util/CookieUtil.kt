@@ -28,7 +28,7 @@ object CookieUtil {
         return Cookie("access", value).apply {
             path = "/"
             maxAge = (ACCESS_TOKEN_EXPIRE_TIME / 1000).toInt()
-            domain = ".moyeobus.com"
+            domain = "moyeobus.com"
             isHttpOnly = true
             secure = true
             setAttribute("SameSite", "Strict")
@@ -39,7 +39,7 @@ object CookieUtil {
         return Cookie("refresh", value).apply {
             path = "/"
             maxAge = (REFRESH_TOKEN_EXPIRE_TIME / 1000).toInt()
-            domain = ".moyeobus.com"
+            domain = "moyeobus.com"
             isHttpOnly = true
             secure = true
             setAttribute("SameSite", "Strict")
