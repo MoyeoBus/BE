@@ -75,6 +75,7 @@ class SecurityConfig(
         config.allowedOrigins = listOf(
             "http://localhost:5173",
             "https://moyeobus.com",
+            "https://api.moyeobus.com",
             "https://app.moyeobus.com",
             "https://moyeo-bus-fe-web.vercel.app",
             "https://moyeo-bus-fe.vercel.app"
