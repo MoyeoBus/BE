@@ -75,7 +75,8 @@ class SecurityConfig(
         config.allowedOrigins = listOf(
             "http://localhost:5173",
             "https://moyeobus.com",
-            "https://moyeo-bus-fe-web.vercel.app"
+            "https://moyeo-bus-fe-web.vercel.app",
+            "https://moyeo-bus-fe.vercel.app"
         )
         config.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
         config.allowedHeaders = listOf("*")
