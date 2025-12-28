@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils
 class HttpCookieOAuth2AuthorizationRequestRepository :
     AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest =
+    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest? =
         CookieUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
             .map { cookie -> CookieUtil.deserialize(cookie, OAuth2AuthorizationRequest::class.java) }
             .orElse(null)
