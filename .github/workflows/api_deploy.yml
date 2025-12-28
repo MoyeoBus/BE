@@ -76,6 +76,7 @@ jobs:
             REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}
             REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
             KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
+            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
             KAFKA_HOST=${{ secrets.KAFKA_HOST }}
             EOF
             
