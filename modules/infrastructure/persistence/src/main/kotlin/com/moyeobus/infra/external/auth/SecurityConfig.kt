@@ -133,7 +133,7 @@ class SecurityConfig(
                 "/oauth2/**",
                 "/swagger-ui/**", "/v3/api-docs/**",
                  "/socket/**", "/api/v1/login", "/api/v1/signup",
-                "/oauth/login"
+                "/oauth/login", "/api/v1/oauth2/authorization/kakao"
             ).permitAll()
                 .anyRequest().authenticated()
         }
