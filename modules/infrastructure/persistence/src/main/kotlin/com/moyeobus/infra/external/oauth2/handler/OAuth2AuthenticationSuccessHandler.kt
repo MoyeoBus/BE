@@ -62,7 +62,7 @@ class OAuth2AuthenticationSuccessHandler(
         request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
         authentication: Authentication
     ): kotlin.String {
-        val targetUrl = "https://www.moyeobus.com"
+        val targetUrl = "https://app.moyeobus.com"
 
 
         val principal: OAuth2UserPrincipal? = getOAuth2UserPrincipal(authentication)
