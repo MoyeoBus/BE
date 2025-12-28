@@ -55,7 +55,7 @@ spring:
               - profile_nickname
               - profile_image
               - account_email
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: https://api.moyeobus.com/login/oauth2/code/kakao
             client-name: Kakao
 
         provider:
