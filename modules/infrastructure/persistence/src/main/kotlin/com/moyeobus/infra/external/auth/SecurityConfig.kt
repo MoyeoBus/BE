@@ -132,8 +132,8 @@ class SecurityConfig(
             it.requestMatchers(
                 "/oauth2/**",
                 "/swagger-ui/**", "/v3/api-docs/**",
-                 "/socket/**", "/api/v1/login", "/api/v1/signup",
-                "/oauth/login", "/api/v1/oauth2/**"
+                 "/socket/**", "/api/v1/login", "/api/v1/login/oauth",
+                "/api/v1/signup", "/api/v1/oauth2/**"
             ).permitAll()
                 .anyRequest().authenticated()
         }
