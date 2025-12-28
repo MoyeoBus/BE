@@ -5,6 +5,7 @@ import com.moyeobus.infra.external.oauth2.service.OAuth2UserPrincipal
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserUnlinkManager
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
@@ -33,22 +34,12 @@ class OAuth2AuthenticationSuccessHandler(
         val principal: OAuth2UserPrincipal? = getOAuth2UserPrincipal(authentication)
 
         if (principal != null) {
-            val accessToken = jwtUtil.createAccess(principal.username)
-            val refreshToken = jwtUtil.createRefresh(principal.username)
-            val oauthToken: OAuth2AuthenticationToken = authentication as OAuth2AuthenticationToken
-            val client: OAuth2AuthorizedClient = authorizedClientService.loadAuthorizedClient(
-                oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName()
-            )
+            val access = jwtUtil.createAccess(principal.username)
+            val refresh = jwtUtil.createRefresh(principal.username)
 
-
-            val googleAccessToken: kotlin.String? = client.getAccessToken().getTokenValue()
-
-            response.addHeader("access", accessToken)
-            response.addHeader("refresh", refreshToken)
-            CookieUtil.addCookie(response, "access_token", accessToken, 3600)
-            CookieUtil.addCookie(response, "google_oauth_token", googleAccessToken, 3600)
-            CookieUtil.addCookie(response, "refresh_token", refreshToken, 86400)
-
+            response.addCookie(CookieUtil.createAccessCookie(access))
+            response.addCookie(CookieUtil.createRefreshCookie(refresh))
+            response.status = HttpStatus.OK.value()
         }
 
         if (response.isCommitted()) {
