@@ -22,6 +22,9 @@ class OAuth2AuthenticationSuccessHandler(
 
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
+    private val FRONTEND_URL = "https://app.moyeobus.com"
+    private val REDIRECT_URI = "$FRONTEND_URL/oauth/callback"
+
     override fun onAuthenticationSuccess(
         request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
         authentication: Authentication
@@ -53,9 +56,14 @@ class OAuth2AuthenticationSuccessHandler(
             return
         }
 
+        val redirectUrl = UriComponentsBuilder
+            .fromUriString(REDIRECT_URI)
+            .build()
+            .toUriString()
+
         clearAuthenticationAttributes(request, response)
 
-        getRedirectStrategy().sendRedirect(request, response, targetUrl)
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl)
     }
 
     override fun determineTargetUrl(
