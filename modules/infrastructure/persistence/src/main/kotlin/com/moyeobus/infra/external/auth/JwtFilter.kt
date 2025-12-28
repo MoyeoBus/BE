@@ -28,7 +28,8 @@ class JwtFilter(
         "/v3/api-docs/**",
         "/oauth/login",
         "/api/v1/signup",
-        "/api/v1/oauth2/authorization/kakao"
+        "/api/v1/oauth2/authorization/kakao",
+        "/favicon.ico", "/error"
     )
     private val tokenReissueApi = "/api/v1/tokens"
     private val pathMatcher = AntPathMatcher()
