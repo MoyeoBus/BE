@@ -23,10 +23,6 @@ class LoginController() : LoginControllerDocs{
         @RequestParam provider: String,
         response: HttpServletResponse
     ) {
-        val redirectUrl = String.format(
-            "https://www.moyeobus.com/oauth2/authorization/%s",
-            provider
-        )
-        response.sendRedirect(redirectUrl)
+        response.sendRedirect("/oauth2/authorization/$provider")
     }
 }

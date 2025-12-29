@@ -5,10 +5,11 @@ import com.moyeobus.infra.external.oauth2.service.OAuth2UserPrincipal
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserUnlinkManager
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
@@ -22,6 +23,10 @@ class OAuth2AuthenticationSuccessHandler(
 
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
+    private val FRONTEND_URL = "https://app.moyeobus.com/home"
+    private val log = LoggerFactory.getLogger(OAuth2AuthenticationSuccessHandler::class.java)
+
+
     override fun onAuthenticationSuccess(
         request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
         authentication: Authentication
@@ -31,38 +36,35 @@ class OAuth2AuthenticationSuccessHandler(
         val principal: OAuth2UserPrincipal? = getOAuth2UserPrincipal(authentication)
 
         if (principal != null) {
-            val accessToken = jwtUtil.createAccess(principal.username)
-            val refreshToken = jwtUtil.createRefresh(principal.username)
-            val oauthToken: OAuth2AuthenticationToken = authentication as OAuth2AuthenticationToken
-            val client: OAuth2AuthorizedClient = authorizedClientService.loadAuthorizedClient(
-                oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName()
-            )
-
-
-            val googleAccessToken: kotlin.String? = client.getAccessToken().getTokenValue()
-
-            response.addHeader("access", accessToken)
-            response.addHeader("refresh", refreshToken)
-            CookieUtil.addCookie(response, "access_token", accessToken, 3600)
-            CookieUtil.addCookie(response, "google_oauth_token", googleAccessToken, 3600)
-            CookieUtil.addCookie(response, "refresh_token", refreshToken, 86400)
-
+            try{
+                val access = jwtUtil.createAccess(principal.username)
+                val refresh = jwtUtil.createRefresh(principal.username)
+                response.addCookie(CookieUtil.createAccessCookie(access))
+                response.addCookie(CookieUtil.createRefreshCookie(refresh))
+            } catch (e: Exception) {
+                log.error("Failed to create tokens for user: ${principal.username}", e)
+            }
         }
 
         if (response.isCommitted()) {
             return
         }
 
+        val redirectUrl = UriComponentsBuilder
+            .fromUriString(FRONTEND_URL)
+            .build()
+            .toUriString()
+
         clearAuthenticationAttributes(request, response)
 
-        getRedirectStrategy().sendRedirect(request, response, targetUrl)
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl)
     }
 
     override fun determineTargetUrl(
-        request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
+        request: HttpServletRequest, response: HttpServletResponse,
         authentication: Authentication
-    ): kotlin.String {
-        val targetUrl = "https://www.moyeobus.com"
+    ): String {
+        val targetUrl = "https://app.moyeobus.com"
 
 
         val principal: OAuth2UserPrincipal? = getOAuth2UserPrincipal(authentication)
@@ -72,12 +74,6 @@ class OAuth2AuthenticationSuccessHandler(
                 .build().toUriString()
         }
 
-
-        val access = jwtUtil.createAccess(principal.username)
-        val refresh = jwtUtil.createRefresh(principal.username)
-
-        CookieUtil.addCookie(response, "access_token", access, 3600)
-        CookieUtil.addCookie(response, "refresh_token", refresh, 86400)
 
         return UriComponentsBuilder.fromUriString(targetUrl)
             .build().toUriString()
@@ -93,8 +89,8 @@ class OAuth2AuthenticationSuccessHandler(
     }
 
     protected fun clearAuthenticationAttributes(
-        request: jakarta.servlet.http.HttpServletRequest,
-        response: jakarta.servlet.http.HttpServletResponse
+        request: HttpServletRequest,
+        response: HttpServletResponse
     ) {
         super.clearAuthenticationAttributes(request)
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response)

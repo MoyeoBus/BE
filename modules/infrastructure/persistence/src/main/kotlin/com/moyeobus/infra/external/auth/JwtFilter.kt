@@ -24,10 +24,12 @@ class JwtFilter(
     private val log = LoggerFactory.getLogger(JwtFilter::class.java)
     private val allowOrigins = listOf(
         "/api/v1/login",
+        "/api/v1/login/oauth",
         "/swagger-ui/**",
         "/v3/api-docs/**",
-        "/oauth/login",
+        "/oauth2/**",
         "/api/v1/signup",
+        "/favicon.ico", "/error"
     )
     private val tokenReissueApi = "/api/v1/tokens"
     private val pathMatcher = AntPathMatcher()

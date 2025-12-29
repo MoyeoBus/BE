@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils
 class HttpCookieOAuth2AuthorizationRequestRepository :
     AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest =
+    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest? =
         CookieUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
             .map { cookie -> CookieUtil.deserialize(cookie, OAuth2AuthorizationRequest::class.java) }
             .orElse(null)
@@ -48,18 +48,26 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     override fun removeAuthorizationRequest(
         request: HttpServletRequest,
         response: HttpServletResponse
-    ): OAuth2AuthorizationRequest? = loadAuthorizationRequest(request)
+    ): OAuth2AuthorizationRequest? {
+        val authRequest = loadAuthorizationRequest(request)
+        val hasCookies = CookieUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+
+        if (authRequest != null || hasCookies.isPresent) {
+            deleteAllCookies(request, response)
+        }
+        return authRequest
+    }
 
     fun deleteAllCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, MODE_PARAM_COOKIE_NAME)
     }
 
     fun removeAuthorizationRequestCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, MODE_PARAM_COOKIE_NAME)
     }
 
     companion object {

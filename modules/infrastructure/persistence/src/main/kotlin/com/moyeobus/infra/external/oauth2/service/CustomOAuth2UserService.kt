@@ -44,6 +44,7 @@ class CustomOAuth2UserService(
         )
 
         val oauthEmail = oAuth2UserInfo.email
+        val oauthName = oAuth2UserInfo.name
 
 
         if (!org.springframework.util.StringUtils.hasText(oauthEmail)) {
@@ -56,6 +57,7 @@ class CustomOAuth2UserService(
         if (existingUser == null) {
             val user = PassengerEntity(
                 id = null,
+                name = oauthName,
                 email = oauthEmail,
                 password = "",
                 autoLoginAgreed = false,

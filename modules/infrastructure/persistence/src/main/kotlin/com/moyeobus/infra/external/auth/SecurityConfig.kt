@@ -75,6 +75,8 @@ class SecurityConfig(
         config.allowedOrigins = listOf(
             "http://localhost:5173",
             "https://moyeobus.com",
+            "https://api.moyeobus.com",
+            "https://app.moyeobus.com",
             "https://moyeo-bus-fe-web.vercel.app",
             "https://moyeo-bus-fe.vercel.app"
         )
@@ -132,8 +134,8 @@ class SecurityConfig(
             it.requestMatchers(
                 "/oauth2/**",
                 "/swagger-ui/**", "/v3/api-docs/**",
-                 "/socket/**", "/api/v1/login", "/api/v1/signup",
-                "/oauth/login"
+                 "/socket/**", "/api/v1/login", "/api/v1/login/oauth",
+                "/api/v1/signup"
             ).permitAll()
                 .anyRequest().authenticated()
         }

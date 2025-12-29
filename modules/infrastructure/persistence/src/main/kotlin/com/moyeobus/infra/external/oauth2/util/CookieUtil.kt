@@ -5,8 +5,10 @@ import com.moyeobus.infra.external.oauth2.util.JwtUtil.Companion.REFRESH_TOKEN_E
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.ResponseCookie
 import org.springframework.stereotype.Component
 import org.springframework.util.SerializationUtils
+import java.time.Duration
 import java.util.*
 import java.util.Optional.empty
 import java.util.Optional.of
@@ -28,6 +30,7 @@ object CookieUtil {
         return Cookie("access", value).apply {
             path = "/"
             maxAge = (ACCESS_TOKEN_EXPIRE_TIME / 1000).toInt()
+            domain = "moyeobus.com"
             isHttpOnly = true
             secure = true
             setAttribute("SameSite", "Strict")
@@ -38,35 +41,37 @@ object CookieUtil {
         return Cookie("refresh", value).apply {
             path = "/"
             maxAge = (REFRESH_TOKEN_EXPIRE_TIME / 1000).toInt()
+            domain = "moyeobus.com"
             isHttpOnly = true
             secure = true
             setAttribute("SameSite", "Strict")
         }
     }
 
-    fun addCookie(response: HttpServletResponse, name: String?, value: String?, maxAge: Int) {
-        val cookie: Cookie = Cookie(name, value)
-        cookie.maxAge = maxAge
-        cookie.path = "/"
-        // cookie.setDomain("");
-        cookie.isHttpOnly = false
-        cookie.secure = true
-        cookie.setAttribute("SameSite", "Strict")
-        response.addCookie(cookie)
+    fun addCookie(response: HttpServletResponse, name: String, value: String?, maxAge: Int) {
+        val cookie = ResponseCookie.from(name, value)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .domain("moyeobus.com")
+            .maxAge(Duration.ofSeconds(maxAge.toLong()))
+            .build()
+
+        response.addHeader("Set-Cookie", cookie.toString())
     }
 
-    fun deleteCookie(request: HttpServletRequest, response: HttpServletResponse, name: String?) {
-        val cookies: Array<Cookie>? = request.cookies
-        if (cookies != null) {
-            for (cookie in cookies) {
-                if (cookie.name.equals(name)) {
-                    cookie.value = ""
-                    cookie.path = "/"
-                    cookie.maxAge = 0
-                    response.addCookie(cookie)
-                }
-            }
-        }
+    fun deleteCookie(response: HttpServletResponse, name: String) {
+        val deleteCookie = ResponseCookie.from(name, "")
+            .path("/")
+            .domain("moyeobus.com")
+            .secure(true)
+            .httpOnly(true)
+            .sameSite("None")
+            .maxAge(Duration.ZERO)
+            .build()
+
+        response.addHeader("Set-Cookie", deleteCookie.toString())
     }
 
     fun expireCookie(

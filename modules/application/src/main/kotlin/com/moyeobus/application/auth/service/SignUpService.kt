@@ -1,6 +1,5 @@
 package com.moyeobus.application.auth.service
 
-import com.moyeobus.application.auth.port.`in`.LoginCommand
 import com.moyeobus.application.auth.port.`in`.SignUpCommand
 import com.moyeobus.application.auth.port.`in`.SignUpUseCase
 import com.moyeobus.application.exception.EmailExistException
@@ -17,6 +16,7 @@ class SignUpService(
         if (checkEmailAvailable(request.email)) {
            val new = Passenger(
                id = null,
+               name = request.name,
                email = request.email,
                password = passengerRepository.encode(request.password),
                autoLoginAgreed = false,
