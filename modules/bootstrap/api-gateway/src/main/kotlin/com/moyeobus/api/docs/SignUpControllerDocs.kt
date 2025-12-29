@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody
 interface SignUpControllerDocs {
 
     @Operation(
-        summary = "회원가입",
-        description = "사용자의 이메일과 비밀번호를 입력받아 계정을 생성합니다.\n\n⚠️ 비밀번호는 최소 7자 이상이어야 합니다."
+        summary = "회원가입 ✅",
+        description = "사용자의 이름, 이메일과 비밀번호를 입력받아 계정을 생성합니다.\n\n⚠️ 비밀번호는 최소 7자 이상이어야 합니다."
     )
     @ApiResponses(
         value = [
@@ -91,6 +91,17 @@ interface SignUpControllerDocs {
                                 {
                                     "code": "COMMON_400",
                                     "message": "비밀번호는 필수입니다",
+                                    "isSuccess": false,
+                                    "path": "/api/v1/signup"
+                                }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "이름 미입력",
+                                value = """
+                                {
+                                    "code": "COMMON_400",
+                                    "message": "이름은 필수입니다",
                                     "isSuccess": false,
                                     "path": "/api/v1/signup"
                                 }
