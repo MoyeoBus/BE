@@ -49,12 +49,12 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
         request: HttpServletRequest,
         response: HttpServletResponse
     ): OAuth2AuthorizationRequest? {
-        println("removeAuthorizationRequest called")
         val authRequest = loadAuthorizationRequest(request)
-        if (authRequest != null) {
+        val hasCookies = CookieUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+
+        if (authRequest != null || hasCookies.isPresent) {
             deleteAllCookies(request, response)
         }
-        println("removeAuthorizationRequest executed")
         return authRequest
     }
 
