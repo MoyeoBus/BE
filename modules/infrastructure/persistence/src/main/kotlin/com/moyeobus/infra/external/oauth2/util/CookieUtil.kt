@@ -61,18 +61,17 @@ object CookieUtil {
         response.addHeader("Set-Cookie", cookie.toString())
     }
 
-    fun deleteCookie(request: HttpServletRequest, response: HttpServletResponse, name: String?) {
-        val cookies: Array<Cookie>? = request.cookies
-        if (cookies != null) {
-            for (cookie in cookies) {
-                if (cookie.name.equals(name)) {
-                    cookie.value = ""
-                    cookie.path = "/"
-                    cookie.maxAge = 0
-                    response.addCookie(cookie)
-                }
-            }
-        }
+    fun deleteCookie(response: HttpServletResponse, name: String) {
+        val deleteCookie = ResponseCookie.from(name, "")
+            .path("/")
+            .domain("moyeobus.com")
+            .secure(true)
+            .httpOnly(true)
+            .sameSite("None")
+            .maxAge(Duration.ZERO)
+            .build()
+
+        response.addHeader("Set-Cookie", deleteCookie.toString())
     }
 
     fun expireCookie(

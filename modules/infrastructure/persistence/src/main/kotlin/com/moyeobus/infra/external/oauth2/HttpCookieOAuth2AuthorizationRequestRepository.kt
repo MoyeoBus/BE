@@ -49,23 +49,25 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
         request: HttpServletRequest,
         response: HttpServletResponse
     ): OAuth2AuthorizationRequest? {
+        println("removeAuthorizationRequest called")
         val authRequest = loadAuthorizationRequest(request)
         if (authRequest != null) {
             deleteAllCookies(request, response)
         }
+        println("removeAuthorizationRequest executed")
         return authRequest
     }
 
     fun deleteAllCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, MODE_PARAM_COOKIE_NAME)
     }
 
     fun removeAuthorizationRequestCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-        CookieUtil.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtil.deleteCookie(response, MODE_PARAM_COOKIE_NAME)
     }
 
     companion object {
