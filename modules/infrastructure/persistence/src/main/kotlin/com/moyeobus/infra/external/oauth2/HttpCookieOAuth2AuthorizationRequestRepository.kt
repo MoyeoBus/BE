@@ -48,7 +48,13 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     override fun removeAuthorizationRequest(
         request: HttpServletRequest,
         response: HttpServletResponse
-    ): OAuth2AuthorizationRequest? = loadAuthorizationRequest(request)
+    ): OAuth2AuthorizationRequest? {
+        val authRequest = loadAuthorizationRequest(request)
+        if (authRequest != null) {
+            deleteAllCookies(request, response)
+        }
+        return authRequest
+    }
 
     fun deleteAllCookies(request: HttpServletRequest, response: HttpServletResponse) {
         CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
