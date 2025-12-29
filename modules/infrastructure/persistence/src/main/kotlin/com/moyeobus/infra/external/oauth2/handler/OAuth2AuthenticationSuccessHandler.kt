@@ -5,11 +5,11 @@ import com.moyeobus.infra.external.oauth2.service.OAuth2UserPrincipal
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserUnlinkManager
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
-import org.springframework.http.HttpStatus
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
@@ -24,6 +24,8 @@ class OAuth2AuthenticationSuccessHandler(
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     private val FRONTEND_URL = "https://app.moyeobus.com/home"
+    private val log = LoggerFactory.getLogger(OAuth2AuthenticationSuccessHandler::class.java)
+
 
     override fun onAuthenticationSuccess(
         request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
@@ -34,12 +36,14 @@ class OAuth2AuthenticationSuccessHandler(
         val principal: OAuth2UserPrincipal? = getOAuth2UserPrincipal(authentication)
 
         if (principal != null) {
-            val access = jwtUtil.createAccess(principal.username)
-            val refresh = jwtUtil.createRefresh(principal.username)
-
-            response.addCookie(CookieUtil.createAccessCookie(access))
-            response.addCookie(CookieUtil.createRefreshCookie(refresh))
-            response.status = HttpStatus.OK.value()
+            try{
+                val access = jwtUtil.createAccess(principal.username)
+                val refresh = jwtUtil.createRefresh(principal.username)
+                response.addCookie(CookieUtil.createAccessCookie(access))
+                response.addCookie(CookieUtil.createRefreshCookie(refresh))
+            } catch (e: Exception) {
+                log.error("Failed to create tokens for user: ${principal.username}", e)
+            }
         }
 
         if (response.isCommitted()) {
@@ -57,9 +61,9 @@ class OAuth2AuthenticationSuccessHandler(
     }
 
     override fun determineTargetUrl(
-        request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
+        request: HttpServletRequest, response: HttpServletResponse,
         authentication: Authentication
-    ): kotlin.String {
+    ): String {
         val targetUrl = "https://app.moyeobus.com"
 
 
@@ -85,8 +89,8 @@ class OAuth2AuthenticationSuccessHandler(
     }
 
     protected fun clearAuthenticationAttributes(
-        request: jakarta.servlet.http.HttpServletRequest,
-        response: jakarta.servlet.http.HttpServletResponse
+        request: HttpServletRequest,
+        response: HttpServletResponse
     ) {
         super.clearAuthenticationAttributes(request)
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response)
