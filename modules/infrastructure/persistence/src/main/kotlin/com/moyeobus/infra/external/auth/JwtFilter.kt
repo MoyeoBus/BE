@@ -27,7 +27,7 @@ class JwtFilter(
         "/api/v1/login/oauth",
         "/swagger-ui/**",
         "/v3/api-docs/**",
-        "/oauth/**",
+        "/oauth2/**",
         "/api/v1/signup",
         "/favicon.ico", "/error"
     )

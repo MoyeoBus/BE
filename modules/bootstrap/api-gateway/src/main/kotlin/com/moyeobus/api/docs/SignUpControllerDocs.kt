@@ -101,7 +101,7 @@ interface SignUpControllerDocs {
                                 value = """
                                 {
                                     "code": "COMMON_400",
-                                    "message": "이름은 필수입니다",
+                                    "message": "이름은 필수입니다.",
                                     "isSuccess": false,
                                     "path": "/api/v1/signup"
                                 }
