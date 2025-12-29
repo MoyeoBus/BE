@@ -71,12 +71,6 @@ class OAuth2AuthenticationSuccessHandler(
         }
 
 
-        val access = jwtUtil.createAccess(principal.username)
-        val refresh = jwtUtil.createRefresh(principal.username)
-
-        CookieUtil.addCookie(response, "access_token", access, 3600)
-        CookieUtil.addCookie(response, "refresh_token", refresh, 86400)
-
         return UriComponentsBuilder.fromUriString(targetUrl)
             .build().toUriString()
     }
