@@ -48,14 +48,14 @@ object CookieUtil {
         }
     }
 
-    fun addCookie(response: HttpServletResponse, name: String?, value: String?, maxAge: Int) {
-        val cookie = ResponseCookie.from("oauth2_auth_request", value)
+    fun addCookie(response: HttpServletResponse, name: String, value: String?, maxAge: Int) {
+        val cookie = ResponseCookie.from(name, value)
             .httpOnly(true)
             .secure(true)
             .sameSite("None")
             .path("/")
             .domain("moyeobus.com")
-            .maxAge(Duration.ofMinutes(3))
+            .maxAge(Duration.ofSeconds(maxAge.toLong()))
             .build()
 
         response.addHeader("Set-Cookie", cookie.toString())
