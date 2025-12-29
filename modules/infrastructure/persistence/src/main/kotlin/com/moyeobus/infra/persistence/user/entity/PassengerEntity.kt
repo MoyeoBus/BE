@@ -15,7 +15,10 @@ class PassengerEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
+    var name: String,
+
     var email: String,
+
     var password: String?,
 
     var autoLoginAgreed: Boolean,
