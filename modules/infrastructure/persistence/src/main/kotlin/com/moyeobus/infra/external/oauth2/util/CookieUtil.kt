@@ -5,8 +5,10 @@ import com.moyeobus.infra.external.oauth2.util.JwtUtil.Companion.REFRESH_TOKEN_E
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.ResponseCookie
 import org.springframework.stereotype.Component
 import org.springframework.util.SerializationUtils
+import java.time.Duration
 import java.util.*
 import java.util.Optional.empty
 import java.util.Optional.of
@@ -47,14 +49,16 @@ object CookieUtil {
     }
 
     fun addCookie(response: HttpServletResponse, name: String?, value: String?, maxAge: Int) {
-        val cookie: Cookie = Cookie(name, value)
-        cookie.maxAge = maxAge
-        cookie.path = "/"
-        // cookie.setDomain("");
-        cookie.isHttpOnly = false
-        cookie.secure = true
-        cookie.setAttribute("SameSite", "Strict")
-        response.addCookie(cookie)
+        val cookie = ResponseCookie.from("oauth2_auth_request", value)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .domain("moyeobus.com")
+            .maxAge(Duration.ofMinutes(3))
+            .build()
+
+        response.addHeader("Set-Cookie", cookie.toString())
     }
 
     fun deleteCookie(request: HttpServletRequest, response: HttpServletResponse, name: String?) {
