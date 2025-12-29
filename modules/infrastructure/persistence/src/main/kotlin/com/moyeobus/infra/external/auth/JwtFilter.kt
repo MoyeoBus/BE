@@ -27,9 +27,8 @@ class JwtFilter(
         "/api/v1/login/oauth",
         "/swagger-ui/**",
         "/v3/api-docs/**",
-        "/oauth/login",
+        "/oauth/**",
         "/api/v1/signup",
-        "/api/v1/oauth2/authorization/kakao",
         "/favicon.ico", "/error"
     )
     private val tokenReissueApi = "/api/v1/tokens"
