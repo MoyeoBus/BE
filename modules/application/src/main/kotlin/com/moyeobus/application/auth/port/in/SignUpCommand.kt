@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
 data class SignUpCommand(
+    @field:NotBlank(message = "이름은 필수입니다.")
+    val name: String,
     @field:Email(message = "이메일 형식이 아닙니다.")
     @field:NotBlank(message = "이메일은 필수입니다.")
     val email: String,
