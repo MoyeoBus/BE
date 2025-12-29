@@ -23,7 +23,7 @@ class OAuth2AuthenticationSuccessHandler(
 
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
-    private val FRONTEND_URL = "https://app.moyeobus.com"
+    private val FRONTEND_URL = "https://app.moyeobus.com/home"
 
     override fun onAuthenticationSuccess(
         request: jakarta.servlet.http.HttpServletRequest, response: jakarta.servlet.http.HttpServletResponse,
