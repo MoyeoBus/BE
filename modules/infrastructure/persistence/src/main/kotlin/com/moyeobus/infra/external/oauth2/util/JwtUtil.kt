@@ -1,7 +1,7 @@
 package com.moyeobus.infra.external.oauth2.util
 
 import com.moyeobus.infra.exception.InvalidTokenException
-import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts

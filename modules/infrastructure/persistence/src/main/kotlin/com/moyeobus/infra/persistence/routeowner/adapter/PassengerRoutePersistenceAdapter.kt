@@ -9,7 +9,7 @@ import com.moyeobus.infra.persistence.route.adapter.RoutePersistenceAdapter
 import com.moyeobus.infra.persistence.routeowner.dto.PassengerRouteEntityDto
 import com.moyeobus.infra.persistence.routeowner.entity.PassengerRouteEntity
 import com.moyeobus.infra.persistence.routeowner.repository.PassengerRouteJpaRepository
-import com.moyeobus.infra.persistence.user.mapper.PassengerMapper
+import com.moyeobus.infra.persistence.passenger.mapper.PassengerMapper
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.time.ZoneOffset

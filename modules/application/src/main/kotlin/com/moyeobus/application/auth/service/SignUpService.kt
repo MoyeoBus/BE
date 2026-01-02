@@ -3,7 +3,7 @@ package com.moyeobus.application.auth.service
 import com.moyeobus.application.auth.port.`in`.SignUpCommand
 import com.moyeobus.application.auth.port.`in`.SignUpUseCase
 import com.moyeobus.application.exception.EmailExistException
-import com.moyeobus.application.user.port.out.PassengerOutPort
+import com.moyeobus.application.passenger.port.out.PassengerOutPort
 import com.moyeobus.domain.user.Passenger
 import com.moyeobus.domain.user.UserType
 import org.springframework.stereotype.Service

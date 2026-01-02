@@ -3,9 +3,9 @@ package com.moyeobus.infra.external.oauth2.service
 import com.moyeobus.infra.external.oauth2.exception.OAuth2AuthenticationProcessingException
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserInfo
 import com.moyeobus.infra.external.oauth2.user.OAuth2UserInfoFactory
-import com.moyeobus.infra.persistence.user.entity.PassengerEntity
-import com.moyeobus.infra.persistence.user.entity.UserType
-import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity
+import com.moyeobus.infra.persistence.passenger.entity.UserType
+import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest

@@ -1,7 +1,7 @@
 package com.moyeobus.infra.external.auth.security
 
 
-import com.moyeobus.infra.persistence.user.entity.PassengerEntity;
+import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

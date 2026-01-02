@@ -9,7 +9,7 @@ import com.moyeobus.infra.external.oauth2.handler.OAuth2AuthenticationSuccessHan
 import com.moyeobus.infra.external.oauth2.service.CustomOAuth2UserService
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
-import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import jakarta.servlet.RequestDispatcher
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository

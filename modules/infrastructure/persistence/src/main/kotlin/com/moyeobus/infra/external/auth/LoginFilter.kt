@@ -7,7 +7,7 @@ import com.moyeobus.infra.exception.NotFoundException
 import com.moyeobus.infra.external.auth.security.CustomUserDetails
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
-import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
