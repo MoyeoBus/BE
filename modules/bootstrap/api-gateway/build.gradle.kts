@@ -25,6 +25,8 @@ dependencies {
     testImplementation(libs.database.mariadb)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 repositories {
     mavenCentral()
