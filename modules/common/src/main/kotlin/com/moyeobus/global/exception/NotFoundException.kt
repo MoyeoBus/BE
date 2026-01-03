@@ -1,4 +1,4 @@
-package com.moyeobus.infra.exception
+package com.moyeobus.global.exception
 
 import com.moyeobus.global.response.exception.GlobalException
 import com.moyeobus.global.response.status.ErrorStatus
