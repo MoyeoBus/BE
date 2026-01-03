@@ -15,7 +15,9 @@ import org.springframework.security.web.SecurityFilterChain
 
 @TestConfiguration
 @EnableWebSecurity
-class TestSecurityConfig {
+class TestSecurityConfig(
+    private val objectMapper: ObjectMapper
+) {
 
     @Bean
     @Primary
@@ -50,7 +52,7 @@ class TestSecurityConfig {
                         requestUri = actualPath
                     )
 
-                    ObjectMapper().writeValue(response.outputStream, errorJson)
+                    objectMapper.writeValue(response.outputStream, errorJson)
                 }
             }
             .build()
