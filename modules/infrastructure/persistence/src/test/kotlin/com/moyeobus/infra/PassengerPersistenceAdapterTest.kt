@@ -1,7 +1,7 @@
 package com.moyeobus.infra
 
 import com.moyeobus.domain.user.Passenger
-import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.persistence.passenger.adapter.PassengerPersistenceAdapter
 import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity
 import com.moyeobus.infra.persistence.passenger.entity.UserType
