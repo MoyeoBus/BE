@@ -12,7 +12,7 @@ import com.moyeobus.application.route.port.out.RouteRequestSummaryProjection
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.RequestStatus
 import com.moyeobus.domain.route.RouteRequest
-import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.persistence.address.mapper.AddressMapper
 import com.moyeobus.infra.persistence.route.entity.RouteRequestEntity
 import com.moyeobus.infra.persistence.route.repository.RouteRequestJpaRepository

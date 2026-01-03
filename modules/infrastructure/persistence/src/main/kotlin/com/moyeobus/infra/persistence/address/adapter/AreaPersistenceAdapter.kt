@@ -2,7 +2,7 @@ package com.moyeobus.infra.persistence.address.adapter
 
 import com.moyeobus.application.address.port.out.AreaOutPort
 import com.moyeobus.domain.route.Area
-import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.persistence.address.mapper.AreaMapper
 import com.moyeobus.infra.persistence.address.repotiory.AreaJpaRepository
 import org.springframework.stereotype.Component
