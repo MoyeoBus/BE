@@ -7,5 +7,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class PassengerQueryService(
+    private val repo: PassengerOutPort
 ) : PassengerQueryUseCase {
+    override fun queryByEmail(email: String): Passenger {
+        return repo.findByEmail(email)
+    }
 }
