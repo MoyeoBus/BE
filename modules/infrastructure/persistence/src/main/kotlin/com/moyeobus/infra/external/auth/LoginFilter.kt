@@ -3,7 +3,7 @@ package com.moyeobus.infra.external.auth
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyeobus.application.auth.port.`in`.LoginCommand
-import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.external.auth.security.CustomUserDetails
 import com.moyeobus.infra.external.oauth2.util.CookieUtil
 import com.moyeobus.infra.external.oauth2.util.JwtUtil
