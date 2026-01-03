@@ -12,11 +12,8 @@ import com.moyeobus.infra.external.oauth2.util.JwtUtil
 import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import jakarta.servlet.RequestDispatcher
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository
-import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -89,21 +86,6 @@ class SecurityConfig(
         return source
     }
 
-    @Bean
-    fun httpExchangeRepository(): HttpExchangeRepository = InMemoryHttpExchangeRepository()
-
-    @Bean
-    @Order(1)
-    fun actuatorSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .securityMatcher("/actuator/**")
-            .authorizeHttpRequests {
-                it.anyRequest().permitAll()
-            }
-            .csrf { it.disable() }
-
-        return http.build()
-    }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -112,6 +94,7 @@ class SecurityConfig(
 
         http.formLogin { it.disable() }
         http.httpBasic { it.disable() }
+        http.requestCache { it.disable() }
 
         http.exceptionHandling {
             it.authenticationEntryPoint { request, response, _ ->
