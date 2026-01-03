@@ -133,8 +133,7 @@ class JwtUtil(
         private const val MINUTE = 60 * 1000L
         private const val HOUR = 60 * MINUTE
 
-        // TODO: 동작 확인 이후 각각 15분, 1시간으로 변경
-        const val ACCESS_TOKEN_EXPIRE_TIME = 1 * MINUTE
-        const val REFRESH_TOKEN_EXPIRE_TIME = 5 * MINUTE
+        const val ACCESS_TOKEN_EXPIRE_TIME = 15 * MINUTE
+        const val REFRESH_TOKEN_EXPIRE_TIME = 1 * HOUR
     }
 }
