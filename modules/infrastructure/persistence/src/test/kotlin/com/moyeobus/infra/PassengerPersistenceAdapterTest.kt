@@ -130,7 +130,7 @@ class PassengerPersistenceAdapterTest {
 
 
     private fun createPassenger(id: Long? = 1L) = PassengerEntity(
-        id = 1L,
+        id = id,
         name = "Tester 1",
         email = "test@test.com",
         password = "password",
@@ -139,7 +139,7 @@ class PassengerPersistenceAdapterTest {
     )
 
     private fun createPassengerDomain(id: Long? = 1L) = Passenger(
-        id = 1L,
+        id = id,
         name = "Tester 1",
         email = "test@test.com",
         password = "password",

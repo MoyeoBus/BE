@@ -1,12 +1,13 @@
-package com.moyeobus.api.address
+package com.moyeobus.api.passenger
 
+import com.moyeobus.api.security.TestSecurityConfig
 import com.moyeobus.api.passenger.controller.PassengerController
 import com.moyeobus.application.passenger.port.`in`.PassengerQueryUseCase
 import com.moyeobus.domain.user.Passenger
-import com.moyeobus.domain.user.UserType
 import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.external.auth.security.CustomUserDetails
 import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity
+import com.moyeobus.infra.persistence.passenger.entity.UserType
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
@@ -18,10 +19,9 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-
 import kotlin.test.Test
 
 @WebMvcTest(PassengerController::class)
@@ -57,7 +57,7 @@ class PassengerControllerTest {
             every { service.queryByEmail(email) } returns domain
 
             mockMvc.get("/api/v1/passengers/me") {
-                with(authentication(authentication))
+                with(SecurityMockMvcRequestPostProcessors.authentication(authentication))
                 accept = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }
@@ -71,7 +71,7 @@ class PassengerControllerTest {
         @Test
         fun `인증되지 않은 사용자는 401을 반환한다`() {
             mockMvc.get("/api/v1/passengers/me") {
-                with(authentication(null))
+                with(SecurityMockMvcRequestPostProcessors.authentication(null))
             }
                 .andExpect {
                     status { isUnauthorized() }
@@ -97,7 +97,7 @@ class PassengerControllerTest {
             } throws NotFoundException("Passenger(email=$email)")
 
             mockMvc.get("/api/v1/passengers/me") {
-                with(authentication(authentication))
+                with(SecurityMockMvcRequestPostProcessors.authentication(authentication))
             }
                 .andExpect {
                     status { isNotFound() }
@@ -113,7 +113,7 @@ class PassengerControllerTest {
         email = "test1@naver.com",
         password = "password",
         autoLoginAgreed = false,
-        userType = com.moyeobus.infra.persistence.passenger.entity.UserType.LOCAL
+        userType = UserType.LOCAL
     )
 
     private fun createIllegalPassenger() = PassengerEntity(
@@ -122,7 +122,7 @@ class PassengerControllerTest {
         email = "illegal@illegal.com",
         password = "password",
         autoLoginAgreed = false,
-        userType = com.moyeobus.infra.persistence.passenger.entity.UserType.LOCAL
+        userType = UserType.LOCAL
     )
 
     private fun createPassengerDomain() = Passenger(
@@ -131,6 +131,6 @@ class PassengerControllerTest {
         email = "test1@naver.com",
         password = "password",
         autoLoginAgreed = false,
-        userType = UserType.LOCAL
+        userType = com.moyeobus.domain.user.UserType.LOCAL
     )
 }

@@ -1,4 +1,4 @@
-package com.moyeobus.api.address
+package com.moyeobus.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.moyeobus.global.response.ApiResponse
