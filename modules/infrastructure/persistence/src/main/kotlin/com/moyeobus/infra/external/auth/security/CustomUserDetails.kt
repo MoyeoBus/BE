@@ -16,6 +16,9 @@ class CustomUserDetails(
     val email: String
         get() = passenger.email
 
+    val name: String
+        get() = passenger.name
+
 
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
