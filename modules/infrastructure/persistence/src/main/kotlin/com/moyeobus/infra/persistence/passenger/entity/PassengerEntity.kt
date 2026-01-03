@@ -1,4 +1,4 @@
-package com.moyeobus.infra.persistence.user.entity
+package com.moyeobus.infra.persistence.passenger.entity
 
 import com.moyeobus.infra.external.oauth2.user.OAuth2Provider
 import jakarta.persistence.Entity

@@ -1,4 +1,4 @@
-package com.moyeobus.application.user.port.out
+package com.moyeobus.application.passenger.port.out
 
 import com.moyeobus.domain.user.Passenger
 

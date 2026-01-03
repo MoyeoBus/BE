@@ -2,7 +2,7 @@ package com.moyeobus.infra.persistence.routeowner.entity
 
 import com.moyeobus.global.entity.BaseEntity
 import com.moyeobus.infra.persistence.route.entity.RouteEntity
-import com.moyeobus.infra.persistence.user.entity.PassengerEntity
+import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue

@@ -1,6 +1,6 @@
 package com.moyeobus.infra.external.auth.security;
 
-import com.moyeobus.infra.persistence.user.repository.PassengerJpaRepository
+import com.moyeobus.infra.persistence.passenger.repository.PassengerJpaRepository
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

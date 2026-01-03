@@ -4,7 +4,7 @@ import com.moyeobus.application.address.dto.StationDto
 import com.moyeobus.application.address.port.out.AddressOutPort
 import com.moyeobus.domain.route.Address
 import com.moyeobus.domain.route.Area
-import com.moyeobus.infra.exception.NotFoundException
+import com.moyeobus.global.exception.NotFoundException
 import com.moyeobus.infra.persistence.address.mapper.AddressMapper
 import com.moyeobus.infra.persistence.address.mapper.AreaMapper
 import com.moyeobus.infra.persistence.address.repotiory.AddressJpaRepository
@@ -26,7 +26,7 @@ class AddressPersistenceAdapter(
     }
 
     override fun findById(id: Long): Address {
-        val res = repo.findById(id).orElseThrow({ NotFoundException("Address(id=$id)")})
+        val res = repo.findById(id).orElseThrow({ NotFoundException("Address(id=$id)") })
         return mapper.toDomain(res)
     }
 

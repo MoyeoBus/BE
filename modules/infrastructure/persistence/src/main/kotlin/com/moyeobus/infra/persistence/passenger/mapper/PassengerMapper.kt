@@ -1,7 +1,7 @@
-package com.moyeobus.infra.persistence.user.mapper
+package com.moyeobus.infra.persistence.passenger.mapper
 
 import com.moyeobus.domain.user.Passenger
-import com.moyeobus.infra.persistence.user.entity.PassengerEntity
+import com.moyeobus.infra.persistence.passenger.entity.PassengerEntity
 import org.mapstruct.Mapper
 
 @Mapper(componentModel = "spring")
